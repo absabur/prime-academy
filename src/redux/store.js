@@ -1,0 +1,31 @@
+import { configureStore } from '@reduxjs/toolkit';
+import authReducer from './auth/authSlice';
+import blogReducer from './blogs/blogSlice';
+import courseReducer from './courses/courseSlice';
+import heroReducer from './hero/heroSlice';
+import seoReducer from './seo/seoSlice';
+import brandReducer from './brands/brandsSlice';
+import footerReducer from './footer/footerSlice';
+import commonReducer from './common/commonSlice';
+import studentReducer from './students/studentSlice';
+import imgIconContentReducer from './imgIconContent/imgIconContentSlice';
+import { setupAxiosInterceptors } from '@/api/setupAxiosInterceptors';
+
+const store = configureStore({
+  reducer: {
+    auth: authReducer,
+    blog: blogReducer,
+    course: courseReducer,
+    hero: heroReducer,
+    seo: seoReducer,
+    brands: brandReducer,
+    footer: footerReducer,
+    common: commonReducer,
+    student: studentReducer,
+    imgIconContent: imgIconContentReducer,
+  },
+});
+
+setupAxiosInterceptors(store);
+
+export default store;

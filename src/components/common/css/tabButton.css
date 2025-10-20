@@ -1,0 +1,22 @@
+.tab-button {
+  position: relative;
+  overflow: visible; /* allow the border to show outside */
+}
+
+/* Bottom border (line) */
+.tab-button::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px; /* 👈 pushes border down */
+  height: 5px;
+  width: 0;
+  background: var(--color-secondary);
+  transition: width 0.3s ease-in-out;
+  border-radius: 10px;
+}
+
+/* Hover animation */
+.tab-button:hover::after {
+  width: 100%; /* animate to full width */
+}

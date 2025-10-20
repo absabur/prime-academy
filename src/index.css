@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/* @custom-variant dark (&:is(.dark *)); */
+body {
+  font-family: 'DM Sans', sans-serif;
+}
+
+@theme {
+  /* Base Theme Variables (Mobile First) */
+  --color-primary: #053867;
+  --color-primary-light: #243985;
+  --color-secondary: #f7b922;
+  --color-secondary-light: #f3ce48;
+  --color-secondary-bg: #f5f5f5;
+  --color-white: #ffffff;
+  --color-black: #000002;
+
+  --font-heading: 'Poppins', sans-serif;
+  --width-max-w: 1480px;
+
+  --spacing-navbar: 90px;
+
+  --spacing-xs: 2px;
+  --spacing-xsm: 4px;
+  --spacing-sm: 6px;
+  --spacing-md: 10px;
+  --spacing-base: 14px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+
+  --text-sm: 12px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 20px;
+  --text-3xl: 24px;
+  --text-4xl: 28px;
+  --text-5xl: 32px;
+
+  --leading-lg: 1.7;
+  --leading-xl: 1.16;
+  --leading-2xl: 1.18;
+  --shadow-around-sm: rgba(0, 0, 0, 0.1) 0px 0px 30px 0px;
+}
+
+/* ✅ Media Queries Outside @theme */
+@media (min-width: 640px) {
+  :root {
+    --spacing-xs: 3px;
+    --spacing-xsm: 5px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 18px;
+    --spacing-xl: 26px;
+
+    --text-sm: 13px;
+    --text-base: 15px;
+    --text-lg: 17px;
+    --text-xl: 19px;
+    --text-2xl: 22px;
+    --text-3xl: 26px;
+    --text-4xl: 32px;
+    --text-5xl: 36px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --spacing-xs: 4px;
+    --spacing-xsm: 7px;
+    --spacing-sm: 10px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+
+    --text-sm: 14px;
+    --text-base: 16px;
+    --text-lg: 18px;
+    --text-xl: 20px;
+    --text-2xl: 24px;
+    --text-3xl: 30px;
+    --text-4xl: 36px;
+    --text-5xl: 48px;
+  }
+}
+
+/* class groups  */
+.heading-5xl {
+  @apply text-5xl font-bold font-heading;
+}
+
+.heading-4xl {
+  @apply font-bold font-heading text-4xl;
+}
+
+.heading-3xl {
+  @apply font-bold text-3xl font-heading text-primary;
+}
+
+.pera-sm-bold {
+  @apply font-bold text-lg font-heading;
+}

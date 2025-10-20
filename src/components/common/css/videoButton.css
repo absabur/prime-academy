@@ -1,0 +1,18 @@
+/* yt play button triangle design */
+.play:before {
+  border-bottom: 20px solid transparent;
+  border-left: 30px solid var(--color-secondary);
+  border-top: 20px solid transparent;
+  content: '';
+  height: 0;
+  left: 55%;
+  width: 0;
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.play:hover:before {
+  border-left: 30px solid white;
+}
