@@ -1,6 +1,5 @@
 import api from '@/api/axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 
 export const fetchStudents = createAsyncThunk(
   'student/fetchStudents',
@@ -22,7 +21,7 @@ export const fetchSingleStudent = createAsyncThunk(
   'student/fetchSingleStudent',
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/students/${id}/`);
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/api/students/${id}/`);
       return response.data; // the student data
     } catch (error) {
       // handle network or API errors

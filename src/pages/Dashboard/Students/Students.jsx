@@ -54,8 +54,6 @@ const Students = () => {
     };
   }, [search, category, currentPage, dispatch, order]);
 
-  console.log(students);
-
   return (
     <div>
       <DashBoardHeader buttonText={'Add Student'} title={'Students'} prefixIcon={<FaPlus />} />

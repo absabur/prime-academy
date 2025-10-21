@@ -65,12 +65,3 @@ export const verifyEmail = createAsyncThunk(
     }
   }
 );
-
-// 🔹 Refresh Token
-export const refreshAccessToken = createAsyncThunk(
-  'auth/refreshAccessToken',
-  async (refreshToken) => {
-    const res = await api.post('/api/token/refresh/', { refreshToken });
-    return res.data;
-  }
-);

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { loginUser, refreshAccessToken, registerStudent, verifyEmail } from './authAction';
+import { loginUser, registerStudent, verifyEmail } from './authAction';
 
 const initialState = {
   user: null,
@@ -47,6 +47,15 @@ const authSlice = createSlice({
     clearAuthMessage: (state) => {
       state.message = null;
     },
+    refreshAccessToken: (state, { payload }) => {
+      state.accessToken = payload.access;
+      state.refreshToken = payload.refresh;
+      const auth = JSON.parse(localStorage.getItem('auth'));
+      localStorage.setItem(
+        'auth',
+        JSON.stringify({ ...auth, accessToken: payload.access, refreshToken: payload.refresh })
+      );
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -73,16 +82,8 @@ const authSlice = createSlice({
         state.loading = false;
         state.isAuthenticated = false;
         state.error = payload.message;
-      })
-      .addCase(refreshAccessToken.fulfilled, (state, { payload }) => {
-        state.accessToken = payload.access;
-        state.refreshToken = payload.refresh;
-        const auth = JSON.parse(localStorage.getItem('auth'));
-        localStorage.setItem(
-          'auth',
-          JSON.stringify({ ...auth, accessToken: payload.access, refreshToken: payload.refresh })
-        );
       });
+
     builder
       .addCase(registerStudent.pending, (state) => {
         state.loading = true;
@@ -110,6 +111,12 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, setCredentials, loadUserFromStorage, clearAuthError, clearAuthMessage } =
-  authSlice.actions;
+export const {
+  logout,
+  setCredentials,
+  loadUserFromStorage,
+  refreshAccessToken,
+  clearAuthError,
+  clearAuthMessage,
+} = authSlice.actions;
 export default authSlice.reducer;

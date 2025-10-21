@@ -1,18 +1,16 @@
-// src/api/setupAxiosInterceptors.js
-
-import api from "./axios";
-import { logout } from "../redux/auth/authSlice";
-import { refreshAccessToken } from "../redux/auth/authAction";
+import api from './axios';
+import { logout, refreshAccessToken } from '../redux/auth/authSlice';
+import axios from 'axios';
 
 export const setupAxiosInterceptors = (store) => {
-  // ✅ Attach access token
+  // Attach access token
   api.interceptors.request.use((config) => {
     const { accessToken } = store.getState().auth;
     if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
     return config;
   });
 
-  // ✅ Handle 401 (token expired)
+  // Handle 401 (token expired)
   api.interceptors.response.use(
     (res) => res,
     async (error) => {
@@ -28,22 +26,27 @@ export const setupAxiosInterceptors = (store) => {
         }
 
         try {
-          const res = await api.post(
-            `${import.meta.env.VITE_API_URL}/auth/refresh`,
-            { refreshToken }
+          const res = await axios.post(
+            `${import.meta.env.VITE_API_URL}/api/token/refresh/`,
+            { refresh: refreshToken },
+            {
+              headers: { 'Content-Type': 'application/json' },
+            }
           );
 
-          // update redux state manually
-          store.dispatch(
-            refreshAccessToken.fulfilled(res.data, "fulfilled", refreshToken)
-          );
+          // Update Redux
+          store.dispatch(refreshAccessToken(res.data));
 
-          originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
+          // Retry original request with new token
+          const newAccessToken = res.data.access;
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           return api(originalRequest);
-        } catch {
+        } catch (err) {
           store.dispatch(logout());
+          return Promise.reject(err);
         }
       }
+
       return Promise.reject(error);
     }
   );
