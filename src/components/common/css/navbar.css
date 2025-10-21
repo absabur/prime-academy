@@ -1,0 +1,29 @@
+.navbar-item,
+.navbar-active {
+  position: relative;
+  overflow: visible; /* allow the border to show outside */
+  text-align: center;
+}
+
+/* Bottom border (line) */
+.navbar-item::after,
+.navbar-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px; /* 👈 pushes border down */
+  height: 3px;
+  width: 0;
+  background: var(--color-primary);
+  transition: width 0.3s ease-in-out;
+  border-radius: 10px;
+}
+
+/* Hover animation */
+.navbar-item:hover::after {
+  width: 100%; /* animate to full width */
+}
+/* Hover animation */
+.navbar-active::before {
+  width: 100%; /* animate to full width */
+}

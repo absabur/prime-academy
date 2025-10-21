@@ -16,6 +16,7 @@ import InnerSection from './InnerSection';
 import { FiMenu, FiX } from 'react-icons/fi'; // ✅ react-icons
 import { useSelector } from 'react-redux';
 import { capitalizeFirst } from '@/utils/capitalizeFirst';
+import './css/navbar.css';
 
 const Navbar = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -80,8 +81,8 @@ const Navbar = () => {
               <Link
                 key={url}
                 to={url}
-                className={`font-semibold transition-colors duration-200 ${
-                  isActive ? 'text-primary underline underline-offset-4' : textColor
+                className={`navbar-item font-semibold transition-colors duration-200 ${
+                  isActive ? 'text-primary navbar-active' : textColor
                 }`}
               >
                 {capitalizeFirst(text)}
@@ -107,7 +108,7 @@ const Navbar = () => {
       {/* Mobile Nav Drawer */}
       {menuOpen && (
         <div className={`md:hidden bg-white shadow-lg absolute w-full top-navbar`}>
-          <nav className="flex flex-col items-center gap-4 py-6">
+          <nav className="flex flex-col items-center gap-lg p-lg">
             {navLinks.map(({ text, url }) => {
               const isActive = location.pathname === url;
               return (
@@ -115,8 +116,8 @@ const Navbar = () => {
                   key={url}
                   to={url}
                   onClick={() => setMenuOpen(false)}
-                  className={`font-semibold text-lg ${
-                    isActive ? 'text-primary underline underline-offset-4' : 'text-black'
+                  className={`text-center navbar-item font-semibold text-lg ${
+                    isActive ? 'text-primary navbar-active' : 'text-black'
                   }`}
                 >
                   {capitalizeFirst(text)}
