@@ -32,14 +32,22 @@ const authSlice = createSlice({
       localStorage.setItem('auth', JSON.stringify({ user, accessToken, refreshToken }));
     },
     loadUserFromStorage: (state) => {
-      const auth = JSON.parse(localStorage.getItem('auth'));
-      if (auth?.accessToken) {
-        state.user = auth.user;
-        state.accessToken = auth.accessToken;
-        state.refreshToken = auth.refreshToken;
-        state.isAuthenticated = true;
+      try {
+        const stored = localStorage.getItem('auth');
+        const auth = stored ? JSON.parse(stored) : null;
+
+        if (auth?.accessToken) {
+          state.user = auth.user;
+          state.accessToken = auth.accessToken;
+          state.refreshToken = auth.refreshToken;
+          state.isAuthenticated = true;
+        }
+      } catch (error) {
+        console.warn("Invalid JSON in localStorage for 'auth':", error);
+        localStorage.removeItem('auth');
+      } finally {
+        state.authLoaded = true;
       }
-      state.authLoaded = true;
     },
     clearAuthError: (state) => {
       state.error = null;
@@ -50,11 +58,17 @@ const authSlice = createSlice({
     refreshAccessToken: (state, { payload }) => {
       state.accessToken = payload.access;
       state.refreshToken = payload.refresh;
-      const auth = JSON.parse(localStorage.getItem('auth'));
-      localStorage.setItem(
-        'auth',
-        JSON.stringify({ ...auth, accessToken: payload.access, refreshToken: payload.refresh })
-      );
+      try {
+        const stored = localStorage.getItem('auth');
+        const auth = stored ? JSON.parse(stored) : null;
+        localStorage.setItem(
+          'auth',
+          JSON.stringify({ ...auth, accessToken: payload.access, refreshToken: payload.refresh })
+        );
+      } catch (error) {
+        console.warn("Invalid JSON in localStorage for 'auth':", error);
+        localStorage.removeItem('auth');
+      }
     },
   },
   extraReducers: (builder) => {
