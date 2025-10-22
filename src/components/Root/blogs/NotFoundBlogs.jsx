@@ -19,7 +19,7 @@ const NotFoundBlogs = () => {
       {/* Optional CTA */}
       <PrimaryButton
         text="View All Blogs"
-        to="/blogs"
+        href="/blogs"
         className="mt-xl rounded-lg shadow-md hover:shadow-lg transition"
       />
     </div>

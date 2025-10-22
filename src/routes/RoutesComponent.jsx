@@ -51,6 +51,7 @@ import Reports from '@/pages/Dashboard/Reports/Reports';
 import SettingsDashBroad from '@/pages/Dashboard/SettingsDashBroad/SettingsDashBroad';
 import ForgatePassword from '@/pages/Root/ForgatePassword/ForgatePassword';
 import ResetPassword from '@/pages/Root/ResetPassword/ResetPassword';
+import RoleBasedLayout from '@/layouts/RoleBasedLayout';
 
 function RoutesComponent() {
   const { pathname } = useLocation();
@@ -96,13 +97,15 @@ function RoutesComponent() {
         {/* Common Dashboard Route */}
         <Route path="/dashboard" element={<Dashboard />} />
         {/* Admin Routes */}
-        <Route path="/dashboard/courses" element={<Courses />} />
-        <Route path="/dashboard/students" element={<Students />} />
-        <Route path="/dashboard/teachers" element={<Teachers />} />
-        <Route path="/dashboard/employees" element={<Employees />} />
-        <Route path="/dashboard/blog" element={<BlogDashboard />} />
-        <Route path="/dashboard/reports" element={<Reports />} />
-        <Route path="/dashboard/settings" element={<SettingsDashBroad />} />
+        <Route element={<RoleBasedLayout roles={['admin']}/>}>
+          <Route path="/dashboard/courses" element={<Courses />} />
+          <Route path="/dashboard/students" element={<Students />} />
+          <Route path="/dashboard/teachers" element={<Teachers />} />
+          <Route path="/dashboard/employees" element={<Employees />} />
+          <Route path="/dashboard/blog" element={<BlogDashboard />} />
+          <Route path="/dashboard/reports" element={<Reports />} />
+          <Route path="/dashboard/settings" element={<SettingsDashBroad />} />
+        </Route>
 
         {/* Teacher Routes */}
 

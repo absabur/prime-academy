@@ -19,7 +19,7 @@ const NotFoundCourses = () => {
       {/* Optional CTA */}
       <PrimaryButton
         text="View All Courses"
-        to="/courses"
+        href="/courses"
         className="mt-xl rounded-lg shadow-md hover:shadow-lg transition"
       />
     </div>
