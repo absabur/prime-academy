@@ -1,20 +1,39 @@
-/**
- * FormSection Component
- * ---------------------
- * - Renders the contact form section for the website.
- * - Includes company contact info and a form to submit user inquiries.
- * - Fully responsive for mobile and desktop.
- * - Accessibility-friendly with proper labels, types, and required fields.
- */
-
+import { useForm } from 'react-hook-form';
 import OuterSection from '../../common/OuterSection';
 import InnerSection from '../../common/InnerSection';
 import { BsTelephoneFill } from 'react-icons/bs';
 import { MdEmail } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import PrimaryButton from '../../common/PrimaryButton';
+import api from '@/api/axios';
+import SwalUtils from '@/utils/sweetAlert';
 
 const FormSection = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
+
+  //form submit handeler
+  const onSubmit = async (data) => {
+    try {
+      let response = await api.post('/api/contact/', data);
+      if (response.data.success) {
+        SwalUtils.success(
+          response.data.message || 'Thank you for reaching out! We’ll get back to you soon'
+        );
+        reset();
+      } else {
+        console.log(response.data.message);
+        SwalUtils.error(response.data.message || 'Unable to send message');
+      }
+    } catch (error) {
+      SwalUtils.error(error.response.data.message || 'Unable to send message');
+    }
+  };
+
   return (
     <OuterSection>
       <InnerSection className="flex gap-xl lg:gap-lg flex-col lg:flex-row">
@@ -25,7 +44,6 @@ const FormSection = () => {
             Complete the form and a member of our team will be in touch within 48 hours.
           </p>
 
-          {/* Phone Contact */}
           <div className="flex gap-md items-center">
             <BsTelephoneFill />
             <Link to={`tel:+8801325731050`} className="hover:text-primary-light">
@@ -33,7 +51,6 @@ const FormSection = () => {
             </Link>
           </div>
 
-          {/* Email Contact */}
           <div className="flex gap-md items-center">
             <MdEmail />
             <Link to={`mailto:example@gmail.com`} className="hover:text-primary-light">
@@ -44,36 +61,39 @@ const FormSection = () => {
 
         {/* Contact Form Section */}
         <div className="flex-2">
-          <form className="w-full space-y-md">
+          <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-md">
             {/* First Name & Last Name */}
             <div className="flex gap-md w-full flex-col sm:flex-row">
               <div className="flex-1">
-                <label htmlFor="fname" className="font-heading font-bold text-base">
+                <label htmlFor="first_name" className="font-heading font-bold text-base">
                   First Name*
                 </label>
                 <input
+                  id="first_name"
                   type="text"
-                  id="fname"
-                  name="fname"
-                  required
-                  aria-required="true"
+                  {...register('first_name', { required: 'First name is required' })}
                   className="w-full px-md py-sm mt-xs rounded-md border-2 border-black/10"
                   placeholder="Enter your first name"
                 />
+                {errors.first_name && (
+                  <p className="text-red-500 text-sm mt-1">{errors.first_name.message}</p>
+                )}
               </div>
+
               <div className="flex-1">
-                <label htmlFor="lname" className="font-heading font-bold text-base">
+                <label htmlFor="last_name" className="font-heading font-bold text-base">
                   Last Name*
                 </label>
                 <input
+                  id="last_name"
                   type="text"
-                  id="lname"
-                  name="lname"
-                  required
-                  aria-required="true"
+                  {...register('last_name', { required: 'Last name is required' })}
                   className="w-full px-md py-sm mt-xs rounded-md border-2 border-black/10"
                   placeholder="Enter your last name"
                 />
+                {errors.last_name && (
+                  <p className="text-red-500 text-sm mt-1">{errors.last_name.message}</p>
+                )}
               </div>
             </div>
 
@@ -84,64 +104,84 @@ const FormSection = () => {
                   Email*
                 </label>
                 <input
-                  type="email"
                   id="email"
-                  name="email"
-                  required
-                  aria-required="true"
+                  type="email"
+                  {...register('email', {
+                    required: 'Email is required',
+                    pattern: {
+                      value: /^\S+@\S+$/i,
+                      message: 'Enter a valid email',
+                    },
+                  })}
                   className="w-full px-md py-sm mt-xs rounded-md border-2 border-black/10"
                   placeholder="Enter your email"
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                )}
               </div>
+
               <div className="flex-1">
                 <label htmlFor="phone" className="font-heading font-bold text-base">
                   Phone*
                 </label>
                 <input
-                  type="tel"
                   id="phone"
-                  name="phone"
-                  required
-                  aria-required="true"
+                  type="tel"
+                  {...register('phone', {
+                    required: 'Phone number is required',
+                    minLength: { value: 10, message: 'Enter a valid phone number' },
+                  })}
                   className="w-full px-md py-sm mt-xs rounded-md border-2 border-black/10"
                   placeholder="Enter your phone number"
                 />
+                {errors.phone && (
+                  <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+                )}
               </div>
             </div>
 
             {/* Message */}
-            <div className="flex gap-md w-full flex-col">
+            <div className="flex w-full flex-col">
               <label htmlFor="message" className="font-heading font-bold text-base">
                 Message*
               </label>
               <textarea
                 id="message"
-                name="message"
                 rows={5}
-                required
-                aria-required="true"
+                {...register('message', { required: 'Message is required' })}
                 className="w-full px-md py-sm mt-xs rounded-md border-2 border-black/10"
                 placeholder="Enter your message"
               ></textarea>
+              {errors.message && (
+                <p className="text-red-500 text-sm mt-1">{errors.message.message}</p>
+              )}
             </div>
 
             {/* Privacy Policy Agreement */}
             <div className="flex gap-md w-full items-center">
               <input
+                id="agree_to_policy"
                 type="checkbox"
-                id="check"
-                name="check"
-                required
-                aria-required="true"
+                {...register('agree_to_policy', {
+                  required: 'You must agree to the Privacy Policy',
+                })}
                 className="text-secondary rounded border-2 border-black/10 w-5 h-5"
               />
-              <label htmlFor="check" className="font-heading font-bold text-base">
-                I agree to the Privacy Policy.*
+              <label htmlFor="agree_to_policy" className="font-heading font-bold text-base">
+                I agree to the{' '}
+                <Link className="text-primary-light" to={`/privacy-policy`}>
+                  Privacy Policy
+                </Link>
+                .*
               </label>
             </div>
+            {errors.agree_to_policy && (
+              <p className="text-red-500 text-sm mt-1">{errors.agree_to_policy.message}</p>
+            )}
 
             {/* Submit Button */}
-            <PrimaryButton type="submit" text={`Submit`} className="rounded-lg" />
+            <PrimaryButton type="submit" text={`Send`} className="rounded-lg" />
           </form>
         </div>
       </InnerSection>
