@@ -9,6 +9,7 @@ import footerReducer from './footer/footerSlice';
 import commonReducer from './common/commonSlice';
 import studentReducer from './students/studentSlice';
 import imgIconContentReducer from './imgIconContent/imgIconContentSlice';
+import faqReducer from './faqs/faqsSlice';
 import { setupAxiosInterceptors } from '@/api/setupAxiosInterceptors';
 
 const store = configureStore({
@@ -23,6 +24,7 @@ const store = configureStore({
     common: commonReducer,
     student: studentReducer,
     imgIconContent: imgIconContentReducer,
+    faq: faqReducer,
   },
 });
 

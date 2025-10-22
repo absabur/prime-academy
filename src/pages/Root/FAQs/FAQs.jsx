@@ -13,11 +13,16 @@ import { useEffect, useState } from 'react';
 import { fetchSeos } from '@/redux/seo/seoAction';
 import { useDispatch, useSelector } from 'react-redux';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
+import { fetchFaqs } from '@/redux/faqs/faqsAction';
 
 const FAQs = () => {
   const [pageSeo, setPageSeo] = useState(null);
   const { seos } = useSelector((state) => state.seo);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchFaqs());
+  }, []);
 
   useEffect(() => {
     dispatch(fetchSeos());
