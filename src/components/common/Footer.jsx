@@ -74,13 +74,13 @@ const Footer = () => {
             </Link>
             <div className="space-y-md">
               <Link
-                href={`tel:${phone}`}
+                to={`tel:${phone}`}
                 className="flex items-center gap-sm text-base text-white/70 transition hover:text-white"
               >
                 <FaPhone /> <span>{phone}</span>
               </Link>
               <Link
-                href={`mailto:${email}`}
+                to={`mailto:${email}`}
                 className="flex items-center gap-sm text-base text-white/70 transition hover:text-white"
               >
                 <FaRegEnvelope /> <span>{email}</span>

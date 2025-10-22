@@ -19,6 +19,11 @@
   border-radius: 10px;
 }
 
+.no-scroll::after,
+.no-scroll::before {
+  background: var(--color-white) !important;
+}
+
 /* Hover animation */
 .navbar-item:hover::after {
   width: 100%; /* animate to full width */

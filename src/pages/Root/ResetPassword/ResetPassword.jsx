@@ -1,9 +1,9 @@
 import { FaBook, FaUsers } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ContentCard from '@/components/Root/login/ContentCard';
-import { loginUser } from '@/redux/auth/authAction';
+import { forgotPassword, resetPassword } from '@/redux/auth/authAction';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import { clearAuthError } from '@/redux/auth/authSlice';
 import SwalUtils from '@/utils/sweetAlert';
@@ -13,24 +13,34 @@ import { useSEO } from '@/hooks/usePageSeo';
 import { fetchSeos } from '@/redux/seo/seoAction';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
 
-export default function LoginStudent() {
-  const { error, isAuthenticated, loading } = useSelector((state) => state.auth);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function ResetPassword() {
+  const { error, message, isAuthenticated, loading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [pageSeo, setPageSeo] = useState(null);
   const { seos } = useSelector((state) => state.seo);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (!email) return SwalUtils.warning('Enter Your Email!');
-    if (!password) return SwalUtils.warning('Enter Your Password');
+  // ✅ Form States
+  const [new_password, setNewPassword] = useState('');
+  const [new_password2, setConfirmPassword] = useState('');
 
-    // Dispatch login async
-    dispatch(loginUser({ email, password, role: 'student' }));
+  // ✅ Extract token from query params
+  const queryParams = new URLSearchParams(location.search);
+  const token = queryParams.get('token');
+
+  // ✅ Handle Reset Submission
+  const handleReset = (e) => {
+    e.preventDefault();
+
+    if (!new_password || !new_password2)
+      return SwalUtils.warning('Enter and confirm your new password!');
+    if (new_password !== new_password2) return SwalUtils.warning('Passwords do not match!');
+
+    dispatch(resetPassword({ token, new_password, new_password2 }));
   };
 
+  // ✅ Handle Errors
   useEffect(() => {
     if (error) {
       SwalUtils.error(error);
@@ -38,17 +48,27 @@ export default function LoginStudent() {
     }
   }, [error]);
 
-  // Navigate when login is successful
+  // ✅ Handle Success Message
   useEffect(() => {
-    if (isAuthenticated) navigate('/dashboard');
+    if (message) {
+      SwalUtils.success(message);
+      dispatch(clearAuthError());
+      setTimeout(() => navigate('/login'), 1000);
+    }
+  }, [message]);
+
+  // ✅ Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) navigate('/');
   }, [isAuthenticated]);
 
+  // ✅ SEO Fetch
   useEffect(() => {
     dispatch(fetchSeos());
   }, []);
 
   useEffect(() => {
-    setPageSeo(seos.find((item) => item.page_name == 'login'));
+    setPageSeo(seos.find((item) => item.page_name === 'forgate-password'));
   }, [seos]);
 
   useSEO(pageSeo ? mapApiSeoToUseSEO(pageSeo) : {});
@@ -61,7 +81,7 @@ export default function LoginStudent() {
           <div className="flex flex-col items-center justify-center gap-3">
             <img src="/assets/prime-academy-logo-full-dark.png" width={180} alt="Prime Academy" />
             <h1 className="text-3xl font-bold mt-4">Prime Academy</h1>
-            <p className="text-gray-600 w-100 text-center">
+            <p className="text-gray-600 text-center">
               Empowering education through innovative learning management
             </p>
           </div>
@@ -79,47 +99,48 @@ export default function LoginStudent() {
           </div>
         </div>
 
-        {/* Right side login form */}
+        {/* Right side reset form */}
         <div className="flex-1 w-full max-w-[500px] shadow-around-sm bg-white p-lg rounded-lg flex flex-col items-start justify-center gap-3 md:w-1/3">
-          <h1 className="text-black font-bold text-3xl text-center w-full">Welcome Back</h1>
+          <h1 className="text-black font-bold text-3xl text-center w-full">Reset Password</h1>
           <p className="text-black/50 text-base w-full text-center">
-            Sign in to access your learning dashboard
+            Enter your details to reset your password
           </p>
 
-          <form onSubmit={handleLogin} className="w-full flex flex-col gap-3 mt-3">
-            <label htmlFor="email">Email</label>
+          <form onSubmit={handleReset} className="w-full flex flex-col gap-3 mt-3">
+            {/* New Password */}
+            <label htmlFor="new_password">New Password*</label>
             <input
-              id="email"
-              type="text"
-              placeholder="Enter you email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
-            />
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
+              id="new_password"
               type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter new password"
+              value={new_password}
+              onChange={(e) => setNewPassword(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded"
             />
-            <Link className="text-primary-light" to={`/forgot-password`}>
-              Forgot Password?
-            </Link>
+
+            {/* Confirm Password */}
+            <label htmlFor="new_password2">Confirm Password*</label>
+            <input
+              id="new_password2"
+              type="password"
+              placeholder="Confirm new password"
+              value={new_password2}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+
             <PrimaryButton
               className="mt-xl"
               disabled={loading}
               type="submit"
-              text={loading ? 'Signing in...' : 'Sign in'}
+              text={loading ? 'Resetting...' : 'Reset Password'}
             />
           </form>
 
           <p className="text-black/50 text-base w-full text-center mt-2">
-            Don't have an account?{' '}
-            <Link className="text-primary" to="/register">
-              Register
+            Remember password?{' '}
+            <Link className="text-primary" to="/login">
+              Login
             </Link>
           </p>
         </div>

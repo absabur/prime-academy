@@ -49,6 +49,8 @@ import Employees from '@/pages/Dashboard/Employees/Employees';
 import BlogDashboard from '@/pages/Dashboard/BlogDashboard/BlogDashboard';
 import Reports from '@/pages/Dashboard/Reports/Reports';
 import SettingsDashBroad from '@/pages/Dashboard/SettingsDashBroad/SettingsDashBroad';
+import ForgatePassword from '@/pages/Root/ForgatePassword/ForgatePassword';
+import ResetPassword from '@/pages/Root/ResetPassword/ResetPassword';
 
 function RoutesComponent() {
   const { pathname } = useLocation();
@@ -85,6 +87,8 @@ function RoutesComponent() {
         <Route path="/login" element={<LoginStudent />} />
         <Route path="/register" element={<RegisterStudent />} />
         <Route path="/verify-student" element={<VerifyEmail />} />
+        <Route path="/forgot-password" element={<ForgatePassword />} />
+        <Route path="/password-reset-confirm" element={<ResetPassword />} />
       </Route>
 
       {/* 🔐 PROTECTED ROUTES (DASHBOARD) */}

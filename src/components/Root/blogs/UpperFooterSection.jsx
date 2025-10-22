@@ -10,11 +10,13 @@ const UpperFooterBlogs = () => {
       buttons={[
         {
           text: 'Search Course',
-          type: 'primary'
+          type: 'primary',
+          url: '/courses'
         },
         {
           text: 'Talk To Us Today',
-          type: 'secondary'
+          type: 'secondary', 
+          url: '/contact'
         }
       ]}
       layout="column"

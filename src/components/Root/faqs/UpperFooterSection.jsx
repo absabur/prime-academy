@@ -10,16 +10,18 @@ const UpperFooterFaq = () => {
       buttons={[
         {
           text: 'Explore This Site',
-          type: 'primary'
+          type: 'primary',
+          url: '/',
         },
         {
           text: 'Talk To Us Today',
-          type: 'secondary'
-        }
+          type: 'secondary',
+          url: '/contact',
+        },
       ]}
       layout="row"
     />
   );
 };
 
-export default UpperFooterFaq
+export default UpperFooterFaq;

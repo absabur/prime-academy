@@ -9,12 +9,14 @@ const UpperFooterCourses = () => {
       description="There is never just one way to reach a destination. We offer an alternative career path and a different route to developing skills."
       buttons={[
         {
-          text: 'Search Course',
-          type: 'primary'
+          text: 'Find Blogs',
+          type: 'primary',
+          url: '/blogs'
         },
         {
           text: 'Talk To Us Today',
-          type: 'secondary'
+          type: 'secondary',
+          url: '/contact'
         }
       ]}
       layout="column"

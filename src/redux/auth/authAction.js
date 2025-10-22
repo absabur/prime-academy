@@ -65,3 +65,39 @@ export const verifyEmail = createAsyncThunk(
     }
   }
 );
+
+// 🔹 Forgot password Student
+export const forgotPassword = createAsyncThunk(
+  'auth/forgotPassword',
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const res = await api.post('/api/students/reset-password/', credentials);
+      return res.data; // success
+    } catch (err) {
+      // capture API error message
+      if (err.response && err.response.data) {
+        return rejectWithValue(err.response.data); // pass backend error
+      } else {
+        return rejectWithValue(err.message); // fallback
+      }
+    }
+  }
+);
+
+// 🔹 Forgot password Student
+export const resetPassword = createAsyncThunk(
+  'auth/resetPassword',
+  async ({new_password, new_password2, token}, { rejectWithValue }) => {
+    try {
+      const res = await api.post(`/api/students/reset-password-confirm/?token=${token}`, {new_password, new_password2});
+      return res.data; // success
+    } catch (err) {
+      // capture API error message
+      if (err.response && err.response.data) {
+        return rejectWithValue(err.response.data); // pass backend error
+      } else {
+        return rejectWithValue(err.message); // fallback
+      }
+    }
+  }
+);

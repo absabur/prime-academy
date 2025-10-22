@@ -53,7 +53,7 @@ export const homeKhowUs = {
     description:
       'Prime Academy is shaping Bangladesh’s future workforce with UK-certified,practical, and industry-relevant training. We work with students, professionals, and employers to deliver skills that create real opportunities, drive career growth, and strengthen businesses.',
     button_text: 'Explore Prime Academy',
-    button_url: '/',
+    button_url: '/about',
   },
   stats: [
     {

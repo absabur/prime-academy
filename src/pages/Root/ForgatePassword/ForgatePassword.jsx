@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import ContentCard from '@/components/Root/login/ContentCard';
-import { loginUser } from '@/redux/auth/authAction';
+import { forgotPassword } from '@/redux/auth/authAction';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import { clearAuthError } from '@/redux/auth/authSlice';
 import SwalUtils from '@/utils/sweetAlert';
@@ -13,22 +13,20 @@ import { useSEO } from '@/hooks/usePageSeo';
 import { fetchSeos } from '@/redux/seo/seoAction';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
 
-export default function LoginStudent() {
-  const { error, isAuthenticated, loading } = useSelector((state) => state.auth);
+export default function ForgatePassword() {
+  const { error, message, isAuthenticated, loading } = useSelector((state) => state.auth);
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [pageSeo, setPageSeo] = useState(null);
   const { seos } = useSelector((state) => state.seo);
 
-  const handleLogin = (e) => {
+  const handleForgot = (e) => {
     e.preventDefault();
     if (!email) return SwalUtils.warning('Enter Your Email!');
-    if (!password) return SwalUtils.warning('Enter Your Password');
 
-    // Dispatch login async
-    dispatch(loginUser({ email, password, role: 'student' }));
+    // Dispatch forgot async
+    dispatch(forgotPassword({ email }));
   };
 
   useEffect(() => {
@@ -38,9 +36,16 @@ export default function LoginStudent() {
     }
   }, [error]);
 
-  // Navigate when login is successful
   useEffect(() => {
-    if (isAuthenticated) navigate('/dashboard');
+    if (message) {
+      SwalUtils.success(message);
+      dispatch(clearAuthError());
+    }
+  }, [message]);
+
+  // Navigate when forgot is successful
+  useEffect(() => {
+    if (isAuthenticated) navigate('/');
   }, [isAuthenticated]);
 
   useEffect(() => {
@@ -48,7 +53,7 @@ export default function LoginStudent() {
   }, []);
 
   useEffect(() => {
-    setPageSeo(seos.find((item) => item.page_name == 'login'));
+    setPageSeo(seos.find((item) => item.page_name == 'forgate-password'));
   }, [seos]);
 
   useSEO(pageSeo ? mapApiSeoToUseSEO(pageSeo) : {});
@@ -79,14 +84,12 @@ export default function LoginStudent() {
           </div>
         </div>
 
-        {/* Right side login form */}
+        {/* Right side forgot form */}
         <div className="flex-1 w-full max-w-[500px] shadow-around-sm bg-white p-lg rounded-lg flex flex-col items-start justify-center gap-3 md:w-1/3">
           <h1 className="text-black font-bold text-3xl text-center w-full">Welcome Back</h1>
-          <p className="text-black/50 text-base w-full text-center">
-            Sign in to access your learning dashboard
-          </p>
+          <p className="text-black/50 text-base w-full text-center">Reset you password</p>
 
-          <form onSubmit={handleLogin} className="w-full flex flex-col gap-3 mt-3">
+          <form onSubmit={handleForgot} className="w-full flex flex-col gap-3 mt-3">
             <label htmlFor="email">Email</label>
             <input
               id="email"
@@ -96,30 +99,18 @@ export default function LoginStudent() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded"
             />
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
-            />
-            <Link className="text-primary-light" to={`/forgot-password`}>
-              Forgot Password?
-            </Link>
             <PrimaryButton
               className="mt-xl"
               disabled={loading}
               type="submit"
-              text={loading ? 'Signing in...' : 'Sign in'}
+              text={loading ? 'Sending...' : 'Send Mail'}
             />
           </form>
 
           <p className="text-black/50 text-base w-full text-center mt-2">
-            Don't have an account?{' '}
-            <Link className="text-primary" to="/register">
-              Register
+            Remember password?{' '}
+            <Link className="text-primary" to="/forgot">
+              Forgot
             </Link>
           </p>
         </div>

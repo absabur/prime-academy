@@ -7,6 +7,7 @@
  */
 
 import TabButtons from '@/components/common/TabButtons';
+import TabButtonsFaq from '@/components/common/TabButtonsFaq';
 
 const ScrollIntoSectionButtons = ({ headings }) => {
   const handleScroll = (id) => {
@@ -19,7 +20,7 @@ const ScrollIntoSectionButtons = ({ headings }) => {
   };
 
   return (
-    <TabButtons
+    <TabButtonsFaq
       data={headings}
       selected={null} // not needed here
       setSelected={(category) => handleScroll(category)}

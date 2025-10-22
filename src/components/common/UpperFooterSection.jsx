@@ -44,6 +44,7 @@ const UpperFooterSection = ({
             return (
               <ButtonComponent
                 key={index}
+                href={button.url}
                 onClick={button.onClick}
                 text={button.text}
                 className="rounded-lg"

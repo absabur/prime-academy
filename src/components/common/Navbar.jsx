@@ -54,8 +54,8 @@ const Navbar = () => {
     { text: 'About', url: '/about' },
     // { text: 'Blogs', url: '/blogs' },
     { text: 'Courses', url: '/courses' },
-    { text: 'Contact', url: '/contact' },
     { text: 'Faqs', url: '/faqs' },
+    { text: 'Contact', url: '/contact' },
     {
       text: isAuthenticated ? 'Dashboard' : 'Login',
       url: isAuthenticated ? '/dashboard' : '/login',
@@ -83,7 +83,7 @@ const Navbar = () => {
                 to={url}
                 className={`navbar-item font-semibold transition-colors duration-200 ${
                   isActive ? 'text-primary navbar-active' : textColor
-                }`}
+                } ${isHome && !scrolled ? 'no-scroll' : ''}`}
               >
                 {capitalizeFirst(text)}
               </Link>
@@ -118,7 +118,7 @@ const Navbar = () => {
                   onClick={() => setMenuOpen(false)}
                   className={`text-center navbar-item font-semibold text-lg ${
                     isActive ? 'text-primary navbar-active' : 'text-black'
-                  }`}
+                  } ${isHome && !scrolled ? 'no-scroll' : ''}`}
                 >
                   {capitalizeFirst(text)}
                 </Link>
