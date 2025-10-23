@@ -109,8 +109,8 @@ export default function ForgatePassword() {
 
           <p className="text-black/50 text-base w-full text-center mt-2">
             Remember password?{' '}
-            <Link className="text-primary" to="/forgot">
-              Forgot
+            <Link className="text-primary" to="/login">
+              Login
             </Link>
           </p>
         </div>

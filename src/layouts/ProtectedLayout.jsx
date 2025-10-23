@@ -20,15 +20,15 @@ export default function ProtectedLayout() {
 
   // 🔹 Main Dashboard Layout
   return (
-    <div className="flex min-h-screen bg-gray-50 text-gray-900">
+    <div className="flex min-h-screen bg-gray-50 text-gray-900 w-full">
       {/* Sidebar (Responsive) */}
       <SideBar />
 
       {/* Main Content */}
-      <div className="flex flex-col flex-1 md:ml-[300px] transition-all duration-300">
+      <div className="flex flex-col w-full max-w-[100vw] md:max-w-[calc(100vw_-_300px)] transition-all duration-300">
         <DashBroadNavbar />
 
-        <main className="flex-1 p-4 md:p-6 overflow-x-hidden bg-gray-50  ">
+        <main className="flex-1 p-lg md:p-6 overflow-x-hidden bg-gray-50">
           <Outlet />
         </main>
       </div>

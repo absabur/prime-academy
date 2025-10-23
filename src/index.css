@@ -102,3 +102,57 @@ body {
 .pera-sm-bold {
   @apply font-bold text-lg font-heading;
 }
+
+/* policy classes  */
+
+.policy-wrapper {
+  @apply text-black;
+}
+
+.policy-wrapper h1,
+.policy-wrapper h2,
+.policy-wrapper h3,
+.policy-wrapper h4 {
+  @apply font-heading mt-lg mb-md text-black underline;
+}
+
+.policy-wrapper h1 {
+  @apply text-3xl;
+}
+
+.policy-wrapper h2 {
+  @apply text-2xl;
+}
+
+.policy-wrapper h3 {
+  @apply text-xl;
+}
+
+.policy-wrapper h4 {
+  @apply text-lg;
+}
+
+.policy-wrapper p {
+  @apply mb-4 text-base;
+}
+
+.policy-wrapper ul,
+.policy-wrapper ol {
+  @apply list-disc ml-6 mb-4;
+}
+
+.policy-wrapper a {
+  @apply text-blue-600 underline hover:text-blue-800;
+}
+
+.policy-wrapper strong {
+  @apply font-semibold text-gray-900;
+}
+
+.policy-wrapper time {
+  @apply font-medium text-gray-600;
+}
+
+.policy-wrapper footer p {
+  @apply text-sm text-gray-500 mt-8;
+}

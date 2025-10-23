@@ -4,7 +4,6 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 const RoleBasedLayout = ({ roles }) => {
   const { user } = useSelector((state) => state.auth);
-  console.log(user)
 
   // If user not loaded yet, show a loader or nothing
   if (!user) return <Navigate to="/login" replace />;

@@ -1,11 +1,19 @@
 import PaginationSection from '@/components/common/PaginationSection';
 import TableHeading from './TableHeading';
-import SecondaryButton from '@/components/common/SecondaryButton';
 import DashBroadActionButton from './DashBroadActionButton';
 
-export default function DataTables({ columns, data, paginationType, pageSize, error }) {
+export default function DataTables({
+  columns,
+  data,
+  paginationType,
+  pageSize,
+  error,
+  handelDelete,
+  deleteButton = true,
+  handelEdit,
+}) {
   return (
-    <div className="overflow-x-auto max-w-[100vw] md:max-w-[calc(100vw_-_350px)] bg-white shadow-around-sm rounded-lg border border-primary/30">
+    <div className="overflow-x-auto bg-white shadow-around-sm rounded-lg border border-primary/30">
       <table className="min-w-max w-full border-collapse ">
         <thead className="bg-primary/10 text-black/80 ">
           <tr>
@@ -30,7 +38,7 @@ export default function DataTables({ columns, data, paginationType, pageSize, er
               >
                 {columns?.map((col) => (
                   <td key={col.key} className="py-md px-xl text-black/80 whitespace-nowrap">
-                    {col.render ? col.render(row) : row[col.key]}
+                    {col.render ? col.render(row, col, index) : row[col.key]}
                   </td>
                 ))}
 
@@ -43,8 +51,14 @@ export default function DataTables({ columns, data, paginationType, pageSize, er
 
                 <td className="py-md px-xl text-black/80 whitespace-nowrap">
                   <div className="flex gap-sm">
-                    <DashBroadActionButton type={'edit'} />
-                    <DashBroadActionButton type={'delete'} />
+                    <DashBroadActionButton type={'edit'} onClick={() => handelEdit(row.id)} />
+                    {deleteButton && (
+                      <DashBroadActionButton
+                        onClick={() => handelDelete(row.id)}
+                        type={'delete'}
+                        id={row.id}
+                      />
+                    )}
                   </div>
                 </td>
               </tr>

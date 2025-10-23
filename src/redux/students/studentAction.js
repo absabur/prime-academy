@@ -21,11 +21,57 @@ export const fetchSingleStudent = createAsyncThunk(
   'student/fetchSingleStudent',
   async (id, { rejectWithValue }) => {
     try {
-      const response = await api.get(`${import.meta.env.VITE_API_URL}/api/students/${id}/`);
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/api/admin/students/${id}/`);
       return response.data; // the student data
     } catch (error) {
       // handle network or API errors
       return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const createStudent = createAsyncThunk(
+  'student/createStudent',
+  async (studentData, { rejectWithValue }) => {
+    try {
+      const response = await api.post(
+        `${import.meta.env.VITE_API_URL}/api/admin/students/`,
+        studentData
+      );
+      return response.data; // return the created student data
+    } catch (error) {
+      console.log(error.response?.data);
+      return rejectWithValue(error.response?.data || 'Failed to create student');
+    }
+  }
+);
+
+export const updateStudent = createAsyncThunk(
+  'student/updateStudent',
+  async ({ id, studentData }, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(
+        `${import.meta.env.VITE_API_URL}/api/admin/students/${id}/`,
+        studentData
+      );
+      return response.data; // return the updated student data
+    } catch (error) {
+      console.log(error.response?.data);
+      return rejectWithValue(error.response?.data?.message || 'Failed to update student');
+    }
+  }
+);
+
+export const deleteStudent = createAsyncThunk(
+  'student/deleteStudent',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(
+        `${import.meta.env.VITE_API_URL}/api/admin/students/${id}/`
+      );
+      return response; // return the deleted student's id
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to delete student');
     }
   }
 );

@@ -2,7 +2,7 @@ import { onSidebarToggle, SidebarClose } from '@/redux/common/commonSlice';
 import { Menu, X, User, Edit, LogOut } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useRef, useEffect } from 'react';
-import { FaDownLong } from 'react-icons/fa6';
+import { IoNotifications } from 'react-icons/io5';
 import { FaChevronDown, FaSearch } from 'react-icons/fa';
 import { clearAuthMessage, logout } from '@/redux/auth/authSlice';
 import SwalUtils from '@/utils/sweetAlert';
@@ -56,7 +56,7 @@ const DashBroadNavbar = () => {
 
       {/* 🔹 Right: Avatar with Dropdown */}
       <div className="relative flex gap-lg items-center " ref={dropdownRef}>
-        <div className="relative">
+        <div className="hidden lg:block relative ">
           <input
             placeholder="Search"
             className="bg-secondary-bg shadow-sm py-xsm px-xl border-none rounded-lg focus:outline-none"
@@ -64,9 +64,12 @@ const DashBroadNavbar = () => {
             name=""
             id=""
           />
-
           <FaSearch className="absolute top-2.5 left-2 text-black/40" />
         </div>
+        {/* notifucation button*/}
+        <button>
+          <IoNotifications size={25} />
+        </button>
         <button
           onClick={() => setOpenDropdown(!openDropdown)}
           className="flex items-center gap-3 focus:outline-none border border-black/10 shadow-sm py-xs px-md rounded-lg "
@@ -97,7 +100,7 @@ const DashBroadNavbar = () => {
               className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               onClick={() => console.log('Edit Profile')}
             >
-              <Edit size={16} /> Edit Profile
+              <Edit size={16} /> Change Password
             </button>
             <hr className="my-1 text-black/20" />
             <button

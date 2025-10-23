@@ -26,7 +26,6 @@ const FormSection = () => {
         );
         reset();
       } else {
-        console.log(response.data.message);
         SwalUtils.error(response.data.message || 'Unable to send message');
       }
     } catch (error) {

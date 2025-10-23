@@ -1,5 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchStudents, fetchSingleStudent } from './studentAction';
+import {
+  fetchStudents,
+  fetchSingleStudent,
+  deleteStudent,
+  createStudent,
+  updateStudent,
+} from './studentAction';
 
 const studentSlice = createSlice({
   name: 'student',
@@ -11,11 +17,15 @@ const studentSlice = createSlice({
     loadingStudents: true,
     loadingStudent: true,
     error: null,
+    message: null,
   },
   reducers: {
-    // setActiveCategory: (state, action) => {
-    //   state.activeCategory = action.payload;
-    // },
+    clearMessage: (state) => {
+      state.message = null;
+    },
+    clearError: (state) => {
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     // Students
@@ -37,7 +47,6 @@ const studentSlice = createSlice({
         state.loadingStudents = false;
         state.error = action.payload;
       });
-
     //single student
     builder
       .addCase(fetchSingleStudent.pending, (state) => {
@@ -52,8 +61,43 @@ const studentSlice = createSlice({
         state.loadingStudent = false;
         state.error = action.payload;
       });
+    // create student
+    builder
+      .addCase(createStudent.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(createStudent.fulfilled, (state, action) => {
+        console.log(action.payload);
+        state.message = 'Student created successfully';
+      })
+      .addCase(createStudent.rejected, (state, action) => {
+        state.error = action.payload.message;
+      });
+    // delete student
+    builder
+      .addCase(deleteStudent.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(deleteStudent.fulfilled, (state, action) => {
+        if (action.payload.status === 204) {
+          state.message = 'Student deleted successfully';
+        }
+      })
+      .addCase(deleteStudent.rejected, (state, action) => {
+        state.error = action.payload;
+      });
+    builder
+      .addCase(updateStudent.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(updateStudent.fulfilled, (state, action) => {
+        state.message = 'Student updated successfully';
+      })
+      .addCase(updateStudent.rejected, (state, action) => {
+        state.error = action.payload;
+      });
   },
 });
 
-export const {} = studentSlice.actions;
+export const { clearMessage, clearError } = studentSlice.actions;
 export default studentSlice.reducer;

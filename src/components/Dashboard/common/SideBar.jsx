@@ -64,7 +64,7 @@ export default function SideBar() {
     <>
       {/* 🔹 Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-40 w-[300px] h-full flex flex-col bg-primary text-white transform transition-transform duration-300 ease-in-out ${
+        className={`fixed md:sticky top-0 left-0 z-40 w-[300px] max-h-screen min-h-screen h-full flex flex-col bg-primary text-white transform transition-transform duration-300 ease-in-out ${
           sidebarIsOpen ? 'translate-x-0' : '-translate-x-full'
         } md:translate-x-0`}
       >

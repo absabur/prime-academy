@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 const TableHeading = ({ col }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const orderKey = searchParams.get('order') || '';
-  const nonSortable = ['id', 'education', 'skills'];
+  const nonSortable = ['sl', 'education', 'skills'];
   const isSortable = !nonSortable.includes(col.key);
   const sortKey = col.key === 'full_name' ? 'first_name' : col.key;
 

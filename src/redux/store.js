@@ -10,6 +10,7 @@ import commonReducer from './common/commonSlice';
 import studentReducer from './students/studentSlice';
 import imgIconContentReducer from './imgIconContent/imgIconContentSlice';
 import faqReducer from './faqs/faqsSlice';
+import policiesReducer from './policies/policiesSlice';
 import { setupAxiosInterceptors } from '@/api/setupAxiosInterceptors';
 
 const store = configureStore({
@@ -25,6 +26,7 @@ const store = configureStore({
     student: studentReducer,
     imgIconContent: imgIconContentReducer,
     faq: faqReducer,
+    policies: policiesReducer,
   },
 });
 
