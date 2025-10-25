@@ -1,6 +1,5 @@
 import api from '@/api/axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 
 export const fetchBlogCategories = createAsyncThunk(
   'blog/fetchCategories',
@@ -50,9 +49,7 @@ export const fetchSingleBlog = createAsyncThunk(
   'blog/fetchSingleBlog',
   async (blogIdOrSlug, { rejectWithValue }) => {
     try {
-      const response = await api.get(
-        `${import.meta.env.VITE_API_URL}/api/blogs/${blogIdOrSlug}/`
-      );
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/api/blogs/${blogIdOrSlug}/`);
       return response.data; // the blog data
     } catch (error) {
       // handle network or API errors

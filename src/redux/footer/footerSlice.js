@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchFooters } from './footerAction';
+import { fetchFooters, updateFooter } from './footerAction';
 
 const footerSlice = createSlice({
   name: 'footer',
@@ -7,8 +7,15 @@ const footerSlice = createSlice({
     footer: {},
     loadingFooters: true,
     error: null,
+    message: null,
   },
   reducers: {
+    clearError: (state) => {
+      state.error = null;
+    },
+    clearMessage: (state) => {
+      state.message = null;
+    },
   },
   extraReducers: (builder) => {
     // footer
@@ -25,9 +32,22 @@ const footerSlice = createSlice({
         state.loadingFooters = false;
         state.error = action.payload;
       });
-
+    builder
+      .addCase(updateFooter.pending, (state) => {
+        state.loadingFooters = true;
+        state.error = null;
+      })
+      .addCase(updateFooter.fulfilled, (state, action) => {
+        state.loadingFooters = false;
+        state.footer = action.payload.data;
+        state.message = action.payload.message;
+      })
+      .addCase(updateFooter.rejected, (state, action) => {
+        state.loadingFooters = false;
+        state.error = action.payload;
+      });
   },
 });
 
-export const {  } = footerSlice.actions;
+export const { clearError, clearMessage } = footerSlice.actions;
 export default footerSlice.reducer;

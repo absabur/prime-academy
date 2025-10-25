@@ -79,7 +79,7 @@ export default function VerifyEmail() {
 
         {status === 'error' && (
           <>
-            <h2 className="text-xl font-semibold text-red-600">❌ Verification Failed</h2>
+            <h2 className="text-xl font-semibold text-red-600">Verification Failed</h2>
             <p className="text-gray-500 mt-2 mb-4">{displayMessage}</p>
             <div className="flex justify-center gap-4">
               <PrimaryButton

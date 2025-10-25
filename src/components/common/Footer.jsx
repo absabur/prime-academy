@@ -127,11 +127,11 @@ const Footer = () => {
             ))}
 
           <div className="col-span-4 md:col-span-2">
-            <h3 className='text-md font-bold'>About</h3>
+            <h3 className="text-md font-bold">About</h3>
             <p className="text-white/70 text-base">{description}</p>
           </div>
           <div className="col-span-4 md:col-span-2">
-            <h3 className='text-md font-bold'>Address</h3>
+            <h3 className="text-md font-bold">Address</h3>
             <address className="not-italic text-white/70 text-base">{address}</address>
           </div>
         </div>

@@ -42,7 +42,7 @@ export const setupAxiosInterceptors = (store) => {
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           return api(originalRequest);
         } catch (err) {
-          store.dispatch(logout());
+          // store.dispatch(logout());
           return Promise.reject(err);
         }
       }

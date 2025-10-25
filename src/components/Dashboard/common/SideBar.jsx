@@ -1,22 +1,31 @@
+import { useState } from 'react';
 import { onSidebarToggle } from '@/redux/common/commonSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 
-// 🔹 সব আইকন এক জায়গা থেকে (react-icons)
+// Icons
 import {
-  FaBlog, // Dashboard
-  FaBookOpen, // Settings
-  FaBox, // Students / Results
-  FaChalkboardTeacher, // Payments
-  FaClipboardList, // Assignments / Reports
-  FaCogs, // Blog
-  FaFileInvoice,
-  FaTachometerAlt, // Inventory
-  FaTools, // Courses
-  FaUserGraduate, // Teachers
-  FaUsers, // Invoices
-  FaWallet,
+  FaBlog,
+  FaBookOpen,
+  FaChalkboardTeacher,
+  FaClipboardList,
+  FaCogs,
+  FaTachometerAlt,
+  FaUserGraduate,
+  FaUsers,
+  FaRegEdit,
+  FaTags,
+  FaHandshake,
+  FaImage,
+  FaEnvelope,
+  FaFolderOpen,
+  FaFileAlt,
+  FaQuestionCircle,
+  FaBook,
+  FaStar,
+  FaSearch,
 } from 'react-icons/fa';
+import { IoIosArrowDown } from 'react-icons/io';
 
 export default function SideBar() {
   const dispatch = useDispatch();
@@ -24,7 +33,6 @@ export default function SideBar() {
   const { user } = useSelector((state) => state.auth);
   const role = user?.role || 'student';
 
-  // 🔹 Sidebar menu by role
   const menuByRole = {
     admin: [
       { name: 'Dashboard', icon: FaTachometerAlt, path: '/dashboard' },
@@ -34,37 +42,33 @@ export default function SideBar() {
       { name: 'Employee List', icon: FaUsers, path: '/dashboard/employees' },
       { name: 'Blog', icon: FaBlog, path: '/dashboard/blog' },
       { name: 'Reports Generate', icon: FaClipboardList, path: '/dashboard/reports' },
-      { name: 'Settings', icon: FaCogs, path: '/dashboard/settings' },
-    ],
-    teacher: [
-      { name: 'Dashboard', icon: FaTachometerAlt, path: '/dashboard' },
-      { name: 'My Classes', icon: FaBookOpen, path: '/dashboard/classes' },
-      { name: 'Assignments', icon: FaClipboardList, path: '/dashboard/assignments' },
-    ],
-    student: [
-      { name: 'Dashboard', icon: FaTachometerAlt, path: '/dashboard' },
-      { name: 'Courses', icon: FaBookOpen, path: '/dashboard/courses' },
-      { name: 'Results', icon: FaUserGraduate, path: '/dashboard/results' },
-    ],
-    account: [
-      { name: 'Dashboard', icon: FaTachometerAlt, path: '/dashboard' },
-      { name: 'Payments', icon: FaWallet, path: '/dashboard/payments' },
-      { name: 'Invoices', icon: FaFileInvoice, path: '/dashboard/invoices' },
-    ],
-    stuff: [
-      { name: 'Dashboard', icon: FaTachometerAlt, path: '/dashboard' },
-      { name: 'Inventory', icon: FaBox, path: '/dashboard/inventory' },
-      { name: 'Maintenance', icon: FaTools, path: '/dashboard/maintenance' },
+      {
+        name: 'Settings',
+        icon: FaCogs,
+        children: [
+          { name: 'Footer', icon: FaRegEdit, path: '/dashboard/footer' },
+          { name: 'Partners', icon: FaHandshake, path: '/dashboard/partners' },
+          { name: 'Hero Headers', icon: FaImage, path: '/dashboard/hero-sections' },
+          { name: 'Messages', icon: FaEnvelope, path: '/dashboard/messages' },
+          { name: 'FAQs', icon: FaQuestionCircle, path: '/dashboard/faqs' },
+          { name: 'Policies', icon: FaBook, path: '/dashboard/policies' },
+          { name: 'Skills', icon: FaStar, path: '/dashboard/skills' },
+        ],
+      },
     ],
   };
 
   const menuItems = menuByRole[role] || [];
+  const [openDropdown, setOpenDropdown] = useState(null);
+
+  const toggleDropdown = (name) => {
+    setOpenDropdown(openDropdown === name ? null : name);
+  };
 
   return (
     <>
-      {/* 🔹 Sidebar */}
       <aside
-        className={`fixed md:sticky top-0 left-0 z-40 w-[300px] max-h-screen min-h-screen h-full flex flex-col bg-primary text-white transform transition-transform duration-300 ease-in-out ${
+        className={`fixed md:sticky top-0 left-0 z-40 w-[300px] max-h-screen min-h-screen h-full flex flex-col bg-primary text-white transform transition-transform duration-300 ${
           sidebarIsOpen ? 'translate-x-0' : '-translate-x-full'
         } md:translate-x-0`}
       >
@@ -74,23 +78,63 @@ export default function SideBar() {
           </Link>
         </div>
 
-        <nav className="flex-1 overflow-y-auto p-lg space-y-sm">
-          {menuItems.map(({ name, icon: Icon, path }) => (
-            <NavLink
-              key={path}
-              to={path}
-              end
-              className={({ isActive }) =>
-                `flex items-center gap-md px-lg py-sm rounded-lg transition font-heading${
-                  isActive ? ' bg-secondary-light text-primary font-semibold' : 'hover:bg-white/10'
-                }`
-              }
-              onClick={() => dispatch(onSidebarToggle())}
-            >
-              <Icon size={18} />
-              <span>{name}</span>
-            </NavLink>
-          ))}
+        <nav className="flex-1 overflow-y-auto p-lg space-y-sm scrollbar-hidden">
+          {menuItems.map(({ name, icon: Icon, path, children }) =>
+            children ? (
+              <div key={name}>
+                <button
+                  onClick={() => toggleDropdown(name)}
+                  className="flex items-center justify-between w-full gap-md px-lg py-sm rounded-lg hover:bg-white/10 transition font-heading"
+                >
+                  <div className="flex items-center gap-md">
+                    <Icon size={18} />
+                    <span>{name}</span>
+                  </div>
+                  <IoIosArrowDown
+                    className={`transition-transform ${openDropdown === name ? 'rotate-180' : ''}`}
+                  />
+                </button>
+
+                {/* Child items */}
+                {openDropdown === name && (
+                  <div className="ml-10 mt-2 space-y-1">
+                    {children.map((child) => (
+                      <NavLink
+                        key={child.path}
+                        to={child.path}
+                        className={({ isActive }) =>
+                          `flex items-center gap-md px-3 py-2 rounded-md text-sm ${
+                            isActive
+                              ? 'bg-secondary-light text-primary font-semibold'
+                              : 'hover:bg-white/10'
+                          }`
+                        }
+                        onClick={() => dispatch(onSidebarToggle())}
+                      >
+                        {child.icon && <child.icon size={14} />} {/* ✅ icon added */}
+                        {child.name}
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <NavLink
+                key={path}
+                to={path}
+                end
+                className={({ isActive }) =>
+                  `flex items-center gap-md px-lg py-sm rounded-lg transition font-heading ${
+                    isActive ? 'bg-secondary-light text-primary font-semibold' : 'hover:bg-white/10'
+                  }`
+                }
+                onClick={() => dispatch(onSidebarToggle())}
+              >
+                <Icon size={18} />
+                <span>{name}</span>
+              </NavLink>
+            )
+          )}
         </nav>
 
         <p className="border-t border-white/20 p-lg text-sm text-center mt-auto">
@@ -98,7 +142,6 @@ export default function SideBar() {
         </p>
       </aside>
 
-      {/* 🔹 Overlay (Mobile) */}
       {sidebarIsOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-30 md:hidden"

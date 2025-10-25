@@ -11,6 +11,7 @@ export default function DataTables({
   handelDelete,
   deleteButton = true,
   handelEdit,
+  paginationShow = true,
 }) {
   return (
     <div className="overflow-x-auto bg-white shadow-around-sm rounded-lg border border-primary/30">
@@ -74,12 +75,14 @@ export default function DataTables({
       </table>
 
       {/* ✅ Pagination Section */}
-      <PaginationSection
-        pagination={paginationType}
-        pageSize={pageSize}
-        error={error}
-        styte={{ padding: 'var(--spacing-lg) 0' }}
-      />
+      {paginationShow && (
+        <PaginationSection
+          pagination={paginationType}
+          pageSize={pageSize}
+          error={error}
+          styte={{ padding: 'var(--spacing-lg) 0' }}
+        />
+      )}
     </div>
   );
 }

@@ -8,6 +8,8 @@ import brandReducer from './brands/brandsSlice';
 import footerReducer from './footer/footerSlice';
 import commonReducer from './common/commonSlice';
 import studentReducer from './students/studentSlice';
+import teacherReducer from './teachers/teacherSlice';
+import employeeReducer from './employee/employeeSlice';
 import imgIconContentReducer from './imgIconContent/imgIconContentSlice';
 import faqReducer from './faqs/faqsSlice';
 import policiesReducer from './policies/policiesSlice';
@@ -24,6 +26,8 @@ const store = configureStore({
     footer: footerReducer,
     common: commonReducer,
     student: studentReducer,
+    teacher: teacherReducer,
+    employee: employeeReducer,
     imgIconContent: imgIconContentReducer,
     faq: faqReducer,
     policies: policiesReducer,

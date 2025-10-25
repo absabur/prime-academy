@@ -20,7 +20,7 @@ const Modal = ({ children, setModal, noClose = false }) => {
       {/* modal content */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-xl shadow-lg w-[90%] md:w-[45%] p-4"
+        className="bg-white rounded-xl shadow-lg w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] p-4 max-w-[95vw] max-h-[90vh] overflow-auto"
       >
         {children}
       </div>

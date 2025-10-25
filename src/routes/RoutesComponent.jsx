@@ -41,17 +41,17 @@ import RegisterStudent from '@/pages/Root/RegisterStudent/RegisterStudent';
 import VerifyEmail from '@/pages/Root/VerifyStudent/VerifyEmail';
 
 // 🧭 Dashboard (Protected Pages)
-import Dashboard from '@/pages/Dashboard/Dashboard/Dashboard';
-import Courses from '@/pages/Dashboard/Courses/Courses';
-import Students from '@/pages/Dashboard/Students/Students';
-import Teachers from '@/pages/Dashboard/Teachers/Teachers';
-import Employees from '@/pages/Dashboard/Employees/Employees';
-import BlogDashboard from '@/pages/Dashboard/BlogDashboard/BlogDashboard';
-import Reports from '@/pages/Dashboard/Reports/Reports';
-import SettingsDashBroad from '@/pages/Dashboard/SettingsDashBroad/SettingsDashBroad';
+import AdminPanelDashboard from '@/pages/Dashboard/AdminDashboard/AdminPanelDashboard/AdminPanelDashboard';
+import AdminPanelCourses from '@/pages/Dashboard/AdminDashboard/AdminPanelCourses/AdminPanelCourses';
+import AdminPanelStudents from '@/pages/Dashboard/AdminDashboard/AdminPanelStudents/AdminPanelStudents';
+import AdminPanelTeachers from '@/pages/Dashboard/AdminDashboard/AdminPanelTeachers/AdminPanelTeachers';
+import AdminPanelEmployees from '@/pages/Dashboard/AdminDashboard/AdminPanelEmployees/AdminPanelEmployees';
+import AdminPanelBlogs from '@/pages/Dashboard/AdminDashboard/AdminPanelBlogs/AdminPanelBlogs';
+import AdminPanelReports from '@/pages/Dashboard/AdminDashboard/AdminPanelReports/AdminPanelReports';
 import ForgatePassword from '@/pages/Root/ForgatePassword/ForgatePassword';
 import ResetPassword from '@/pages/Root/ResetPassword/ResetPassword';
 import RoleBasedLayout from '@/layouts/RoleBasedLayout';
+import AdminPanelFooter from '@/pages/Dashboard/AdminDashboard/AdminPanelFooter/AdminPanelFooter';
 
 function RoutesComponent() {
   const { pathname } = useLocation();
@@ -94,17 +94,24 @@ function RoutesComponent() {
 
       {/* 🔐 PROTECTED ROUTES (DASHBOARD) */}
       <Route element={<ProtectedLayout />}>
-        {/* Common Dashboard Route */}
-        <Route path="/dashboard" element={<Dashboard />} />
         {/* Admin Routes */}
-        <Route element={<RoleBasedLayout roles={['admin']}/>}>
-          <Route path="/dashboard/courses" element={<Courses />} />
-          <Route path="/dashboard/students" element={<Students />} />
-          <Route path="/dashboard/teachers" element={<Teachers />} />
-          <Route path="/dashboard/employees" element={<Employees />} />
-          <Route path="/dashboard/blog" element={<BlogDashboard />} />
-          <Route path="/dashboard/reports" element={<Reports />} />
-          <Route path="/dashboard/settings" element={<SettingsDashBroad />} />
+        <Route element={<RoleBasedLayout roles={['admin']} />}>
+          {/* main menues  */}
+          <Route path="/dashboard" element={<AdminPanelDashboard />} />
+          <Route path="/dashboard/courses" element={<AdminPanelCourses />} />
+          <Route path="/dashboard/students" element={<AdminPanelStudents />} />
+          <Route path="/dashboard/teachers" element={<AdminPanelTeachers />} />
+          <Route path="/dashboard/employees" element={<AdminPanelEmployees />} />
+          <Route path="/dashboard/blog" element={<AdminPanelBlogs />} />
+          <Route path="/dashboard/reports" element={<AdminPanelReports />} />
+          {/* sub menues */}
+          <Route path="/dashboard/footer" element={<AdminPanelFooter />} />
+          <Route path="/dashboard/partners" element={<AdminPanelReports />} />
+          <Route path="/dashboard/hero-sections" element={<AdminPanelReports />} />
+          <Route path="/dashboard/messages" element={<AdminPanelReports />} />
+          <Route path="/dashboard/faqs" element={<AdminPanelReports />} />
+          <Route path="/dashboard/policies" element={<AdminPanelReports />} />
+          <Route path="/dashboard/skills" element={<AdminPanelReports />} />
         </Route>
 
         {/* Teacher Routes */}

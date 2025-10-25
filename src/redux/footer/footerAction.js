@@ -12,3 +12,18 @@ export const fetchFooters = createAsyncThunk(
     }
   }
 );
+
+export const updateFooter = createAsyncThunk(
+  'footer/updateFooter',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(
+        `${import.meta.env.VITE_API_URL}/api/admin/footer/update/`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data?.message || 'Something went wrong');
+    }
+  }
+);

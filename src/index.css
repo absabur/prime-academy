@@ -86,6 +86,15 @@ body {
   }
 }
 
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hidden {
+  -ms-overflow-style: none; /* IE & Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 /* class groups  */
 .heading-5xl {
   @apply text-5xl font-bold font-heading;
@@ -113,11 +122,11 @@ body {
 .policy-wrapper h2,
 .policy-wrapper h3,
 .policy-wrapper h4 {
-  @apply font-heading mt-lg mb-md text-black underline;
+  @apply font-heading mt-lg mb-md text-black;
 }
 
 .policy-wrapper h1 {
-  @apply text-3xl;
+  @apply text-3xl underline;
 }
 
 .policy-wrapper h2 {
