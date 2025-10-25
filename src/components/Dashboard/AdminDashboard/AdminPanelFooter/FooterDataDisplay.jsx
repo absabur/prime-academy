@@ -40,7 +40,8 @@ const footerDisplay = () => {
   } = footer;
 
   // Helper styles for the tables
-  const thStyle = 'p-3 text-left text-sm font-semibold text-gray-700 bg-gray-100 border-b border-black/20';
+  const thStyle =
+    'p-3 text-left text-sm font-semibold text-gray-700 bg-gray-100 border-b border-black/20';
   const tdStyle = 'p-3 text-sm text-black/70 border-b border-black/20';
   const tableContainerStyle = 'shadow-md rounded-lg overflow-x-auto';
   const tableTitleStyle = 'text-xl font-bold text-black/70 mb-sm mt-xl';
@@ -65,14 +66,21 @@ const footerDisplay = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* --- Main Details Table --- */}
-      <h2 className={tableTitleStyle}>Main Details</h2>
+      <h2 className={tableTitleStyle} style={{ marginTop: 0 }}>
+        Main Details
+      </h2>
       <div className={tableContainerStyle}>
         <table className="min-w-full bg-white">
           <tbody>
             <tr className="border-b border-black/20">
               <td className={`${tdStyle} font-medium w-1/4`}>Logo</td>
               <td className={tdStyle}>
-                <img src={logo_url} alt="Footer Logo" width={150} className="bg-primary-light p-sm rounded" />
+                <img
+                  src={logo_url}
+                  alt="Footer Logo"
+                  width={150}
+                  className="bg-primary-light p-sm rounded"
+                />
               </td>
             </tr>
             <tr className="border-b border-black/20">
@@ -123,7 +131,7 @@ const footerDisplay = () => {
               social_links?.map((link) => (
                 <tr key={link.platform}>
                   <td className={tdStyle}>
-                    <span className='flex items-center gap-sm'>
+                    <span className="flex items-center gap-sm">
                       {socialIcons[link.platform]} {link.platform}
                     </span>
                   </td>

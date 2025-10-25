@@ -9,9 +9,7 @@ const ContactHero = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!heros?.length) {
-      dispatch(fetchHeros());
-    }
+    dispatch(fetchHeros());
   }, []);
 
   useEffect(() => {

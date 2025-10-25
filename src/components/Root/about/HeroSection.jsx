@@ -9,13 +9,11 @@ const AboutHero = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!heros?.length) {
-      dispatch(fetchHeros());
-    }
+    dispatch(fetchHeros());
   }, []);
 
   useEffect(() => {
-    let current = heros.filter((item) => item.page_name == "about");
+    let current = heros.filter((item) => item.page_name == 'about');
     setAboutHero(current[0]);
   }, [heros]);
 

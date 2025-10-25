@@ -60,7 +60,6 @@ const employeeSlice = createSlice({
         state.error = null;
       })
       .addCase(createEmployee.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.message = 'Employee created successfully';
       })
       .addCase(createEmployee.rejected, (state, action) => {

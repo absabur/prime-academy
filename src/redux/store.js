@@ -13,6 +13,7 @@ import employeeReducer from './employee/employeeSlice';
 import imgIconContentReducer from './imgIconContent/imgIconContentSlice';
 import faqReducer from './faqs/faqsSlice';
 import policiesReducer from './policies/policiesSlice';
+import departmentReducer from './department/departmentSlice';
 import { setupAxiosInterceptors } from '@/api/setupAxiosInterceptors';
 
 const store = configureStore({
@@ -31,6 +32,7 @@ const store = configureStore({
     imgIconContent: imgIconContentReducer,
     faq: faqReducer,
     policies: policiesReducer,
+    department: departmentReducer,
   },
 });
 

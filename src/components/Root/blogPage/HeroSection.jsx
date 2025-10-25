@@ -10,13 +10,11 @@ const SingleBlogHero = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!heros?.length) {
-      dispatch(fetchHeros());
-    }
+    dispatch(fetchHeros());
   }, []);
 
   useEffect(() => {
-    let current = heros.filter((item) => item.page_name == "single-blog");
+    let current = heros.filter((item) => item.page_name == 'single-blog');
     setSingleBlogHero(current[0]);
   }, [heros]);
 

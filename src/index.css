@@ -86,6 +86,14 @@ body {
   }
 }
 
+button {
+  cursor: pointer !important;
+}
+
+a {
+  text-decoration: none !important;
+}
+
 .scrollbar-hidden::-webkit-scrollbar {
   display: none;
 }

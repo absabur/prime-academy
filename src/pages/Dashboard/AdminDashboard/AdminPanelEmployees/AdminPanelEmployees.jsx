@@ -1,4 +1,5 @@
 import Modal from '@/components/common/Modal';
+import AddEmployeeForm from '@/components/Dashboard/AdminDashboard/AdminEmployee/AddEmployeeForm';
 import DashBoardHeader from '@/components/Dashboard/common/DashBoardHeader';
 import DataTables from '@/components/Dashboard/common/DataTables';
 import {
@@ -7,7 +8,8 @@ import {
   fetchSingleEmployee,
   updateEmployee,
 } from '@/redux/employee/employeeAction';
-import { clearMessage } from '@/redux/students/studentSlice';
+import { clearMessage } from '@/redux/employee/employeeSlice';
+
 import SwalUtils from '@/utils/sweetAlert';
 import { useEffect, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
@@ -43,28 +45,10 @@ const AdminPanelEmployees = () => {
     setModalType('edit');
   };
 
-  const handelEditEmployee = async (data) => {
-    const formData = new FormData();
-
-    // 🔹 object কে সহজে FormData তে যোগ করা
-    Object.entries({
-      first_name: data.first_name,
-      last_name: data.last_name,
-      'profile.title': data.profile?.title,
-      'profile.education': data.profile?.education,
-      'profile.bio': data.profile?.bio,
-    }).forEach(([key, value]) => {
-      formData.append(key, value || '');
-    });
-
-    // 🔹 ফাইল থাকলে যুক্ত করা
-    const file = data.profile?.image?.[0];
-    if (file instanceof File) {
-      formData.append('profile.image', file);
-    }
-
+  const handelEditEmployee = async (data, id) => {
+    if (!id) return;
     // 🔹 Redux dispatch
-    dispatch(updateEmployee({ id: data.id, employeeData: formData })).then((res) => {
+    dispatch(updateEmployee({ id, employeeData: data })).then((res) => {
       if (res.type.endsWith('/fulfilled')) {
         setModal(false);
       }
@@ -120,14 +104,19 @@ const AdminPanelEmployees = () => {
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>
             {modalType === 'add' && (
-              <EmployeeForm
+              <AddEmployeeForm
                 onCancel={() => setModal(false)}
                 title="Add New Employee"
                 onSubmit={handleAddEmployee}
               />
             )}
             {modalType === 'edit' && (
-              <EditEmployeeForm onCancel={() => setModal(false)} onSubmit={handelEditEmployee} />
+              <AddEmployeeForm
+                title="Edit Employee Data"
+                onCancel={() => setModal(false)}
+                onSubmit={handelEditEmployee}
+                defaultValues={employee}
+              />
             )}
           </div>
         </Modal>

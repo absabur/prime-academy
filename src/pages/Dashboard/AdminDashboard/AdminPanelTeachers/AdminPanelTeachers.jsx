@@ -65,8 +65,6 @@ const AdminPanelTeachers = () => {
       formData.append('profile.image', file);
     }
 
-    console.log(Object.fromEntries(formData));
-
     // 🔹 Redux dispatch
     dispatch(updateTeacher({ id: data.id, teacherData: formData })).then((res) => {
       if (res.type.endsWith('/fulfilled')) {

@@ -40,7 +40,6 @@ export const createTeacher = createAsyncThunk(
       );
       return response.data; // return the created teacher data
     } catch (error) {
-      console.log(error.response?.data);
       return rejectWithValue(error.response?.data || 'Failed to create teacher');
     }
   }
@@ -56,7 +55,6 @@ export const updateTeacher = createAsyncThunk(
       );
       return response.data; // return the updated teacher data
     } catch (error) {
-      console.log(error.response?.data);
       return rejectWithValue(error.response?.data?.message || 'Failed to update teacher');
     }
   }

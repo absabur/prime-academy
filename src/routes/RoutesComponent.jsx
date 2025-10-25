@@ -26,8 +26,8 @@ import Blog from '../pages/Root/Blog/Blog';
 import Contact from '../pages/Root/Contact/Contact';
 import FAQs from '../pages/Root/FAQs/FAQs';
 import About from '../pages/Root/About/About';
-import PrivacyPolicy from '../pages/Root/Privacy Policy/PrivacyPolicy';
-import RefundPolicy from '../pages/Root/refund/RefundPolicy';
+import PrivacyPolicy from '../pages/Root/PrivacyPolicy/PrivacyPolicy';
+import RefundPolicy from '../pages/Root/RefundPolicy/RefundPolicy';
 import SingleCourse from '@/pages/Root/singleCourse/SingleCourse';
 import CoursesPage from '@/pages/Root/Courses/Courses';
 

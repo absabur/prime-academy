@@ -65,8 +65,6 @@ const AdminPanelStudents = () => {
       formData.append('profile.image', file);
     }
 
-    console.log(Object.fromEntries(formData));
-
     // 🔹 Redux dispatch
     dispatch(updateStudent({ id: data.id, studentData: formData })).then((res) => {
       if (res.type.endsWith('/fulfilled')) {

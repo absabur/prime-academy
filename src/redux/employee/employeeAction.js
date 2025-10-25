@@ -10,8 +10,6 @@ export const fetchEmployees = createAsyncThunk(
       const response = await api.get(
         `${import.meta.env.VITE_API_URL}/api/employees/?${searchParam}${orderParams}`
       );
-
-      console.log(response);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Something went wrong');
@@ -42,7 +40,6 @@ export const createEmployee = createAsyncThunk(
       );
       return response.data; // return the created employee data
     } catch (error) {
-      console.log(error.response?.data);
       return rejectWithValue(error.response?.data || 'Failed to create employee');
     }
   }
@@ -58,7 +55,6 @@ export const updateEmployee = createAsyncThunk(
       );
       return response.data; // return the updated employee data
     } catch (error) {
-      console.log(error.response?.data);
       return rejectWithValue(error.response?.data?.message || 'Failed to update employee');
     }
   }

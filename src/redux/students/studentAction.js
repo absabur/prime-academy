@@ -40,7 +40,6 @@ export const createStudent = createAsyncThunk(
       );
       return response.data; // return the created student data
     } catch (error) {
-      console.log(error.response?.data);
       return rejectWithValue(error.response?.data || 'Failed to create student');
     }
   }
@@ -56,7 +55,6 @@ export const updateStudent = createAsyncThunk(
       );
       return response.data; // return the updated student data
     } catch (error) {
-      console.log(error.response?.data);
       return rejectWithValue(error.response?.data?.message || 'Failed to update student');
     }
   }

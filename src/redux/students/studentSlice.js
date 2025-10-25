@@ -67,7 +67,6 @@ const studentSlice = createSlice({
         state.error = null;
       })
       .addCase(createStudent.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.message = 'Student created successfully';
       })
       .addCase(createStudent.rejected, (state, action) => {
