@@ -40,28 +40,20 @@ const PartnerCarousel = () => {
           1024: { slidesPerView: 7 },
         }}
       >
-        {[
-          ...brands,
-          ...brands,
-          ...brands,
-          ...brands,
-          ...brands,
-          ...brands,
-          ...brands,
-          ...brands,
-          ...brands,
-        ].map((partner, i) => (
-          <SwiperSlide key={i} className="flex justify-center">
-            <div className="p-6 flex justify-center items-center">
-              <img
-                src={partner.logo}
-                alt={`${partner.id} logo`}
-                className="h-12 mx-auto object-contain"
-                loading="lazy" // ✅ improves performance
-              />
-            </div>
-          </SwiperSlide>
-        ))}
+        {[...brands, ...brands, ...brands, ...brands, ...brands, ...brands, ...brands]
+          ?.filter((brand) => brand.is_active === true)
+          .map((partner, i) => (
+            <SwiperSlide key={i} className="flex justify-center">
+              <div className="p-6 flex justify-center items-center">
+                <img
+                  src={partner.logo}
+                  alt={`${partner.id} logo`}
+                  className="h-12 mx-auto object-contain"
+                  loading="lazy"
+                />
+              </div>
+            </SwiperSlide>
+          ))}
       </Swiper>
     </div>
   );

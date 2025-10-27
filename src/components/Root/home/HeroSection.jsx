@@ -10,7 +10,7 @@ const HomeHero = () => {
   const { heros } = useSelector((state) => state.hero);
 
   // Data fetching and selection logic remains here
-  const homeHero = useMemo(() => heros?.find((item) => item.page_name === "home"), [heros]);
+  const homeHero = useMemo(() => heros?.find((item) => item.page_name === 'home'), [heros]);
 
   useEffect(() => {
     if (!heros?.length) {

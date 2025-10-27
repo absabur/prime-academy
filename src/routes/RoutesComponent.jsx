@@ -52,6 +52,7 @@ import ForgatePassword from '@/pages/Root/ForgatePassword/ForgatePassword';
 import ResetPassword from '@/pages/Root/ResetPassword/ResetPassword';
 import RoleBasedLayout from '@/layouts/RoleBasedLayout';
 import AdminPanelFooter from '@/pages/Dashboard/AdminDashboard/AdminPanelFooter/AdminPanelFooter';
+import AdminPanelPartner from '@/pages/Dashboard/AdminDashboard/AdminPanelPartners/AdminPanelPartners';
 
 function RoutesComponent() {
   const { pathname } = useLocation();
@@ -106,7 +107,7 @@ function RoutesComponent() {
           <Route path="/dashboard/reports" element={<AdminPanelReports />} />
           {/* sub menues */}
           <Route path="/dashboard/footer" element={<AdminPanelFooter />} />
-          <Route path="/dashboard/partners" element={<AdminPanelReports />} />
+          <Route path="/dashboard/partners" element={<AdminPanelPartner />} />
           <Route path="/dashboard/hero-sections" element={<AdminPanelReports />} />
           <Route path="/dashboard/messages" element={<AdminPanelReports />} />
           <Route path="/dashboard/faqs" element={<AdminPanelReports />} />

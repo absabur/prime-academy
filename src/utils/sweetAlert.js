@@ -50,7 +50,7 @@ const SwalUtils = {
     });
   },
 
-  confirm: (onConfirm) => {
+  confirm: (onConfirm, buttonText = 'Yes, delete it!') => {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -58,7 +58,7 @@ const SwalUtils = {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonText: buttonText,
     }).then((result) => {
       if (result.isConfirmed) {
         onConfirm();

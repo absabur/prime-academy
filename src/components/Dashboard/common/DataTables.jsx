@@ -12,6 +12,8 @@ export default function DataTables({
   deleteButton = true,
   handelEdit,
   paginationShow = true,
+  statusKey = 'is_active',
+  statusChange,
 }) {
   return (
     <div className="overflow-x-auto bg-white shadow-around-sm rounded-lg border border-primary/30">
@@ -44,9 +46,14 @@ export default function DataTables({
                 ))}
 
                 <td className="py-md px-xl text-black/80 whitespace-nowrap">
-                  <select name="" id="">
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
+                  <select
+                    onChange={(e) => statusChange(row.id, statusKey, e.target.value)}
+                    value={row[statusKey]}
+                    name=""
+                    id=""
+                  >
+                    <option value={true}>Active</option>
+                    <option value={false}>Inactive</option>
                   </select>
                 </td>
 

@@ -28,7 +28,7 @@ const departmentSlice = createSlice({
       })
       .addCase(fetchDepartments.fulfilled, (state, action) => {
         state.loadingDepartments = false;
-        state.departments = action.payload.data;
+        state.departments = action.payload.data.results;
       })
       .addCase(fetchDepartments.rejected, (state, action) => {
         state.loadingDepartments = false;
@@ -42,7 +42,7 @@ const departmentSlice = createSlice({
       })
       .addCase(fetchSingleDepartment.fulfilled, (state, action) => {
         state.loadingDepartment = false;
-        state.department = action.payload.data; // store single department
+        state.department = action.payload.data.results; // store single department
       })
       .addCase(fetchSingleDepartment.rejected, (state, action) => {
         state.loadingDepartment = false;

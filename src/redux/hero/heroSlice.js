@@ -8,8 +8,7 @@ const heroSlice = createSlice({
     loadingHeros: true,
     error: null,
   },
-  reducers: {
-  },
+  reducers: {},
   extraReducers: (builder) => {
     // heros
     builder
@@ -19,15 +18,14 @@ const heroSlice = createSlice({
       })
       .addCase(fetchHeros.fulfilled, (state, action) => {
         state.loadingHeros = false;
-        state.heros = action.payload.data;
+        state.heros = action.payload.data.results;
       })
       .addCase(fetchHeros.rejected, (state, action) => {
         state.loadingHeros = false;
         state.error = action.payload;
       });
-
   },
 });
 
-export const {  } = heroSlice.actions;
+export const {} = heroSlice.actions;
 export default heroSlice.reducer;

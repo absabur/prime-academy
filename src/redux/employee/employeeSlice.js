@@ -34,7 +34,7 @@ const employeeSlice = createSlice({
       })
       .addCase(fetchEmployees.fulfilled, (state, action) => {
         state.loadingEmployees = false;
-        state.employees = action.payload.data;
+        state.employees = action.payload.data.results;
       })
       .addCase(fetchEmployees.rejected, (state, action) => {
         state.loadingEmployees = false;

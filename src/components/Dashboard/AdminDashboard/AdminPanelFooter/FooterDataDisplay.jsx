@@ -72,15 +72,10 @@ const footerDisplay = () => {
       <div className={tableContainerStyle}>
         <table className="min-w-full bg-white">
           <tbody>
-            <tr className="border-b border-black/20">
-              <td className={`${tdStyle} font-medium w-1/4`}>Logo</td>
-              <td className={tdStyle}>
-                <img
-                  src={logo_url}
-                  alt="Footer Logo"
-                  width={150}
-                  className="bg-primary-light p-sm rounded"
-                />
+            <tr className="border-b border-black/20 bg-primary">
+              <td className={`${tdStyle} font-medium w-1/4 text-white`}>Logo</td>
+              <td className={`${tdStyle}`}>
+                <img src={logo_url} alt="Footer Logo" width={150} className="p-sm rounded" />
               </td>
             </tr>
             <tr className="border-b border-black/20">
@@ -121,9 +116,9 @@ const footerDisplay = () => {
         <table className="min-w-full bg-white">
           <thead>
             <tr>
-              <th className={thStyle}>Platform</th>
-              <th className={thStyle}>URL</th>
-              <th className={thStyle}>Order</th>
+              <th className={`${thStyle} text-white bg-primary`}>Platform</th>
+              <th className={`${thStyle} text-white bg-primary`}>URL</th>
+              <th className={`${thStyle} text-white bg-primary`}>Order</th>
             </tr>
           </thead>
           <tbody>

@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaPlus } from 'react-icons/fa6';
 import { useDispatch, useSelector } from 'react-redux';
-import { data } from 'react-router-dom';
 
 export default function AddEmployeeForm({
   title = 'Add New Employee',
@@ -26,8 +25,17 @@ export default function AddEmployeeForm({
 
   // 🧠 যখন defaultValues পরিবর্তন হবে (Edit এর সময়), তখন ফর্ম আপডেট করো
   useEffect(() => {
-    reset(defaultValues);
-    setPreview(defaultValues.employee_image || null);
+    if (defaultValues && Object.keys(defaultValues).length > 0) {
+      const formattedValues = {
+        ...defaultValues,
+        department_id: defaultValues.department?.id || '',
+        employee_image: defaultValues.employee_image || '',
+        is_active: defaultValues.is_active ? 'true' : 'false', // select field string নেয়
+      };
+
+      reset(formattedValues);
+      setPreview(defaultValues.employee_image || null);
+    }
   }, [defaultValues, reset]);
 
   // get department
@@ -35,6 +43,8 @@ export default function AddEmployeeForm({
   useEffect(() => {
     dispatch(fetchDepartments());
   }, []);
+
+  console.log(departments);
 
   // Handle image preview
   const handleImageChange = (e) => {
@@ -149,7 +159,7 @@ export default function AddEmployeeForm({
               className={`w-[90%] border ${
                 errors.department ? 'border-red-500' : 'border-black/10'
               } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
-              {...register('department.id', { required: 'Department name is required' })}
+              {...register('department_id', { required: 'Department name is required' })}
             >
               <option value="">Select Department</option>
               {departments.map((d) => (
@@ -283,6 +293,7 @@ export default function AddEmployeeForm({
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </select>
+
           {errors.is_active && (
             <p className="text-red-500 text-sm mt-1">{errors.is_active.message}</p>
           )}
