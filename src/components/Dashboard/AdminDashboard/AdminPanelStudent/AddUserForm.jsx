@@ -1,3 +1,5 @@
+import PrimaryButton from '@/components/common/PrimaryButton';
+import SecondaryButton from '@/components/common/SecondaryButton';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -133,19 +135,17 @@ export default function AddUserForm({
 
         {/* Buttons */}
         <div className="md:col-span-2 flex justify-end gap-sm mt-md">
-          <button
-            type="button"
+          <SecondaryButton
+            className="text-black  border-primary hover:bg-secondary hover:text-white hover:border-secondary"
             onClick={onCancel}
-            className="px-md py-sm bg-gray-200 rounded-md hover:bg-gray-300"
-          >
-            Cancel
-          </button>
-          <button
+            type="button"
+            text={`Cancel`}
+          />
+          <PrimaryButton
             type="submit"
-            className="px-md py-sm bg-primary text-white rounded-md hover:bg-primary-dark"
-          >
-            {title.includes('Edit') ? 'Update' : 'Add'} Student
-          </button>
+            text={`${title.includes('Edit') ? 'Update' : 'Add'} Student`}
+            minWidth="fit"
+          />
         </div>
       </div>
     </form>

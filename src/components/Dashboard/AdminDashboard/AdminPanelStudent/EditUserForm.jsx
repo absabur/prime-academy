@@ -1,3 +1,5 @@
+import PrimaryButton from '@/components/common/PrimaryButton';
+import SecondaryButton from '@/components/common/SecondaryButton';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { BsTypeH1 } from 'react-icons/bs';
@@ -139,21 +141,18 @@ export default function EditUserForm({
 
           {/* Buttons */}
           <div className="md:col-span-2 flex justify-end gap-sm mt-md">
-            <button
-              type="button"
+            <SecondaryButton
+              className="text-black border-primary hover:bg-secondary hover:text-white hover:border-secondary"
               onClick={onCancel}
-              className="px-md py-sm bg-gray-200 rounded-md hover:bg-gray-300"
-            >
-              Cancel
-            </button>
-            <button
+              text={`Cancel`}
+            />
+            <PrimaryButton
               type="submit"
               disabled={loading}
-              className="px-md py-sm bg-primary text-white rounded-md hover:bg-primary-dark"
-            >
-              {title.toLocaleLowerCase().includes('teacher') && 'Update Teacher'}
-              {title.toLocaleLowerCase().includes('student') && 'Update Student'}
-            </button>
+              text={`
+              ${title.toLocaleLowerCase().includes('teacher') && 'Update Teacher'}
+              ${title.toLocaleLowerCase().includes('student') && 'Update Student'}`}
+            ></PrimaryButton>
           </div>
         </div>
       </form>

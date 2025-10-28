@@ -1,6 +1,7 @@
 import PaginationSection from '@/components/common/PaginationSection';
 import TableHeading from './TableHeading';
 import DashBroadActionButton from './DashBroadActionButton';
+import './table.css';
 
 export default function DataTables({
   columns,
@@ -51,15 +52,24 @@ export default function DataTables({
                 ))}
                 {statusShow && (
                   <td className="py-md px-xl text-black/80 whitespace-nowrap">
-                    <select
-                      onChange={(e) => statusChange(row.id, statusKey, e.target.value)}
-                      value={row[statusKey]}
-                      name=""
-                      id=""
+                    <div
+                      className={`relative inline-flex items-center justify-between w-28 px-md py-sm rounded-full border transition-all duration-200 cursor-pointer
+                        ${
+                          row[statusKey] === 'true' || row[statusKey] === true
+                            ? 'bg-green-100 border-green-400 text-green-700'
+                            : 'bg-red-100 border-red-400 text-red-700'
+                        }`}
                     >
-                      <option value={true}>Active</option>
-                      <option value={false}>Inactive</option>
-                    </select>
+                      <select
+                        onChange={(e) => statusChange(row.id, statusKey, e.target.value)}
+                        value={row[statusKey]}
+                        className="appearance-none bg-transparent w-full font-medium text-sm focus:outline-none cursor-pointer pr-5 tableStatusDropDown"
+                      >
+                        <option value={true}>Active</option>
+                        <option value={false}>Inactive</option>
+                      </select>
+                      <span className="absolute right-2 text-gray-600 pointer-events-none">▼</span>
+                    </div>
                   </td>
                 )}
 

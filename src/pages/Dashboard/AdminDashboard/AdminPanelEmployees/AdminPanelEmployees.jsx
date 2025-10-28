@@ -18,12 +18,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 
 const AdminPanelEmployees = () => {
-  const { employees, loadingEmployees, pageSize, employeePagination, error, message, employee } =
-    useSelector((state) => state.employee);
+  const { employees, loadingEmployees, pageSize, employeePagination, error, message } = useSelector(
+    (state) => state.employee
+  );
 
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
   const [modalType, setModalType] = useState(''); // 'add' or 'edit'
+  const [employee, setEmployee] = useState({});
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
   const category = searchParams.get('category') || null;
@@ -41,7 +43,8 @@ const AdminPanelEmployees = () => {
 
   // editEmployee Function
   const singleEmployee = async (id) => {
-    dispatch(fetchSingleEmployee(id));
+    const singelEmployee = employees.find((e) => e.id === id);
+    setEmployee(singelEmployee);
     setModal(true);
     setModalType('edit');
   };
@@ -56,6 +59,10 @@ const AdminPanelEmployees = () => {
     });
   };
 
+  const handelStatus = async (id, statusKey, value) => {
+    dispatch(updateEmployee({ id, employeeData: { [statusKey]: value } }));
+  };
+
   // ✅ কলাম ডেফিনিশন
   const columns = [
     {
@@ -64,6 +71,7 @@ const AdminPanelEmployees = () => {
     },
     { key: 'employee_name', label: 'Employee Name' },
     { key: 'job_title', label: 'Job Title' },
+    { key: 'department', label: 'Department', render: (row) => row.department?.name || 'N/A' },
     { key: 'phone_number', label: 'Phone' },
     { key: 'email', label: 'Email' },
     { key: 'joining_date', label: 'Joining Date' },
@@ -140,6 +148,8 @@ const AdminPanelEmployees = () => {
         deleteButton={false}
         handelEdit={singleEmployee}
         paginationShow={false}
+        statusChange={handelStatus}
+        statusKey="is_active"
       />
     </div>
   );

@@ -347,7 +347,7 @@ const UpdateFooter = ({ setModal }) => {
           <textarea
             value={data.description}
             onChange={(e) => updateField('description', e.target.value)}
-            className="w-full p-md rounded-md text-whie border border-black/10 px-lg py-xs rounded-md mt-sm"
+            className="w-full p-md text-whie border border-black/10 px-lg py-xs rounded-md mt-sm"
           />
         </div>
 
@@ -356,7 +356,7 @@ const UpdateFooter = ({ setModal }) => {
           <textarea
             value={data.address}
             onChange={(e) => updateField('address', e.target.value)}
-            className="w-full p-md rounded-md text-whie border border-black/10 px-lg py-xs rounded-md mt-sm"
+            className="w-full p-md text-whie border border-black/10 px-lg py-xs rounded-md mt-sm"
           />
         </div>
       </div>

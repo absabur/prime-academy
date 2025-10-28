@@ -17,12 +17,14 @@ import AddUserForm from '@/components/Dashboard/AdminDashboard/AdminPanelStudent
 import EditUserForm from '@/components/Dashboard/AdminDashboard/AdminPanelStudent/EditUserForm';
 
 const AdminPanelStudents = () => {
-  const { students, loadingStudents, pageSize, studentPagination, error, message, student } =
-    useSelector((state) => state.student);
+  const { students, loadingStudents, pageSize, studentPagination, error, message } = useSelector(
+    (state) => state.student
+  );
 
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
   const [modalType, setModalType] = useState(''); // 'add' or 'edit'
+  const [student, setStudent] = useState({});
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
   const category = searchParams.get('category') || null;
@@ -40,7 +42,8 @@ const AdminPanelStudents = () => {
 
   // editStudent Function
   const singleStudent = async (id) => {
-    dispatch(fetchSingleStudent(id));
+    const singleStudent = students.find((s) => s.id === id);
+    setStudent(singleStudent);
     setModal(true);
     setModalType('edit');
   };
@@ -71,6 +74,10 @@ const AdminPanelStudents = () => {
         setModal(false);
       }
     });
+  };
+
+  const handelStatus = async (id, statusKey, value) => {
+    dispatch(updateStudent({ id, studentData: { [statusKey]: value } }));
   };
 
   // ✅ কলাম ডেফিনিশন
@@ -160,6 +167,8 @@ const AdminPanelStudents = () => {
         error={error || null}
         deleteButton={false}
         handelEdit={singleStudent}
+        statusChange={handelStatus}
+        statusKey="is_enabled"
       />
     </div>
   );

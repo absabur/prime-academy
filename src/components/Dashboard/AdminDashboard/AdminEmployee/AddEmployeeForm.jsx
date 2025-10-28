@@ -1,3 +1,5 @@
+import PrimaryButton from '@/components/common/PrimaryButton';
+import SecondaryButton from '@/components/common/SecondaryButton';
 import { createDepartment, fetchDepartments } from '@/redux/department/departmentAction';
 import SwalUtils from '@/utils/sweetAlert';
 import { useEffect, useState } from 'react';
@@ -36,7 +38,7 @@ export default function AddEmployeeForm({
       reset(formattedValues);
       setPreview(defaultValues.employee_image || null);
     }
-  }, [defaultValues, reset]);
+  }, [defaultValues, reset, departments]);
 
   // get department
   const dispatch = useDispatch();
@@ -185,20 +187,19 @@ export default function AddEmployeeForm({
                   className="w-full border border-black/20 px-sm py-xs rounded-md focus:outline-none"
                 />
                 <div className="flex justify-end gap-xs">
-                  <button
-                    type="button"
+                  <SecondaryButton
+                    className="text-black  border-primary hover:bg-secondary hover:text-white hover:border-secondary"
                     onClick={() => setdepartmentDropDown(false)}
-                    className="text-sm px-2 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
-                  >
-                    Cancel
-                  </button>
-                  <button
+                    type="button"
+                    text={`Cancel`}
+                    minWidth="fit"
+                  />
+                  <PrimaryButton
                     type="button"
                     onClick={handleAddDepartment}
-                    className="text-sm px-2 py-1 bg-primary text-white rounded-md hover:bg-primary-dark"
-                  >
-                    Add
-                  </button>
+                    text={`Add`}
+                    minWidth="fit"
+                  />
                 </div>
               </div>
             )}
@@ -299,19 +300,16 @@ export default function AddEmployeeForm({
 
         {/* Buttons */}
         <div className="md:col-span-2 flex justify-end gap-sm mt-md">
-          <button
-            type="button"
+          <SecondaryButton
+            className="text-black border-primary hover:bg-secondary hover:text-white hover:border-secondary"
             onClick={onCancel}
-            className="px-md py-sm bg-gray-200 rounded-md hover:bg-gray-300"
-          >
-            Cancel
-          </button>
-          <button
+            text={`Cancel`}
+          />
+          <PrimaryButton
             type="submit"
-            className="px-md py-sm bg-primary text-white rounded-md hover:bg-primary-dark"
-          >
-            {title.includes('Edit') ? 'Update' : 'Add'} Employee
-          </button>
+            text={`
+              ${title.includes('Edit') ? 'Update' : 'Add'} Employee`}
+          />
         </div>
       </div>
     </form>

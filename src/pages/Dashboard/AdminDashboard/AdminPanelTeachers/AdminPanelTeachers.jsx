@@ -17,12 +17,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 
 const AdminPanelTeachers = () => {
-  const { teachers, loadingTeachers, pageSize, teacherPagination, error, message, teacher } =
-    useSelector((state) => state.teacher);
+  const { teachers, loadingTeachers, pageSize, teacherPagination, error, message } = useSelector(
+    (state) => state.teacher
+  );
 
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
   const [modalType, setModalType] = useState(''); // 'add' or 'edit'
+  const [teacher, setTeacher] = useState({});
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
   const category = searchParams.get('category') || null;
@@ -40,7 +42,8 @@ const AdminPanelTeachers = () => {
 
   // editTeacher Function
   const singleTeacher = async (id) => {
-    dispatch(fetchSingleTeacher(id));
+    const singelTeacher = teachers.find((t) => t.id == id);
+    setTeacher(singelTeacher);
     setModal(true);
     setModalType('edit');
   };
@@ -71,6 +74,10 @@ const AdminPanelTeachers = () => {
         setModal(false);
       }
     });
+  };
+
+  const handelStatus = async (id, statusKey, value) => {
+    dispatch(updateTeacher({ id, teacherData: { [statusKey]: value } }));
   };
 
   // ✅ কলাম ডেফিনিশন
@@ -161,6 +168,8 @@ const AdminPanelTeachers = () => {
         error={error || null}
         deleteButton={false}
         handelEdit={singleTeacher}
+        statusChange={handelStatus}
+        statusKey="is_enabled"
       />
     </div>
   );
