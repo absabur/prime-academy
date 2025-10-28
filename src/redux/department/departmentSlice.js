@@ -32,7 +32,7 @@ const departmentSlice = createSlice({
       })
       .addCase(fetchDepartments.rejected, (state, action) => {
         state.loadingDepartments = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     //single department
     builder
@@ -46,7 +46,7 @@ const departmentSlice = createSlice({
       })
       .addCase(fetchSingleDepartment.rejected, (state, action) => {
         state.loadingDepartment = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     // create department
     builder
@@ -57,7 +57,7 @@ const departmentSlice = createSlice({
         state.message = 'Department created successfully';
       })
       .addCase(createDepartment.rejected, (state, action) => {
-        state.error = action.payload.message;
+        state.error = action.payload?.message ? action.payload?.message : action.payload.message;
       });
   },
 });

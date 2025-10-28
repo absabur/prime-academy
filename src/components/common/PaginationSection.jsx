@@ -83,7 +83,7 @@ const PaginationSection = ({ pagination, pageSize, error, styte = {} }) => {
                 size="icon"
                 onClick={() => goToPage(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="mr-1 w-8 h-8 rounded-full bg-black text-white hover:bg-black/90 disabled:opacity-50"
+                className="mr-1 w-8 h-8 rounded-lg bg-black text-white hover:bg-black/90 disabled:opacity-50"
               >
                 <FaArrowLeft size={14} />
               </Button>
@@ -119,7 +119,7 @@ const PaginationSection = ({ pagination, pageSize, error, styte = {} }) => {
                 size="icon"
                 onClick={() => goToPage(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="ml-1 w-8 h-8 rounded-full bg-black text-white hover:bg-black/90 disabled:opacity-50"
+                className="ml-1 w-8 h-8 rounded-lg bg-black text-white hover:bg-black/90 disabled:opacity-50"
               >
                 <FaArrowRight size={14} />
               </Button>

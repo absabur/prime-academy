@@ -12,6 +12,7 @@ import OuterSection from '../../common/OuterSection';
 import InnerSection from '../../common/InnerSection';
 import ScrollIntoSectionButtons from './ScrollIntoSectionButtons';
 import { useSelector } from 'react-redux';
+import DOMPurify from 'dompurify';
 
 const FaqsSections = () => {
   // Track currently opened FAQ by unique ID `${categoryIndex}-${qnaIndex}`
@@ -74,14 +75,12 @@ const FaqsSections = () => {
                           }`}
                         >
                           <div className="overflow-hidden ml-sm">
-                            {qna?.answer.split('\n').map(
-                              (answer, index) =>
-                                answer.trim().length > 0 && (
-                                  <p key={index} className="text-heading text-base leading-lg">
-                                    {answer}
-                                  </p>
-                                )
-                            )}
+                            <div
+                              className="policy-wrapper text-sm text-gray-700 leading-relaxed"
+                              dangerouslySetInnerHTML={{
+                                __html: DOMPurify.sanitize(qna?.answer),
+                              }}
+                            />
                           </div>
                         </div>
                       </div>

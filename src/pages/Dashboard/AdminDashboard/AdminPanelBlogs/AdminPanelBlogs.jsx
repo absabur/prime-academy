@@ -2,7 +2,7 @@ import Modal from '@/components/common/Modal';
 import DashBoardHeader from '@/components/Dashboard/common/DashBoardHeader';
 import DataTables from '@/components/Dashboard/common/DataTables';
 import { fetchBlogCategories, fetchBlogs, fetchSingleBlog } from '@/redux/blogs/blogAction';
-import { clearMessage } from '@/redux/students/studentSlice';
+import { clearError, clearMessage } from '@/redux/blogs/blogSlice';
 import SwalUtils from '@/utils/sweetAlert';
 import { dateConvertionBlogsPageBlogCard } from '@/utils/timeFormat';
 import { useEffect, useState } from 'react';
@@ -92,16 +92,20 @@ const AdminPanelBlogs = () => {
   useEffect(() => {
     if (error) {
       SwalUtils.error(error);
-      dispatch(clearMessage());
+      dispatch(clearError());
     }
   }, [error]);
-
-  // ✅ Debounce সহ ডেটা ফেচ
+  
+  // show error  message
   useEffect(() => {
     if (message) {
       SwalUtils.success(message);
       dispatch(clearMessage());
     }
+  }, [message]);
+
+  // ✅ Debounce সহ ডেটা ফেচ
+  useEffect(() => {
     const handler = setTimeout(() => {
       dispatch(
         fetchBlogs({
@@ -117,7 +121,7 @@ const AdminPanelBlogs = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [search, category, currentPage, dispatch, order, message]);
+  }, [search, category, currentPage, dispatch, order]);
 
   return (
     <div>

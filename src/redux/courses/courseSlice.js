@@ -28,11 +28,11 @@ const courseSlice = createSlice({
       })
       .addCase(fetchCourseCategories.fulfilled, (state, action) => {
         state.loadingCourseCategory = false;
-        state.categories = action.payload.data;
+        state.categories = action.payload.data.results;
       })
       .addCase(fetchCourseCategories.rejected, (state, action) => {
         state.loadingCourseCategory = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 
     // Courses
@@ -52,7 +52,7 @@ const courseSlice = createSlice({
       })
       .addCase(fetchCourses.rejected, (state, action) => {
         state.loadingCourses = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 
     //single course
@@ -67,7 +67,7 @@ const courseSlice = createSlice({
       })
       .addCase(fetchSingleCourse.rejected, (state, action) => {
         state.loadingCourse = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
   },
 });

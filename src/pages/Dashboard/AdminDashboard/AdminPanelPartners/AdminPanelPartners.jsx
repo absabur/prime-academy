@@ -17,7 +17,7 @@ const AdminPanelPartner = () => {
   const [singlePartner, setSinglePartner] = useState({});
   const [modalType, setModalType] = useState('');
 
-  // addStudent Function
+  // add Function
   const handleAddPartner = async (data) => {
     const formData = new FormData();
 

@@ -14,6 +14,8 @@ import imgIconContentReducer from './imgIconContent/imgIconContentSlice';
 import faqReducer from './faqs/faqsSlice';
 import policiesReducer from './policies/policiesSlice';
 import departmentReducer from './department/departmentSlice';
+import skillReducer from './skill/skillSlice';
+
 import { setupAxiosInterceptors } from '@/api/setupAxiosInterceptors';
 
 const store = configureStore({
@@ -33,6 +35,7 @@ const store = configureStore({
     faq: faqReducer,
     policies: policiesReducer,
     department: departmentReducer,
+    skill: skillReducer,
   },
 });
 

@@ -45,7 +45,7 @@ const studentSlice = createSlice({
       })
       .addCase(fetchStudents.rejected, (state, action) => {
         state.loadingStudents = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     //single student
     builder
@@ -59,7 +59,7 @@ const studentSlice = createSlice({
       })
       .addCase(fetchSingleStudent.rejected, (state, action) => {
         state.loadingStudent = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     // create student
     builder
@@ -70,7 +70,7 @@ const studentSlice = createSlice({
         state.message = 'Student created successfully';
       })
       .addCase(createStudent.rejected, (state, action) => {
-        state.error = action.payload.message;
+        state.error = action.payload?.message ? action.payload?.message : action.payload.message;
       });
     // delete student
     builder
@@ -83,7 +83,7 @@ const studentSlice = createSlice({
         }
       })
       .addCase(deleteStudent.rejected, (state, action) => {
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     builder
       .addCase(updateStudent.pending, (state) => {
@@ -93,7 +93,7 @@ const studentSlice = createSlice({
         state.message = 'Student updated successfully';
       })
       .addCase(updateStudent.rejected, (state, action) => {
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
   },
 });

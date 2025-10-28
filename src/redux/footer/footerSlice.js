@@ -30,7 +30,7 @@ const footerSlice = createSlice({
       })
       .addCase(fetchFooters.rejected, (state, action) => {
         state.loadingFooters = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     builder
       .addCase(updateFooter.pending, (state) => {
@@ -44,7 +44,7 @@ const footerSlice = createSlice({
       })
       .addCase(updateFooter.rejected, (state, action) => {
         state.loadingFooters = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
   },
 });

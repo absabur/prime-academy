@@ -22,7 +22,8 @@ const FormSection = () => {
       let response = await api.post('/api/contact/', data);
       if (response.data.success) {
         SwalUtils.success(
-          response.data.message || 'Thank you for reaching out! We’ll get back to you soon'
+          response.data.message || 'Thank you for reaching out! We’ll get back to you soon',
+          'Thank You!'
         );
         reset();
       } else {

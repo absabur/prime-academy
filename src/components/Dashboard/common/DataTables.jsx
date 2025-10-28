@@ -14,6 +14,7 @@ export default function DataTables({
   paginationShow = true,
   statusKey = 'is_active',
   statusChange,
+  statusShow = true,
 }) {
   return (
     <div className="overflow-x-auto bg-white shadow-around-sm rounded-lg border border-primary/30">
@@ -23,12 +24,16 @@ export default function DataTables({
             {columns?.map((col) => (
               <TableHeading key={col.key} col={col} />
             ))}
-            <th className={`py-md px-xl text-left font-semibold whitespace-nowrap select-none `}>
-              Status
-            </th>
-            <th className={`py-md px-xl text-left font-semibold whitespace-nowrap select-none `}>
-              Action
-            </th>
+            {statusShow && (
+              <th className={`py-md px-xl text-left font-semibold whitespace-nowrap select-none `}>
+                Status
+              </th>
+            )}
+            {(handelEdit || deleteButton) && (
+              <th className={`py-md px-xl text-left font-semibold whitespace-nowrap select-none `}>
+                Action
+              </th>
+            )}
           </tr>
         </thead>
 
@@ -44,31 +49,34 @@ export default function DataTables({
                     {col.render ? col.render(row, col, index) : row[col.key]}
                   </td>
                 ))}
+                {statusShow && (
+                  <td className="py-md px-xl text-black/80 whitespace-nowrap">
+                    <select
+                      onChange={(e) => statusChange(row.id, statusKey, e.target.value)}
+                      value={row[statusKey]}
+                      name=""
+                      id=""
+                    >
+                      <option value={true}>Active</option>
+                      <option value={false}>Inactive</option>
+                    </select>
+                  </td>
+                )}
 
-                <td className="py-md px-xl text-black/80 whitespace-nowrap">
-                  <select
-                    onChange={(e) => statusChange(row.id, statusKey, e.target.value)}
-                    value={row[statusKey]}
-                    name=""
-                    id=""
-                  >
-                    <option value={true}>Active</option>
-                    <option value={false}>Inactive</option>
-                  </select>
-                </td>
-
-                <td className="py-md px-xl text-black/80 whitespace-nowrap">
-                  <div className="flex gap-sm">
-                    <DashBroadActionButton type={'edit'} onClick={() => handelEdit(row.id)} />
-                    {deleteButton && (
-                      <DashBroadActionButton
-                        onClick={() => handelDelete(row.id)}
-                        type={'delete'}
-                        id={row.id}
-                      />
-                    )}
-                  </div>
-                </td>
+                {(handelEdit || deleteButton) && (
+                  <td className="py-md px-xl text-black/80 whitespace-nowrap">
+                    <div className="flex gap-sm">
+                      <DashBroadActionButton type={'edit'} onClick={() => handelEdit(row.id)} />
+                      {deleteButton && (
+                        <DashBroadActionButton
+                          onClick={() => handelDelete(row.id)}
+                          type={'delete'}
+                          id={row.id}
+                        />
+                      )}
+                    </div>
+                  </td>
+                )}
               </tr>
             ))
           ) : (

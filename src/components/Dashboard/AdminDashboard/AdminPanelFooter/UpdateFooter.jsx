@@ -22,6 +22,7 @@ import SortableSocialLinkItem from './SortableSocialLinkItem';
 import SwalUtils from '@/utils/sweetAlert';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import SecondaryButton from '@/components/common/SecondaryButton';
+import { FaPlus } from 'react-icons/fa';
 
 // Main Component
 const UpdateFooter = ({ setModal }) => {
@@ -255,11 +256,11 @@ const UpdateFooter = ({ setModal }) => {
 
       <div className="flex flex-col">
         {/* Contact & Brand */}
-        <div className="flex gap-lg items-start flex-wrap rounded-md shadow-md py-md px-sm border border-black/20">
+        <div className="flex gap-lg items-start flex-wrap rounded-md py-md px-sm border border-black/10">
           <div className="w-full md:w-[47%]">
             <label>Phone:</label>
             <input
-              className="border border-black/20 shadow-md px-lg py-xs rounded-md w-full"
+              className="border border-black/10 px-lg py-xs rounded-md w-full"
               value={data.phone}
               onChange={(e) => updateField('phone', e.target.value)}
             />
@@ -268,7 +269,7 @@ const UpdateFooter = ({ setModal }) => {
           <div className="w-full md:w-[47%]">
             <label>Email:</label>
             <input
-              className="border border-black/20 shadow-md px-lg py-xs rounded-md w-full"
+              className="border border-black/10 px-lg py-xs rounded-md w-full"
               value={data.email}
               onChange={(e) => updateField('email', e.target.value)}
             />
@@ -277,7 +278,7 @@ const UpdateFooter = ({ setModal }) => {
           <div className="w-full md:w-[47%]">
             <label>Copy Right Name:</label>
             <input
-              className="border border-black/20 shadow-md px-lg py-xs rounded-md w-full"
+              className="border border-black/10 px-lg py-xs rounded-md w-full"
               value={data.copyright_name}
               onChange={(e) => updateField('copyright_name', e.target.value)}
             />
@@ -302,8 +303,11 @@ const UpdateFooter = ({ setModal }) => {
                 ))}
               </SortableContext>
             </DndContext>
-            <button className="ml-md mt-sm" onClick={addSocial}>
-              ➕ Add Social Link
+            <button
+              className="w-full flex items-center justify-center gap-sm p-sm rounded-md border border-black/10 hover:border-primary hover:border-dashed"
+              onClick={addSocial}
+            >
+              <FaPlus /> Add Social Link
             </button>
           </div>
         </div>
@@ -330,8 +334,11 @@ const UpdateFooter = ({ setModal }) => {
             ))}
           </SortableContext>
         </DndContext>
-        <button className="mt-lg" onClick={addGroup}>
-          ➕ Add New Section
+        <button
+          className="text-lg font-semibold mt-lg p-xl flex items-center justify-center gap-sm border rounded-md mb-md border-black/10 hover:border-primary hover:border-dashed"
+          onClick={addGroup}
+        >
+          <FaPlus /> Add New Section
         </button>
 
         {/* About & Address */}
@@ -340,7 +347,7 @@ const UpdateFooter = ({ setModal }) => {
           <textarea
             value={data.description}
             onChange={(e) => updateField('description', e.target.value)}
-            className="w-full p-md rounded-md text-whie border border-black/20 shadow-md px-lg py-xs rounded-md mt-sm"
+            className="w-full p-md rounded-md text-whie border border-black/10 px-lg py-xs rounded-md mt-sm"
           />
         </div>
 
@@ -349,7 +356,7 @@ const UpdateFooter = ({ setModal }) => {
           <textarea
             value={data.address}
             onChange={(e) => updateField('address', e.target.value)}
-            className="w-full p-md rounded-md text-whie border border-black/20 shadow-md px-lg py-xs rounded-md mt-sm"
+            className="w-full p-md rounded-md text-whie border border-black/10 px-lg py-xs rounded-md mt-sm"
           />
         </div>
       </div>

@@ -30,7 +30,7 @@ const brandSlice = createSlice({
       })
       .addCase(fetchBrands.rejected, (state, action) => {
         state.loadingbrands = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 
     // update brand
@@ -45,7 +45,7 @@ const brandSlice = createSlice({
       })
       .addCase(updateBrand.rejected, (state, action) => {
         state.loadingbrands = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 
     // create brand
@@ -56,13 +56,11 @@ const brandSlice = createSlice({
       })
       .addCase(createBrand.fulfilled, (state, action) => {
         state.loadingbrands = false;
-        console.log(action.payload);
         state.message = action.payload.message;
       })
       .addCase(createBrand.rejected, (state, action) => {
         state.loadingbrands = false;
-        console.log(action.payload);
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 
     // create brand
@@ -77,7 +75,7 @@ const brandSlice = createSlice({
       })
       .addCase(deleteBrand.rejected, (state, action) => {
         state.loadingbrands = false;
-        state.error = action.payload.message || 'Unable to delete';
+        state.error = action.payload?.message ? action.payload?.message : action.payload.message || 'Unable to delete';
       });
   },
 });

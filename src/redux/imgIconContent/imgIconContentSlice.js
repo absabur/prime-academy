@@ -26,7 +26,7 @@ const imgIconContentSlice = createSlice({
       })
       .addCase(fetchImgIconContents.rejected, (state, action) => {
         state.loadingImgIconContents = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
   },
 });

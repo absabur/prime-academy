@@ -23,7 +23,7 @@ const faqSlice = createSlice({
       })
       .addCase(fetchFaqs.rejected, (state, action) => {
         state.loadingFaqs = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 
   },

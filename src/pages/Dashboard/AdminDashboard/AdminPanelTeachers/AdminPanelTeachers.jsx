@@ -9,7 +9,7 @@ import {
   fetchTeachers,
   updateTeacher,
 } from '@/redux/teachers/teacherAction';
-import { clearMessage } from '@/redux/teachers/teacherSlice';
+import { clearError, clearMessage } from '@/redux/teachers/teacherSlice';
 import SwalUtils from '@/utils/sweetAlert';
 import { useEffect, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
@@ -94,7 +94,7 @@ const AdminPanelTeachers = () => {
   useEffect(() => {
     if (error) {
       SwalUtils.error(error);
-      dispatch(clearMessage());
+      dispatch(clearError());
     }
   }, [error]);
 

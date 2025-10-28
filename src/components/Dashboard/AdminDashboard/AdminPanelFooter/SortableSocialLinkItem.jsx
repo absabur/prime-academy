@@ -36,7 +36,7 @@ const SortableSocialLinkItem = ({ item, idx, updateSocialLink, deleteSocialLink 
     <div
       ref={setNodeRef}
       style={style}
-      className="flex flex-wrap justify-between gap-sm items-center my-sm p-sm rounded-md border border-black/20 shadow"
+      className="hover:bg-black/5 flex flex-wrap justify-between gap-sm items-center my-sm p-sm rounded-md border border-black/10 "
     >
       <button
         {...attributes}
@@ -49,7 +49,7 @@ const SortableSocialLinkItem = ({ item, idx, updateSocialLink, deleteSocialLink 
       <select
         onChange={(e) => updateSocialLink(idx, 'platform', e.target.value)}
         value={item.platform}
-        className="shadow-sm border border-black/20 px-lg py-xs rounded-md w-full lg:w-[43%]"
+        className="border border-black/10 px-lg py-xs rounded-md w-full lg:w-[43%]"
       >
         <option value="">Select Icon</option>
         {socialIcons.map((item) => (
@@ -61,7 +61,7 @@ const SortableSocialLinkItem = ({ item, idx, updateSocialLink, deleteSocialLink 
 
       <input
         placeholder="URL"
-        className="shadow-sm border border-black/20 px-lg py-xs rounded-md w-full lg:w-[43%]"
+        className="border border-black/10 px-lg py-xs rounded-md w-full lg:w-[43%]"
         value={item.url}
         onChange={(e) => updateSocialLink(idx, 'url', e.target.value)}
       />

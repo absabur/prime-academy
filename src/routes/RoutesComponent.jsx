@@ -53,6 +53,11 @@ import ResetPassword from '@/pages/Root/ResetPassword/ResetPassword';
 import RoleBasedLayout from '@/layouts/RoleBasedLayout';
 import AdminPanelFooter from '@/pages/Dashboard/AdminDashboard/AdminPanelFooter/AdminPanelFooter';
 import AdminPanelPartner from '@/pages/Dashboard/AdminDashboard/AdminPanelPartners/AdminPanelPartners';
+import AdminPanelHero from '@/pages/Dashboard/AdminDashboard/AdminPanelHero/AdminPanelHero';
+import AdminContactMessages from '@/pages/Dashboard/AdminDashboard/AdminContactMessages/AdminContactMessages';
+import FaqManager from '@/pages/Dashboard/AdminDashboard/AdminPanelFaqs/AdminPanelFaqs';
+import AdminPanelSkills from '@/pages/Dashboard/AdminDashboard/AdminPanelSkills/AdminPanelSkills';
+import AdminPanelPolicies from '@/pages/Dashboard/AdminDashboard/AdminPanelPolicies/AdminPanelPolicies';
 
 function RoutesComponent() {
   const { pathname } = useLocation();
@@ -108,11 +113,11 @@ function RoutesComponent() {
           {/* sub menues */}
           <Route path="/dashboard/footer" element={<AdminPanelFooter />} />
           <Route path="/dashboard/partners" element={<AdminPanelPartner />} />
-          <Route path="/dashboard/hero-sections" element={<AdminPanelReports />} />
-          <Route path="/dashboard/messages" element={<AdminPanelReports />} />
-          <Route path="/dashboard/faqs" element={<AdminPanelReports />} />
-          <Route path="/dashboard/policies" element={<AdminPanelReports />} />
-          <Route path="/dashboard/skills" element={<AdminPanelReports />} />
+          <Route path="/dashboard/hero-sections" element={<AdminPanelHero />} />
+          <Route path="/dashboard/messages" element={<AdminContactMessages />} />
+          <Route path="/dashboard/faqs" element={<FaqManager />} />
+          <Route path="/dashboard/policies" element={<AdminPanelPolicies />} />
+          <Route path="/dashboard/skills" element={<AdminPanelSkills />} />
         </Route>
 
         {/* Teacher Routes */}

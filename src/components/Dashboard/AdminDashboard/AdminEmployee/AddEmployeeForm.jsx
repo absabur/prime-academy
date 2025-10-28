@@ -44,8 +44,6 @@ export default function AddEmployeeForm({
     dispatch(fetchDepartments());
   }, []);
 
-  console.log(departments);
-
   // Handle image preview
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];

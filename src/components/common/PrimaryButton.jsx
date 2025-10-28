@@ -13,6 +13,7 @@ const PrimaryButton = ({
   from,
   suffixIcon = null,
   prefixIcon = null,
+  minWidth = '',
   ...props
 }) => {
   const content = loading ? (
@@ -24,7 +25,12 @@ const PrimaryButton = ({
   );
 
   // Exact CSS from your old button
-  const baseStyles = `min-w-[150px] bg-secondary p-lg font-bold text-base text-white cursor-pointer 
+  let widthCss = 'min-w-[150px]';
+  if (minWidth == 'fit') {
+    widthCss = 'min-w-fit';
+  }
+
+  const baseStyles = `${widthCss} bg-secondary p-lg font-bold text-base text-white cursor-pointer 
     transition-colors inline-flex items-center justify-center border-2 border-secondary
     ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
     ${from === 'hero' ? 'hover:bg-transparent hover:border-white' : 'hover:bg-primary hover:border-primary'}

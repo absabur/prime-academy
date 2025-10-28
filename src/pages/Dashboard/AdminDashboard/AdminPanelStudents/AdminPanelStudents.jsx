@@ -6,7 +6,7 @@ import {
   fetchStudents,
   updateStudent,
 } from '@/redux/students/studentAction';
-import { clearMessage } from '@/redux/students/studentSlice';
+import { clearError, clearMessage } from '@/redux/students/studentSlice';
 import SwalUtils from '@/utils/sweetAlert';
 import { useEffect, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
@@ -94,7 +94,7 @@ const AdminPanelStudents = () => {
   useEffect(() => {
     if (error) {
       SwalUtils.error(error);
-      dispatch(clearMessage());
+      dispatch(clearError());
     }
   }, [error]);
 

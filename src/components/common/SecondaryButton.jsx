@@ -1,17 +1,20 @@
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button"; // shadcn/ui Button
-import { FaSpinner } from "react-icons/fa";
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button'; // shadcn/ui Button
+import { FaSpinner } from 'react-icons/fa';
 
 const SecondaryButton = ({
   children,
   text,
   href,
-  type = "button",
-  className = "",
+  type = 'button',
+  className = '',
   onClick,
   disabled = false,
   loading = false,
   from,
+  suffixIcon = null,
+  prefixIcon = null,
+  minWidth = '',
   ...props
 }) => {
   const content = loading ? (
@@ -22,28 +25,38 @@ const SecondaryButton = ({
     children || text
   );
 
-  // Exact previous Tailwind CSS
-  const baseStyles = `min-w-[150px] rounded-lg p-lg font-bold text-base text-white cursor-pointer 
+  let widthCss = 'min-w-[150px]';
+  if (minWidth == 'fit') {
+    widthCss = 'min-w-fit';
+  }
+
+  const baseStyles = `${widthCss}  rounded-lg p-lg font-bold text-base text-white cursor-pointer 
     transition-colors border-2 border-white inline-flex items-center justify-center bg-transparent
-    ${disabled ? "opacity-50 cursor-not-allowed" : ""}
-    ${from === "hero" ? "hover:bg-secondary hover:border-secondary" : "hover:bg-primary hover:border-primary"}
+    ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+    ${from === 'hero' ? 'hover:bg-secondary hover:border-secondary' : 'hover:bg-primary hover:border-primary'}
     ${className}`;
 
   // External vs internal links
   if (href) {
-    const isExternal = href.startsWith("http");
+    const isExternal = href.startsWith('http');
     if (isExternal) {
       return (
         <Button asChild className={baseStyles} disabled={disabled || loading} {...props}>
           <Link href={href} target="_blank" rel="noopener noreferrer">
-            {content}
+            <span>{prefixIcon}</span>
+            <span>{content}</span>
+            <span>{suffixIcon}</span>
           </Link>
         </Button>
       );
     } else {
       return (
         <Button asChild className={baseStyles} disabled={disabled || loading} {...props}>
-          <Link to={href}>{content}</Link>
+          <Link to={href}>
+            <span>{prefixIcon}</span>
+            <span>{content}</span>
+            <span>{suffixIcon}</span>
+          </Link>
         </Button>
       );
     }
@@ -58,7 +71,9 @@ const SecondaryButton = ({
       className={baseStyles}
       {...props}
     >
-      {content}
+      <span>{prefixIcon}</span>
+      <span>{content}</span>
+      <span>{suffixIcon}</span>
     </Button>
   );
 };

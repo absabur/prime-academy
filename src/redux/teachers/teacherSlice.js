@@ -45,7 +45,7 @@ const teacherSlice = createSlice({
       })
       .addCase(fetchTeachers.rejected, (state, action) => {
         state.loadingTeachers = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     //single teacher
     builder
@@ -59,7 +59,7 @@ const teacherSlice = createSlice({
       })
       .addCase(fetchSingleTeacher.rejected, (state, action) => {
         state.loadingTeacher = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     // create teacher
     builder
@@ -70,7 +70,7 @@ const teacherSlice = createSlice({
         state.message = 'Teacher created successfully';
       })
       .addCase(createTeacher.rejected, (state, action) => {
-        state.error = action.payload.message;
+        state.error = action.payload?.message ? action.payload?.message : action.payload.message;
       });
     // delete teacher
     builder
@@ -83,7 +83,7 @@ const teacherSlice = createSlice({
         }
       })
       .addCase(deleteTeacher.rejected, (state, action) => {
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     builder
       .addCase(updateTeacher.pending, (state) => {
@@ -93,7 +93,7 @@ const teacherSlice = createSlice({
         state.message = 'Teacher updated successfully';
       })
       .addCase(updateTeacher.rejected, (state, action) => {
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
   },
 });

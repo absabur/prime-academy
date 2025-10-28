@@ -9,7 +9,7 @@ const SwalUtils = {
       icon: 'success',
       confirmButtonText: 'Okay',
       customClass: {
-        confirmButton: 'bg-green-500 min-w-[180px] text-white px-6 py-2 rounded-lg font-bold',
+        confirmButtonColor: 'red',
       },
     });
   },
@@ -20,9 +20,6 @@ const SwalUtils = {
       text: message,
       icon: 'error',
       confirmButtonText: 'Okay',
-      customClass: {
-        confirmButton: 'bg-red-500 min-w-[180px] text-white px-6 py-2 rounded-lg font-bold',
-      },
     });
   },
 
@@ -32,9 +29,6 @@ const SwalUtils = {
       text: message,
       icon: 'info',
       confirmButtonText: 'Okay',
-      customClass: {
-        confirmButton: 'bg-blue-500 min-w-[180px] text-white px-6 py-2 rounded-lg font-bold',
-      },
     });
   },
 
@@ -44,9 +38,6 @@ const SwalUtils = {
       text: message,
       icon: 'warning',
       confirmButtonText: 'Okay',
-      customClass: {
-        confirmButton: 'bg-yellow-400 min-w-[180px] text-black px-6 py-2 rounded-lg font-bold',
-      },
     });
   },
 
@@ -56,8 +47,6 @@ const SwalUtils = {
       text: "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
       confirmButtonText: buttonText,
     }).then((result) => {
       if (result.isConfirmed) {

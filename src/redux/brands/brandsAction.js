@@ -29,7 +29,6 @@ export const updateBrand = createAsyncThunk(
 export const createBrand = createAsyncThunk(
   'brands/createBrand',
   async (data, { rejectWithValue, dispatch }) => {
-    console.log(data);
     try {
       const response = await api.post(`${import.meta.env.VITE_API_URL}/api/brands/`, data);
       dispatch(fetchBrands());

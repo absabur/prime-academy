@@ -28,7 +28,7 @@ const SortableGroupLinkItem = ({ link, gIndex, iIndex, updateGroupLink, deleteGr
       ref={setNodeRef}
       style={style}
       className="flex flex-wrap justify-between
-       gap-sm my-sm p-sm rounded-md border border-black/20"
+       gap-sm my-sm p-sm rounded-md border border-black/10 hover:bg-black/5"
     >
       <button
         {...attributes}
@@ -42,20 +42,20 @@ const SortableGroupLinkItem = ({ link, gIndex, iIndex, updateGroupLink, deleteGr
         value={link.label}
         onChange={(e) => updateGroupLink(gIndex, iIndex, 'label', e.target.value)}
         placeholder="Label"
-        className="shadow-sm border border-black/20 px-lg py-xs rounded-md w-full lg:w-[40%]"
+        className="border border-black/10 px-lg py-xs rounded-md w-full lg:w-[40%]"
       />
       <input
         value={link.url}
         onChange={(e) => updateGroupLink(gIndex, iIndex, 'url', e.target.value)}
         placeholder="URL"
-        className="shadow-sm border border-black/20 px-lg py-xs rounded-md w-full lg:w-[40%]"
+        className="border border-black/10 px-lg py-xs rounded-md w-full lg:w-[40%]"
       />
       <input
         checked={link.is_external}
         title="If provided link is external or want to open in new tab then check this."
         onChange={(e) => handleIsExternal(e.target.checked)}
         type="checkbox"
-        className="shadow-sm border border-black/20 px-lg py-xs rounded-md lg:w-[3%]"
+        className="border border-black/10 px-lg py-xs rounded-md lg:w-[3%]"
       />
       <button
         className="text-red-400 cursor-pointer text-xl"

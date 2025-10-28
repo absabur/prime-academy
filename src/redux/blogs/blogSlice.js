@@ -15,10 +15,17 @@ const blogSlice = createSlice({
     loadingBlogCategory: true,
     loadingLatestBlogs: true,
     error: null,
+    message: null,
   },
   reducers: {
     setActiveCategory: (state, action) => {
       state.activeCategory = action.payload;
+    },
+    clearMessage: (state) => {
+      state.message = null;
+    },
+    clearError: (state) => {
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -30,11 +37,11 @@ const blogSlice = createSlice({
       })
       .addCase(fetchBlogCategories.fulfilled, (state, action) => {
         state.loadingBlogCategory = false;
-        state.categories = action.payload.data;
+        state.categories = action.payload.data.results;
       })
       .addCase(fetchBlogCategories.rejected, (state, action) => {
         state.loadingBlogCategory = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload.message;
       });
 
     // Blogs
@@ -54,7 +61,7 @@ const blogSlice = createSlice({
       })
       .addCase(fetchBlogs.rejected, (state, action) => {
         state.loadingBlogs = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 
     // Latest Blogs
@@ -69,7 +76,7 @@ const blogSlice = createSlice({
       })
       .addCase(fetchLatestBlogs.rejected, (state, action) => {
         state.loadingLatestBlogs = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 
     //single blog
@@ -84,10 +91,10 @@ const blogSlice = createSlice({
       })
       .addCase(fetchSingleBlog.rejected, (state, action) => {
         state.loadingBlog = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
   },
 });
 
-export const { setActiveCategory } = blogSlice.actions;
+export const { setActiveCategory, clearMessage, clearError } = blogSlice.actions;
 export default blogSlice.reducer;

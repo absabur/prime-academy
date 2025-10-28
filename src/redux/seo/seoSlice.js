@@ -23,7 +23,7 @@ const seoSlice = createSlice({
       })
       .addCase(fetchSeos.rejected, (state, action) => {
         state.loadingSeos = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 
   },

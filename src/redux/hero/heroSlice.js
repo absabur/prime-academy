@@ -1,14 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchHeros } from './heroAction';
+import { fetchHeros, updateHero } from './heroAction';
 
 const heroSlice = createSlice({
   name: 'hero',
   initialState: {
     heros: [],
     loadingHeros: true,
+    message: null,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    clearMessage: (state) => {
+      state.message = null;
+    },
+    clearError: (state) => {
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     // heros
     builder
@@ -22,10 +30,25 @@ const heroSlice = createSlice({
       })
       .addCase(fetchHeros.rejected, (state, action) => {
         state.loadingHeros = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // update
+    builder
+      .addCase(updateHero.pending, (state) => {
+        state.loadingHeros = true;
+        state.error = null;
+      })
+      .addCase(updateHero.fulfilled, (state, action) => {
+        state.loadingHeros = false;
+        state.message = action.payload.message;
+      })
+      .addCase(updateHero.rejected, (state, action) => {
+        state.loadingHeros = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload.message;
       });
   },
 });
 
-export const {} = heroSlice.actions;
+export const { clearMessage, clearError } = heroSlice.actions;
 export default heroSlice.reducer;

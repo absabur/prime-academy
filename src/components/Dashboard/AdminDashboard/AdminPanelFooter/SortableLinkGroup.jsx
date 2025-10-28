@@ -15,7 +15,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import SortableGroupLinkItem from './SortableGroupLinkItem';
-import { FaGripVertical, FaTrash } from 'react-icons/fa';
+import { FaGripVertical, FaPlus, FaTrash } from 'react-icons/fa';
 import { useMemo } from 'react';
 import SwalUtils from '@/utils/sweetAlert';
 
@@ -71,9 +71,9 @@ const SortableLinkGroup = ({
     <div
       ref={setNodeRef}
       style={style}
-      className="col-span-4 mt-lg rounded-md shadow-md py-md px-sm border border-black/20"
+      className="col-span-4 mt-lg rounded-md border border-black/10 shadow-md"
     >
-      <div className="flex items-center gap-sm">
+      <div className="flex p-sm items-center gap-sm bg-black/5">
         <button
           {...attributes}
           {...listeners}
@@ -85,7 +85,7 @@ const SortableLinkGroup = ({
         <input
           value={group.title}
           onChange={(e) => updateGroup(gIndex, 'title', e.target.value)}
-          className="font-bold w-full shadow-sm border border-black/20 px-lg py-xs rounded-md"
+          className="font-bold w-full border border-black/10 px-lg py-xs rounded-md"
         />
         <button
           className="text-red-400 cursor-pointer text-xl"
@@ -95,28 +95,32 @@ const SortableLinkGroup = ({
         </button>
       </div>
 
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleGroupLinkDragEnd}
-      >
-        <SortableContext items={linkIds} strategy={verticalListSortingStrategy}>
-          {group.links.map((link, iIndex) => (
-            <SortableGroupLinkItem
-              key={link.id}
-              link={link}
-              gIndex={gIndex}
-              iIndex={iIndex}
-              updateGroupLink={updateGroupLink}
-              deleteGroupLink={deleteGroupLink}
-            />
-          ))}
-        </SortableContext>
-      </DndContext>
-
-      <button className="ml-md mt-sm" onClick={() => addGroupLink(gIndex)}>
-        ➕ Add Link
-      </button>
+      <div className="px-md pb-md">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleGroupLinkDragEnd}
+        >
+          <SortableContext items={linkIds} strategy={verticalListSortingStrategy}>
+            {group.links.map((link, iIndex) => (
+              <SortableGroupLinkItem
+                key={link.id}
+                link={link}
+                gIndex={gIndex}
+                iIndex={iIndex}
+                updateGroupLink={updateGroupLink}
+                deleteGroupLink={deleteGroupLink}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
+        <button
+          className="w-full flex items-center justify-center gap-sm p-sm rounded-md border border-black/10 hover:border-primary hover:border-dashed"
+          onClick={() => addGroupLink(gIndex)}
+        >
+          <FaPlus /> Add Link
+        </button>
+      </div>
     </div>
   );
 };

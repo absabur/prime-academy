@@ -38,7 +38,7 @@ const employeeSlice = createSlice({
       })
       .addCase(fetchEmployees.rejected, (state, action) => {
         state.loadingEmployees = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     //single employee
     builder
@@ -52,7 +52,7 @@ const employeeSlice = createSlice({
       })
       .addCase(fetchSingleEmployee.rejected, (state, action) => {
         state.loadingEmployee = false;
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     // create employee
     builder
@@ -63,7 +63,7 @@ const employeeSlice = createSlice({
         state.message = 'Employee created successfully';
       })
       .addCase(createEmployee.rejected, (state, action) => {
-        state.error = action.payload.message;
+        state.error = action.payload?.message ? action.payload?.message : action.payload.message;
       });
     // delete employee
     builder
@@ -76,7 +76,7 @@ const employeeSlice = createSlice({
         }
       })
       .addCase(deleteEmployee.rejected, (state, action) => {
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     builder
       .addCase(updateEmployee.pending, (state) => {
@@ -86,7 +86,7 @@ const employeeSlice = createSlice({
         state.message = 'Employee updated successfully';
       })
       .addCase(updateEmployee.rejected, (state, action) => {
-        state.error = action.payload;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
   },
 });

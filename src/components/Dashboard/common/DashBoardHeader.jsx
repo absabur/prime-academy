@@ -30,12 +30,14 @@ const DashBoardHeader = ({
             }
           />
         )}
-        <PrimaryButton
-          text={buttonText}
-          prefixIcon={prefixIcon}
-          suffixIcon={suffixIcon}
-          onClick={handeleAdd}
-        />
+        {buttonText && (
+          <PrimaryButton
+            text={buttonText}
+            prefixIcon={prefixIcon}
+            suffixIcon={suffixIcon}
+            onClick={handeleAdd}
+          />
+        )}
       </div>
     </div>
   );
