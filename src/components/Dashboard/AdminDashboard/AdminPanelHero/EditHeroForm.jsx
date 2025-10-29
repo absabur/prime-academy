@@ -2,7 +2,22 @@ import PrimaryButton from '@/components/common/PrimaryButton';
 import SecondaryButton from '@/components/common/SecondaryButton';
 import { capitalizeFirst } from '@/utils/capitalizeFirst';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { Plus } from 'lucide-react';
+import SortableSlideItem from './SortableSlideItem';
 
 export default function EditHeroForm({
   onSubmit,
@@ -12,10 +27,21 @@ export default function EditHeroForm({
 }) {
   const {
     register,
+    control, // <-- Need 'control' for useFieldArray
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({ defaultValues });
+    watch, // <-- Watch changes for slides
+  } = useForm({
+    defaultValues,
+  });
+
+  // --- useFieldArray Hook ---
+  const { fields, append, remove, move } = useFieldArray({
+    control,
+    name: 'slides',
+  });
+  // --------------------------
 
   const [preview, setPreview] = useState(defaultValues.banner_image || null);
 
@@ -24,6 +50,7 @@ export default function EditHeroForm({
       const formattedValues = {
         ...defaultValues,
         is_active: defaultValues.is_active ? 'true' : 'false',
+        slides: defaultValues.slides || [], // Ensure slides is an array
       };
       reset(formattedValues);
       setPreview(defaultValues.banner_image || null);
@@ -36,27 +63,68 @@ export default function EditHeroForm({
     if (file) setPreview(URL.createObjectURL(file));
   };
 
+  // --- Dnd-kit Sensor setup ---
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // --- Dnd-kit Drag End Handler ---
+  function handleDragEnd(event) {
+    const { active, over } = event;
+    if (active.id !== over.id) {
+      const oldIndex = fields.findIndex((field) => field.id === active.id);
+      const newIndex = fields.findIndex((field) => field.id === over.id);
+      move(oldIndex, newIndex); // This function updates react-hook-form state
+    }
+  }
+
+  // --- UPDATED Form Submit Handler ---
   const handleFormSubmit = (data) => {
     const id = data.id || null;
-    const formData = new FormData();
-
     const isFileSelected = data.banner_image && data.banner_image[0] instanceof File;
 
+    // --- Process slides: update 'order' based on final array index ---
+    const processedSlides = data.slides.map((slide, index) => ({
+      ...slide,
+      order: index, // This ensures the order is saved correctly
+    }));
+
     if (isFileSelected) {
+      const formData = new FormData();
+
+      // Append all fields EXCEPT image and slides
       for (const [key, value] of Object.entries(data)) {
-        if (key !== 'banner_image' || key !== 'page_name') formData.append(key, value);
+        if (key !== 'banner_image' && key !== 'slides' && key !== 'page_name') {
+          formData.append(key, value);
+        }
       }
+
+      // Append the new image file
       formData.append('banner_image', data.banner_image[0]);
+
+      // Append slides as a JSON string
+      // The backend will need to JSON.parse(req.body.slides)
+      formData.append('slides', JSON.stringify(processedSlides));
+
       onSubmit(formData, id);
     } else {
+      // Send as JSON
       const jsonData = { ...data };
+      jsonData.slides = processedSlides; // Use the processed slides
+
+      // Don't send the old image URL string as a "file"
       delete jsonData.banner_image;
       delete jsonData.page_name;
+
       onSubmit(jsonData, id);
     }
 
-    reset();
-    setPreview(null);
+    // Note: You might not want to reset() here if the submit fails
+    // reset();
+    // setPreview(null);
   };
 
   return (
@@ -106,7 +174,6 @@ export default function EditHeroForm({
             className="w-full border border-black/10 px-md py-sm rounded-md focus:shadow-lg"
           />
         </div>
-
         <div>
           <label className="block mb-sm font-medium">Button 1 URL</label>
           <input
@@ -126,7 +193,6 @@ export default function EditHeroForm({
             className="w-full border border-black/10 px-md py-sm rounded-md focus:shadow-lg"
           />
         </div>
-
         <div>
           <label className="block mb-sm font-medium">Button 2 URL</label>
           <input
@@ -136,6 +202,55 @@ export default function EditHeroForm({
             placeholder="/faqs"
           />
         </div>
+
+        {/* --- Slides Section --- */}
+        {defaultValues.page_name == 'home' && (
+          <div className="md:col-span-2 space-y-3">
+            <label className="block font-medium">Slide Texts</label>
+
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={fields.map((f) => f.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="space-y-2">
+                  {fields.map((field, index) => {
+                    // Check for errors on this specific slide item
+                    const fieldError = errors.slides?.[index]?.text;
+                    return (
+                      <div key={field.id}>
+                        <SortableSlideItem
+                          id={field.id}
+                          field={field}
+                          index={index}
+                          register={register}
+                          remove={remove}
+                        />
+                        {fieldError && (
+                          <p className="text-red-500 text-sm mt-1">{fieldError.message}</p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </SortableContext>
+            </DndContext>
+
+            <button
+              type="button"
+              onClick={() => append({ text: '', order: fields.length })} // Add new slide
+              className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-medium"
+            >
+              <Plus size={16} />
+              Add Slide
+            </button>
+          </div>
+        )}
+        {/* ----------------------- */}
 
         {/* Banner Image */}
         <div className="md:col-span-2">
@@ -147,7 +262,6 @@ export default function EditHeroForm({
             onChange={handleImageChange}
             className="w-full border border-black/10 px-md py-sm rounded-md focus:outline-none focus:shadow-lg"
           />
-
           {preview && (
             <img
               src={preview}
@@ -155,18 +269,6 @@ export default function EditHeroForm({
               alt="Preview"
             />
           )}
-        </div>
-
-        {/* Active Status */}
-        <div>
-          <label className="block mb-sm font-medium">Active Status</label>
-          <select
-            {...register('is_active')}
-            className="w-full border border-black/10 px-md py-sm rounded-md focus:shadow-lg"
-          >
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </select>
         </div>
 
         {/* Buttons */}

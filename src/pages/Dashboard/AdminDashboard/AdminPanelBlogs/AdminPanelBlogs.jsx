@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
+import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
 
 const AdminPanelBlogs = () => {
   const { blogs, loadingBlogs, pageSize, blogPagination, error, message, blog, categories } =
@@ -95,7 +96,7 @@ const AdminPanelBlogs = () => {
       dispatch(clearError());
     }
   }, [error]);
-  
+
   // show error  message
   useEffect(() => {
     if (message) {
@@ -125,6 +126,7 @@ const AdminPanelBlogs = () => {
 
   return (
     <div>
+      {loadingBlogs && <LoadingDashboard />}
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

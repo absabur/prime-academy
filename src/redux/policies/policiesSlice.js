@@ -39,7 +39,6 @@ const policiesSlice = createSlice({
         state.error = null;
       })
       .addCase(createPolicy.fulfilled, (state, action) => {
-        console.log(action);
         state.loadingPolicies = false;
         state.message = action.payload.message;
       })

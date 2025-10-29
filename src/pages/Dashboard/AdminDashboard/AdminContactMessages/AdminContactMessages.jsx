@@ -7,27 +7,30 @@ import { dateConvertionHomePageBlogCard } from '@/utils/timeFormat';
 import { useEffect, useState } from 'react';
 import { MdVerified } from 'react-icons/md';
 import { RxCross2 } from 'react-icons/rx';
-import { useDispatch } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import Modal from '@/components/common/Modal';
 import MessageDetails from '../../../../components/Dashboard/AdminDashboard/AdminContactMessages/MessageDetails';
+import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchMessages } from '../../../../redux/messages/messagesAction';
 
 const AdminContactMessages = () => {
+  const { messages, messagePagination, pageSize, loadingMessages } = useSelector(
+    (state) => state.message
+  );
   const [modal, setModal] = useState(false);
-  const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState({});
-  const [pagination, setPagination] = useState({});
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
   const search = searchParams.get('search') || '';
-  const page_size = 10;
+  const dispatch = useDispatch();
 
   // ✅ কলাম ডেফিনিশন
   const columns = [
     {
       key: 'sl',
       label: 'SL',
-      render: (_, __, index) => (currentPage - 1) * page_size + (index + 1), // index+1 দেখাবে
+      render: (_, __, index) => (currentPage - 1) * pageSize + (index + 1), // index+1 দেখাবে
     },
     { key: 'first_name', label: 'First Name' },
     { key: 'last_name', label: 'Last Name' },
@@ -60,30 +63,14 @@ const AdminContactMessages = () => {
   ];
 
   useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const searchParams = search ? `&search=${search}` : '';
-        const response = await api.get(
-          `${import.meta.env.VITE_API_URL}/api/contact/?page=${currentPage}&page_size=${page_size}${searchParams}`
-        );
-        setMessages(response.data.results);
-        setPagination({
-          count: response?.data?.count,
-          next: response?.data?.next,
-          previous: response?.data?.previous,
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
     const handler = setTimeout(() => {
-      fetchMessages();
+      dispatch(fetchMessages({ search, currentPage, pageSize }));
     }, 600); // debounce delay 600ms
 
     return () => {
       clearTimeout(handler); // cleanup old timer before new one
     };
-  }, [currentPage, page_size, search]);
+  }, [currentPage, pageSize, search]);
 
   const handleView = (id) => {
     setModal(true);
@@ -92,6 +79,7 @@ const AdminContactMessages = () => {
 
   return (
     <div>
+      {loadingMessages && <LoadingDashboard />}
       <DashBoardHeader title={'Messages'} />
       {modal && (
         <Modal setModal={setModal} noClose={true}>
@@ -104,8 +92,8 @@ const AdminContactMessages = () => {
         data={messages}
         columns={columns}
         currentPage={currentPage}
-        paginationType={pagination}
-        pageSize={page_size}
+        paginationType={messagePagination}
+        pageSize={pageSize}
         error={null}
         paginationShow={true}
         deleteButton={false}

@@ -58,6 +58,7 @@ import AdminContactMessages from '@/pages/Dashboard/AdminDashboard/AdminContactM
 import FaqManager from '@/pages/Dashboard/AdminDashboard/AdminPanelFaqs/AdminPanelFaqs';
 import AdminPanelSkills from '@/pages/Dashboard/AdminDashboard/AdminPanelSkills/AdminPanelSkills';
 import AdminPanelPolicies from '@/pages/Dashboard/AdminDashboard/AdminPanelPolicies/AdminPanelPolicies';
+import Policy from '../pages/Root/Policies/Policy';
 
 function RoutesComponent() {
   const { pathname } = useLocation();
@@ -81,6 +82,7 @@ function RoutesComponent() {
         <Route path="refund-policy" element={<RefundPolicy />} />
         <Route path="courses" element={<CoursesPage />} />
         <Route path="courses/:id" element={<SingleCourse />} />
+        <Route path="policy/:page_name" element={<Policy />} />
       </Route>
 
       {/* 🚀 LANDING PAGE */}

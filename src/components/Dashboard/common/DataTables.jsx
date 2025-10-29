@@ -27,12 +27,12 @@ export default function DataTables({
               <TableHeading key={col.key} col={col} />
             ))}
             {statusShow && (
-              <th className={`py-md px-xl text-left font-semibold whitespace-nowrap select-none `}>
+              <th className={`py-md px-md text-left font-semibold whitespace-nowrap select-none `}>
                 Status
               </th>
             )}
             {(handleView || handelEdit || deleteButton) && (
-              <th className={`py-md px-xl text-left font-semibold whitespace-nowrap select-none `}>
+              <th className={`py-md px-md text-left font-semibold whitespace-nowrap select-none `}>
                 Action
               </th>
             )}
@@ -47,12 +47,12 @@ export default function DataTables({
                 className="hover:bg-gray-50 border-b border-black/10 last:border-none transition"
               >
                 {columns?.map((col) => (
-                  <td key={col.key} className="py-md px-xl text-black/80 whitespace-nowrap">
+                  <td key={col.key} className="py-md px-md text-black/80 whitespace-nowrap">
                     {col.render ? col.render(row, col, index) : row[col.key]}
                   </td>
                 ))}
                 {statusShow && (
-                  <td className="py-md px-xl text-black/80 whitespace-nowrap">
+                  <td className="py-md px-md text-black/80 whitespace-nowrap">
                     <div
                       className={`relative inline-flex items-center justify-between w-28 px-md py-sm rounded-full border transition-all duration-200 cursor-pointer
                         ${
@@ -75,17 +75,23 @@ export default function DataTables({
                 )}
 
                 {(handleView || handelEdit || deleteButton) && (
-                  <td className="py-md px-xl text-black/80 whitespace-nowrap">
+                  <td className="py-md px-md text-black/80 whitespace-nowrap">
                     <div className="flex gap-sm">
                       {handleView && (
-                        <DashBroadActionButton type={'view'} onClick={() => handleView(row.id)} />
+                        <DashBroadActionButton
+                          type={'view'}
+                          onClick={() => handleView(row.id || row.page_name)}
+                        />
                       )}
                       {handelEdit && (
-                        <DashBroadActionButton type={'edit'} onClick={() => handelEdit(row.id)} />
+                        <DashBroadActionButton
+                          type={'edit'}
+                          onClick={() => handelEdit(row.id || row.page_name)}
+                        />
                       )}
                       {deleteButton && (
                         <DashBroadActionButton
-                          onClick={() => handelDelete(row.id)}
+                          onClick={() => handelDelete(row.id || row.page_name)}
                           type={'delete'}
                           id={row.id}
                         />

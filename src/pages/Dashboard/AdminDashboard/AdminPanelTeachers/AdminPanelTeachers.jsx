@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
+import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
 
 const AdminPanelTeachers = () => {
   const { teachers, loadingTeachers, pageSize, teacherPagination, error, message } = useSelector(
@@ -129,6 +130,7 @@ const AdminPanelTeachers = () => {
 
   return (
     <div>
+      {loadingTeachers && <LoadingDashboard />}
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

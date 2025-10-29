@@ -9,9 +9,10 @@ import { createBrand, updateBrand } from '@/redux/brands/brandsAction';
 
 import { clearError, clearMessage } from '@/redux/brands/brandsSlice';
 import SwalUtils from '@/utils/sweetAlert';
+import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
 
 const AdminPanelPartner = () => {
-  const { message, error } = useSelector((state) => state.brands);
+  const { message, error, loadingbrands } = useSelector((state) => state.brands);
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
   const [singlePartner, setSinglePartner] = useState({});
@@ -58,6 +59,7 @@ const AdminPanelPartner = () => {
 
   return (
     <div>
+      {loadingbrands && <LoadingDashboard />}
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

@@ -8,7 +8,7 @@ import SecondaryButton from '@/components/common/SecondaryButton';
 import Modal from '@/components/common/Modal';
 import EditHeroForm from './EditHeroForm';
 import { clearError, clearMessage } from '@/redux/hero/heroSlice';
-import BannerDetails from './BannerDetails';
+import HeroDetailsView from './HeroDetailsView';
 
 export default function AllHeros() {
   const { message, error, heros } = useSelector((state) => state.hero);
@@ -58,17 +58,13 @@ export default function AllHeros() {
     { key: 'sl', label: 'SL' },
     { key: 'page_name', label: 'Page' },
     { key: 'title', label: 'Title' },
-    // { key: 'description', label: 'Description' },
+    { key: 'description', label: 'Description' },
     { key: 'banner_image', label: 'Banner' },
     { key: 'button1_text', label: 'Button 1' },
     { key: 'button2_text', label: 'Button 2' },
   ];
 
   if (!heros?.length) return null;
-
-  const handleStatusChange = (id, key, value) => {
-    dispatch(updateHero({ id, value: { [key]: value } }));
-  };
 
   return (
     <>
@@ -82,7 +78,7 @@ export default function AllHeros() {
                 defaultValues={hero}
               />
             )}
-            {modalType == 'view' && <BannerDetails data={hero} />}
+            {modalType == 'view' && <HeroDetailsView data={hero} />}
           </div>
         </Modal>
       )}
@@ -92,9 +88,9 @@ export default function AllHeros() {
         columns={columns}
         error={error || null}
         deleteButton={false}
-        statusChange={handleStatusChange}
         handelEdit={handleEditModal}
         handleView={handleView}
+        statusShow={false}
       />
     </>
   );
@@ -105,9 +101,8 @@ const enhancedHeros = (heros) => {
     ...hero,
     sl: index + 1,
     description: (
-      <p className="max-w-[400px] whitespace-normal break-words">
-        {hero?.description.slice(0, 30)}
-        {hero?.description.slice(31) && '...'}
+      <p className="max-w-[300px] whitespace-normal break-words line-clamp-2">
+        {hero?.description}
       </p>
     ),
     banner_image: (

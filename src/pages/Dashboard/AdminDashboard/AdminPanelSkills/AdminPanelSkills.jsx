@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
+import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
 
 const AdminPanelSkills = () => {
   const { skills, loadingSkills, pageSize, skillPagination, error, message, skill } = useSelector(
@@ -48,6 +49,20 @@ const AdminPanelSkills = () => {
         setModal(false);
       }
     });
+  };
+
+  const statusChange = (id, key, value) => {
+    if (!id) return;
+
+    SwalUtils.confirm(
+      () =>
+        dispatch(updateSkill({ id, skillData: { [key]: value } })).then((res) => {
+          if (res.type.endsWith('/fulfilled')) {
+            setModal(false);
+          }
+        }),
+      'Change Status'
+    );
   };
 
   // ✅ কলাম ডেফিনিশন
@@ -104,6 +119,7 @@ const AdminPanelSkills = () => {
 
   return (
     <div>
+      {loadingSkills && <LoadingDashboard />}
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>
@@ -142,6 +158,9 @@ const AdminPanelSkills = () => {
         error={error || null}
         deleteButton={false}
         handelEdit={singleSkill}
+        statusChange={statusChange}
+        statusKey="is_active"
+        StatusShow={true}
         paginationShow={true}
       />
     </div>

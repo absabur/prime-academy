@@ -15,6 +15,7 @@ import { useSearchParams } from 'react-router-dom';
 import DashBoardHeader from '@/components/Dashboard/common/DashBoardHeader';
 import AddUserForm from '@/components/Dashboard/AdminDashboard/AdminPanelStudent/AddUserForm';
 import EditUserForm from '@/components/Dashboard/AdminDashboard/AdminPanelStudent/EditUserForm';
+import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
 
 const AdminPanelStudents = () => {
   const { students, loadingStudents, pageSize, studentPagination, error, message } = useSelector(
@@ -129,6 +130,7 @@ const AdminPanelStudents = () => {
 
   return (
     <div>
+      {loadingStudents && <LoadingDashboard />}
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

@@ -32,7 +32,9 @@ export default function AddEditPolicyForm({
   const handleFormSubmit = (data) => {
     const page_name = data.page_name || null;
     const json_data = data;
-    delete json_data.page_name;
+    if (defaultValues.page_name) {
+      delete json_data.page_name;
+    }
     onSubmit(json_data, page_name);
     reset();
   };
@@ -47,14 +49,31 @@ export default function AddEditPolicyForm({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
         {/* Policy Name */}
         <div>
-          <label className="block mb-sm font-medium">Policy Name</label>
-          <input
+          <label className="block mb-sm font-medium">Page Name</label>
+          <select
             disabled={title.includes('Edit')}
-            type="text"
-            value={defaultValues.page_name}
             className={`w-full border border-black/15 px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
-            placeholder="Enter policy page_name"
-          />
+            name="page_name"
+            id="page_name"
+            {...register('page_name', { required: 'Policy Title is required' })}
+          >
+            <option value="">Select Page Name</option>
+
+            <option value="privacy">Privacy Policy</option>
+            <option value="terms">Terms Policy</option>
+            <option value="refund">Refund Policy</option>
+            <option value="cookie">Cookie Policy</option>
+            <option value="data">Data Policy</option>
+            <option value="disclaimer">Disclaimer Policy</option>
+            <option value="instructor">Instructor Policy</option>
+            <option value="student">Student Policy</option>
+            <option value="copyright">Copyright Policy</option>
+            <option value="accessibility">Accessibility Policy</option>
+            <option value="payment">Payment Policy</option>
+          </select>
+          {errors.page_name && (
+            <p className="text-red-500 text-sm mt-1">{errors.page_name.message}</p>
+          )}
         </div>
 
         {/* Policy Title */}

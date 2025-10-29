@@ -13,11 +13,10 @@ import { CSS } from '@dnd-kit/utilities';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFaqs } from '@/redux/faqs/faqsAction';
 import DashBoardHeader from '@/components/Dashboard/common/DashBoardHeader';
-import { FaPlus } from 'react-icons/fa';
 
 // --- Main Component ---
 export default function FaqManager() {
-  const { faqs } = useSelector((state) => state.faq);
+  const { faqs, loadingFaqs } = useSelector((state) => state.faq);
   const [categories, setCategories] = useState([]);
   const sensors = useSensors(useSensor(PointerSensor));
   const dispatch = useDispatch();
@@ -95,6 +94,7 @@ export default function FaqManager() {
 
   return (
     <div className="w-full bg-gray-50">
+      {loadingFaqs && <LoadingDashboard />}
       <DashBoardHeader title={'FAQs Management'} searchBar={false} />
 
       {/* Category Drag Context */}
@@ -210,6 +210,7 @@ function SortableCategory({ category, onAddFaq, onToggleActive, onFaqDragEnd }) 
 }
 
 import DOMPurify from 'dompurify';
+import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
 function SortableFaqCard({ faq, onToggleActive }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: faq.id });
 

@@ -11,6 +11,7 @@ import { FaEye, FaPlus } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import DOMPurify from 'dompurify';
 import ViewPolicy from '../../../../components/Dashboard/AdminDashboard/AdminPanelPolicies/ViewPolicy';
+import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
 
 const AdminPanelPolicies = () => {
   const { policies, loadingPolicies, error, message } = useSelector((state) => state.policies);
@@ -30,15 +31,15 @@ const AdminPanelPolicies = () => {
   };
 
   // editPolicy Function
-  const singlePolicy = async (id) => {
-    setPolicy(policies.find((item) => item.id == id));
+  const singlePolicy = async (page_name) => {
+    setPolicy(policies.find((item) => item.page_name == page_name));
     setModal(true);
     setModalType('edit');
   };
 
   // handleView Function
-  const handleView = async (id) => {
-    setPolicy(policies.find((item) => item.id == id));
+  const handleView = async (page_name) => {
+    setPolicy(policies.find((item) => item.page_name == page_name));
     setModal(true);
     setModalType('view');
   };
@@ -104,6 +105,7 @@ const AdminPanelPolicies = () => {
 
   return (
     <div>
+      {loadingPolicies && <LoadingDashboard />}
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

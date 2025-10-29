@@ -2,15 +2,15 @@ import Modal from '@/components/common/Modal';
 import SwalUtils from '@/utils/sweetAlert';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Footer from '@/components/common/Footer';
 import DashBoardHeader from '@/components/Dashboard/common/DashBoardHeader';
 import { FaPlus } from 'react-icons/fa';
 import UpdateFooter from '@/components/Dashboard/AdminDashboard/AdminPanelFooter/UpdateFooter';
 import { clearError } from '@/redux/footer/footerSlice';
 import FooterDataDisplay from '../../../../components/Dashboard/AdminDashboard/AdminPanelFooter/FooterDataDisplay';
+import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
 
 const AdminPanelFooter = () => {
-  const { error } = useSelector((state) => state.footer);
+  const { error, loadingFooters } = useSelector((state) => state.footer);
 
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
@@ -25,6 +25,7 @@ const AdminPanelFooter = () => {
 
   return (
     <div>
+      {loadingFooters && <LoadingDashboard />}
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

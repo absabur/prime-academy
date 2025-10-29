@@ -24,7 +24,7 @@ const TableHeading = ({ col }) => {
     <th
       onClick={handleSort}
       key={col.key}
-      className={`py-md px-xl text-left font-semibold whitespace-nowrap select-none ${
+      className={`py-md px-md text-left font-semibold whitespace-nowrap select-none ${
         isSortable ? 'cursor-pointer' : ''
       }`}
     >
