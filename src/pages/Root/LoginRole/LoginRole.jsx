@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import ContentCard from '@/components/Root/login/ContentCard';
-import { RoleButton } from '@/components/Root/login/RoleButton';
 import { loginUser } from '@/redux/auth/authAction';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import { clearAuthError } from '@/redux/auth/authSlice';
@@ -13,6 +12,7 @@ import InnerSection from '@/components/common/InnerSection';
 import { useSEO } from '@/hooks/usePageSeo';
 import { fetchSeos } from '@/redux/seo/seoAction';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
+import { RoleButton } from '../../../components/Root/login/RoleButton';
 
 export default function LoginRole() {
   const { error, isAuthenticated, loading } = useSelector((state) => state.auth);
@@ -26,9 +26,10 @@ export default function LoginRole() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (!email) return SwalUtils.warning('Enter Your Email!');
-    if (!password) return SwalUtils.warning('Enter Your Password');
-    if (!role) return SwalUtils.warning('Select Your Role');
+    if (!email) return SwalUtils.warning('Please Enter Your Email!', 'Email Required');
+    if (!password) return SwalUtils.warning('Please Enter Your Password', 'Password Required');
+    if (!role)
+      return SwalUtils.warning('Please choose your role before proceeding.', 'Select Role');
 
     // Dispatch login async
     dispatch(loginUser({ email, password, role }));

@@ -11,6 +11,7 @@ export default function DataTables({
   error,
   handelDelete,
   deleteButton = true,
+  handleView,
   handelEdit,
   paginationShow = true,
   statusKey = 'is_active',
@@ -30,7 +31,7 @@ export default function DataTables({
                 Status
               </th>
             )}
-            {(handelEdit || deleteButton) && (
+            {(handleView || handelEdit || deleteButton) && (
               <th className={`py-md px-xl text-left font-semibold whitespace-nowrap select-none `}>
                 Action
               </th>
@@ -73,10 +74,15 @@ export default function DataTables({
                   </td>
                 )}
 
-                {(handelEdit || deleteButton) && (
+                {(handleView || handelEdit || deleteButton) && (
                   <td className="py-md px-xl text-black/80 whitespace-nowrap">
                     <div className="flex gap-sm">
-                      <DashBroadActionButton type={'edit'} onClick={() => handelEdit(row.id)} />
+                      {handleView && (
+                        <DashBroadActionButton type={'view'} onClick={() => handleView(row.id)} />
+                      )}
+                      {handelEdit && (
+                        <DashBroadActionButton type={'edit'} onClick={() => handelEdit(row.id)} />
+                      )}
                       {deleteButton && (
                         <DashBroadActionButton
                           onClick={() => handelDelete(row.id)}
@@ -100,14 +106,16 @@ export default function DataTables({
       </table>
 
       {/* ✅ Pagination Section */}
-      {paginationShow && (
-        <PaginationSection
-          pagination={paginationType}
-          pageSize={pageSize}
-          error={error}
-          styte={{ padding: 'var(--spacing-lg) 0' }}
-        />
-      )}
+      <div className="w-full sticky left-0">
+        {paginationShow && (
+          <PaginationSection
+            pagination={paginationType}
+            pageSize={pageSize}
+            error={error}
+            styte={{ padding: 'var(--spacing-lg) 0' }}
+          />
+        )}
+      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaRegEdit } from 'react-icons/fa';
+import { FaEye, FaRegEdit } from 'react-icons/fa';
 import { MdDelete, MdEdit } from 'react-icons/md';
 
 const DashBroadActionButton = ({ className, type, onClick }) => {
@@ -10,6 +10,7 @@ const DashBroadActionButton = ({ className, type, onClick }) => {
     >
       {type == 'delete' && <MdDelete size={20} />}
       {type == 'edit' && <FaRegEdit size={20} />}
+      {type == 'view' && <FaEye size={20} />}
     </button>
   );
 };

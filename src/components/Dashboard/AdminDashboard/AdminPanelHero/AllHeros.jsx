@@ -8,22 +8,31 @@ import SecondaryButton from '@/components/common/SecondaryButton';
 import Modal from '@/components/common/Modal';
 import EditHeroForm from './EditHeroForm';
 import { clearError, clearMessage } from '@/redux/hero/heroSlice';
+import BannerDetails from './BannerDetails';
 
 export default function AllHeros() {
   const { message, error, heros } = useSelector((state) => state.hero);
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
+  const [modalType, setModalType] = useState('');
   const [hero, setHero] = useState({});
 
   // handle edit modal
   const handleEditModal = async (id) => {
     setHero(heros.find((item) => item.id == id));
     setModal(true);
+    setModalType('edit');
   };
 
   // handle edit
   const handleEdit = async (value, id) => {
     dispatch(updateHero({ id, value }));
+  };
+  // handle edit
+  const handleView = async (id) => {
+    setHero(heros.find((item) => item.id == id));
+    setModal(true);
+    setModalType('view');
   };
 
   useEffect(() => {
@@ -52,9 +61,7 @@ export default function AllHeros() {
     // { key: 'description', label: 'Description' },
     { key: 'banner_image', label: 'Banner' },
     { key: 'button1_text', label: 'Button 1' },
-    { key: 'button1_url', label: 'Button 1 URL' },
     { key: 'button2_text', label: 'Button 2' },
-    { key: 'button2_url', label: 'Button 2 URL' },
   ];
 
   if (!heros?.length) return null;
@@ -68,11 +75,14 @@ export default function AllHeros() {
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>
-            <EditHeroForm
-              onSubmit={handleEdit}
-              onCancel={() => setModal(false)}
-              defaultValues={hero}
-            />
+            {modalType == 'edit' && (
+              <EditHeroForm
+                onSubmit={handleEdit}
+                onCancel={() => setModal(false)}
+                defaultValues={hero}
+              />
+            )}
+            {modalType == 'view' && <BannerDetails data={hero} />}
           </div>
         </Modal>
       )}
@@ -82,9 +92,9 @@ export default function AllHeros() {
         columns={columns}
         error={error || null}
         deleteButton={false}
-        statusKey="is_active"
         statusChange={handleStatusChange}
         handelEdit={handleEditModal}
+        handleView={handleView}
       />
     </>
   );
@@ -108,7 +118,11 @@ const enhancedHeros = (heros) => {
       />
     ),
     button1_text: hero.button1_text && (
-      <PrimaryButton href={hero.button1_url} text={hero.button1_text}></PrimaryButton>
+      <PrimaryButton
+        target="_blank"
+        href={hero.button1_url}
+        text={hero.button1_text}
+      ></PrimaryButton>
     ),
     button1_url: hero.button1_url && (
       <a
@@ -122,6 +136,7 @@ const enhancedHeros = (heros) => {
     ),
     button2_text: hero.button2_text && (
       <SecondaryButton
+        target="_blank"
         href={hero.button2_url}
         className="border-primary text-primary hover:text-white"
         text={hero.button2_text}
@@ -137,6 +152,5 @@ const enhancedHeros = (heros) => {
         {hero.button2_url}
       </a>
     ),
-    is_active: hero.is_active,
   }));
 };

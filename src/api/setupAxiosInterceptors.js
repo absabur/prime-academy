@@ -59,7 +59,6 @@ export const setupAxiosInterceptors = (store) => {
           processQueue(null, newToken);
           return api(originalRequest);
         } catch (err) {
-          console.log(error);
           processQueue(err, null);
           store.dispatch(logout());
           return Promise.reject(err);

@@ -55,6 +55,7 @@ const AdminPanelSkills = () => {
     {
       key: 'id',
       label: 'ID',
+      render: (_, __, index) => (currentPage - 1) * pageSize + (index + 1),
     },
     { key: 'name', label: 'Skill Name' },
   ];
@@ -79,7 +80,7 @@ const AdminPanelSkills = () => {
           order: !order ? 'published_at' : order,
         })
       );
-      dispatch(clearError());
+      dispatch(clearMessage());
     }
   }, [message]);
 

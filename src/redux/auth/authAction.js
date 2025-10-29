@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../api/axios';
+import axios from 'axios';
 
 // 🔹 Login
 export const loginUser = createAsyncThunk(
@@ -17,7 +18,7 @@ export const loginUser = createAsyncThunk(
     }
 
     try {
-      const res = await api.post(route, credentials);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}${route}`, credentials);
       return res.data; // success
     } catch (err) {
       // capture API error message
@@ -35,7 +36,10 @@ export const registerStudent = createAsyncThunk(
   'auth/registerStudent',
   async (credentials, { rejectWithValue }) => {
     try {
-      const res = await api.post('/api/students/register/', credentials);
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/students/register/`,
+        credentials
+      );
       return res.data; // success
     } catch (err) {
       // capture API error message
@@ -53,7 +57,9 @@ export const verifyEmail = createAsyncThunk(
   'auth/verifyEmail',
   async ({ token }, { rejectWithValue }) => {
     try {
-      const res = await api.get(`/api/verify-student/?token=${token}`);
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/verify-student/?token=${token}`
+      );
       return res.data; // success
     } catch (err) {
       // capture API error message
@@ -71,7 +77,10 @@ export const forgotPassword = createAsyncThunk(
   'auth/forgotPassword',
   async (credentials, { rejectWithValue }) => {
     try {
-      const res = await api.post('/api/students/reset-password/', credentials);
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/students/reset-password/`,
+        credentials
+      );
       return res.data; // success
     } catch (err) {
       // capture API error message
@@ -87,9 +96,15 @@ export const forgotPassword = createAsyncThunk(
 // 🔹 Forgot password Student
 export const resetPassword = createAsyncThunk(
   'auth/resetPassword',
-  async ({new_password, new_password2, token}, { rejectWithValue }) => {
+  async ({ new_password, new_password2, token }, { rejectWithValue }) => {
     try {
-      const res = await api.post(`/api/students/reset-password-confirm/?token=${token}`, {new_password, new_password2});
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/students/reset-password-confirm/?token=${token}`,
+        {
+          new_password,
+          new_password2,
+        }
+      );
       return res.data; // success
     } catch (err) {
       // capture API error message

@@ -13,7 +13,7 @@ const AdminPanelDashboard = () => {
 
   useEffect(() => {
     if (message) {
-      SwalUtils.success(message);
+      SwalUtils.success(message, 'Welcome back!');
       dispatch(clearAuthMessage());
     }
   }, [message]);

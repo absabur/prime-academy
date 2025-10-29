@@ -9,12 +9,13 @@ import { MdVerified } from 'react-icons/md';
 import { RxCross2 } from 'react-icons/rx';
 import { useDispatch } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
+import Modal from '@/components/common/Modal';
+import MessageDetails from '../../../../components/Dashboard/AdminDashboard/AdminContactMessages/MessageDetails';
 
 const AdminContactMessages = () => {
-  const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
-  const [modalType, setModalType] = useState('');
-  const [messages, setMessages] = useState({});
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState({});
   const [pagination, setPagination] = useState({});
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
@@ -34,7 +35,7 @@ const AdminContactMessages = () => {
       key: 'message',
       label: 'Message',
       render: (r, c, i) => (
-        <p className="line-clamp-3 max-w-[350px] whitespace-pre-line break-words text-heading text-base leading-lg">
+        <p className="line-clamp-2 max-w-[300px] whitespace-pre-line break-words text-heading text-base leading-lg">
           {r[c.key]}
         </p>
       ),
@@ -46,7 +47,7 @@ const AdminContactMessages = () => {
       label: 'Policy',
       render: (r, c, i) =>
         r[c.key] ? (
-          <MdVerified className="text-xl text-green-700" />
+          <MdVerified className="text-xl text-primary-light" />
         ) : (
           <RxCross2 className="text-xl text-red-700" />
         ),
@@ -84,9 +85,21 @@ const AdminContactMessages = () => {
     };
   }, [currentPage, page_size, search]);
 
+  const handleView = (id) => {
+    setModal(true);
+    setMessage(messages.find((m) => m.id == id));
+  };
+
   return (
     <div>
       <DashBoardHeader title={'Messages'} />
+      {modal && (
+        <Modal setModal={setModal} noClose={true}>
+          <div className="w-full" onClick={(e) => e.stopPropagation()}>
+            <MessageDetails data={message} />
+          </div>
+        </Modal>
+      )}
       <DataTables
         data={messages}
         columns={columns}
@@ -97,6 +110,7 @@ const AdminContactMessages = () => {
         paginationShow={true}
         deleteButton={false}
         statusShow={false}
+        handleView={handleView}
       />
     </div>
   );

@@ -7,10 +7,9 @@ const SwalUtils = {
       title,
       text: message,
       icon: 'success',
+      iconColor: 'var(--color-primary-light)',
       confirmButtonText: 'Okay',
-      customClass: {
-        confirmButtonColor: 'red',
-      },
+      confirmButtonColor: 'var(--color-primary)',
     });
   },
 
@@ -20,6 +19,8 @@ const SwalUtils = {
       text: message,
       icon: 'error',
       confirmButtonText: 'Okay',
+      confirmButtonColor: 'var(--color-secondary)',
+      iconColor: 'var(--color-secondary-light)',
     });
   },
 
@@ -28,7 +29,9 @@ const SwalUtils = {
       title,
       text: message,
       icon: 'info',
+      iconColor: 'var(--color-primary)',
       confirmButtonText: 'Okay',
+      confirmButtonColor: 'var(--color-primary)',
     });
   },
 
@@ -38,6 +41,8 @@ const SwalUtils = {
       text: message,
       icon: 'warning',
       confirmButtonText: 'Okay',
+      confirmButtonColor: 'var(--color-secondary)',
+      iconColor: 'var(--color-secondary-light)',
     });
   },
 
@@ -46,7 +51,10 @@ const SwalUtils = {
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
       icon: 'warning',
+      iconColor: 'var(--color-secondary-light)',
       showCancelButton: true,
+      confirmButtonColor: 'var(--color-primary)',
+      cancelButtonColor: 'var(--color-secondary)',
       confirmButtonText: buttonText,
     }).then((result) => {
       if (result.isConfirmed) {

@@ -32,14 +32,12 @@ export const updatePolicy = createAsyncThunk(
   'policy/updatePolicy',
   async ({ page_name, policyData }, { rejectWithValue }) => {
     try {
-      console.log(page_name)
       const response = await api.patch(
         `${import.meta.env.VITE_API_URL}/api/policy-pages/${page_name}/`,
         policyData
       );
       return response.data; // return the updated policy data
     } catch (error) {
-      console.log(error);
       return rejectWithValue(error.response?.data?.message || 'Failed to update policy');
     }
   }

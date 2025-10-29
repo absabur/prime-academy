@@ -113,6 +113,7 @@ const authSlice = createSlice({
         state.message = payload.message;
       })
       .addCase(registerStudent.rejected, (state, { payload }) => {
+        console.log(payload);
         state.loading = false;
         state.error = payload.message;
       });

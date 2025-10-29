@@ -90,7 +90,7 @@ function RoutesComponent() {
 
       {/* 🔑 AUTH ROUTES */}
       <Route element={<AuthLayout />}>
-        <Route path="/login/role" element={<LoginRole />} />
+        <Route path="/auth/login/verify-role" element={<LoginRole />} />
         <Route path="/login" element={<LoginStudent />} />
         <Route path="/register" element={<RegisterStudent />} />
         <Route path="/verify-student" element={<VerifyEmail />} />

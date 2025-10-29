@@ -6,7 +6,7 @@ import { IoNotifications } from 'react-icons/io5';
 import { FaChevronDown, FaSearch } from 'react-icons/fa';
 import { clearAuthMessage, logout } from '@/redux/auth/authSlice';
 import SwalUtils from '@/utils/sweetAlert';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const DashBroadNavbar = () => {
   // auth & coommon state from redux
@@ -14,6 +14,7 @@ const DashBroadNavbar = () => {
   const { sidebarIsOpen } = useSelector((state) => state.common);
   const { user, message } = useSelector((state) => state.auth);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (message) {
@@ -105,7 +106,12 @@ const DashBroadNavbar = () => {
             <hr className="my-1 text-black/20" />
             <button
               className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-              onClick={() => dispatch(logout())}
+              onClick={() => {
+                dispatch(logout());
+                setTimeout(() => {
+                  navigate('/auth/login/verify-role');
+                }, 100);
+              }}
             >
               <LogOut size={16} /> Logout
             </button>

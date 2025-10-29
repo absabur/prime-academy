@@ -6,7 +6,7 @@ const RoleBasedLayout = ({ roles }) => {
   const { user } = useSelector((state) => state.auth);
 
   // If user not loaded yet, show a loader or nothing
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/auth/login/verify-role" replace />;
 
   // If user role not allowed, redirect
   if (!roles.includes(user.role)) {

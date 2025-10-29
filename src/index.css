@@ -173,3 +173,33 @@ a {
 .policy-wrapper footer p {
   @apply text-sm text-gray-500 mt-8;
 }
+
+/* ck editor watermark hide */
+.ck.ck-powered-by {
+  position: absolute !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Confirm button hover */
+.swal2-confirm {
+  @apply min-w-[150px] w-fit bg-secondary font-bold text-base text-white cursor-pointer transition-colors inline-flex items-center justify-center border-2 border-secondary hover:bg-primary hover:border-primary;
+}
+
+/* .swal2-confirm:hover {
+  background-color: #059669;
+  transform: scale(1.05);
+  color: #fff;
+} */
+
+/* Cancel button hover (optional) */
+.swal2-cancel {
+  @apply min-w-[150px] w-fit font-bold text-base text-primary cursor-pointer transition-colors border-2 border-primary inline-flex items-center justify-center bg-transparent hover:bg-primary hover:border-primary hover:text-white;
+}
+
+/* .swal2-cancel:hover {
+  background-color: #9ca3af;
+  transform: scale(1.05);
+  color: #fff;
+} */

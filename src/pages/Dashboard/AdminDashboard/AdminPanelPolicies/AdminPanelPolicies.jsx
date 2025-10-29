@@ -9,6 +9,8 @@ import SwalUtils from '@/utils/sweetAlert';
 import { useEffect, useState } from 'react';
 import { FaEye, FaPlus } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
+import DOMPurify from 'dompurify';
+import ViewPolicy from '../../../../components/Dashboard/AdminDashboard/AdminPanelPolicies/ViewPolicy';
 
 const AdminPanelPolicies = () => {
   const { policies, loadingPolicies, error, message } = useSelector((state) => state.policies);
@@ -34,6 +36,13 @@ const AdminPanelPolicies = () => {
     setModalType('edit');
   };
 
+  // handleView Function
+  const handleView = async (id) => {
+    setPolicy(policies.find((item) => item.id == id));
+    setModal(true);
+    setModalType('view');
+  };
+
   const handelEditPolicy = async (data, page_name) => {
     if (!page_name) return;
     // 🔹 Redux dispatch
@@ -51,7 +60,18 @@ const AdminPanelPolicies = () => {
       label: 'Page Name',
     },
     { key: 'title', label: 'Title' },
-    { key: 'content', label: 'Content', render: () => <FaEye /> },
+    {
+      key: 'content',
+      label: 'Content',
+      render: (r, c, i) => (
+        <div
+          className="policy-wrapper text-sm text-gray-700 leading-relaxed line-clamp-3 max-w-[300px]"
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(r[c.key]),
+          }}
+        />
+      ),
+    },
   ];
 
   // show error  message
@@ -102,6 +122,7 @@ const AdminPanelPolicies = () => {
                 defaultValues={policy}
               />
             )}
+            {modalType === 'view' && <ViewPolicy data={policy} />}
           </div>
         </Modal>
       )}
@@ -122,6 +143,7 @@ const AdminPanelPolicies = () => {
         handelEdit={singlePolicy}
         paginationShow={false}
         statusShow={false}
+        handleView={handleView}
       />
     </div>
   );
