@@ -174,6 +174,10 @@ const DashBroadNavbar = () => {
                     setTimeout(() => {
                       navigate('/auth/login/verify-role');
                     }, 100);
+                  } else {
+                    setTimeout(() => {
+                      navigate('/login');
+                    }, 100);
                   }
                 }, 'Logout');
               }}
