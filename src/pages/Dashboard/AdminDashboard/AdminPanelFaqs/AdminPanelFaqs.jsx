@@ -94,7 +94,7 @@ export default function FaqManager() {
 
   return (
     <div className="w-full bg-gray-50">
-      {loadingFaqs && <LoadingDashboard />}
+      <LoadingDashboard loading={loadingFaqs} />
       <DashBoardHeader title={'FAQs Management'} searchBar={false} />
 
       {/* Category Drag Context */}

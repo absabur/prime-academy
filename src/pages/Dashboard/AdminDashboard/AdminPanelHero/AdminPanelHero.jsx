@@ -7,7 +7,7 @@ const AdminPanelHero = () => {
   const { loadingHeros } = useSelector((state) => state.hero);
   return (
     <div>
-      {loadingHeros && <LoadingDashboard />}
+      <LoadingDashboard loading={loadingHeros} />
       <DashBoardHeader title={'Heros'} searchBar={false} />
       <AllHeros />
     </div>

@@ -59,7 +59,7 @@ const AdminPanelPartner = () => {
 
   return (
     <div>
-      {loadingbrands && <LoadingDashboard />}
+      <LoadingDashboard loading={loadingbrands} />
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

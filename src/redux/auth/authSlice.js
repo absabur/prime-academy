@@ -1,9 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
+  changePassword,
   forgotPassword,
   loginUser,
   registerStudent,
   resetPassword,
+  updateProfile,
+  userProfile,
   verifyEmail,
 } from './authAction';
 
@@ -16,6 +19,7 @@ const initialState = {
   loading: false,
   error: null,
   message: null,
+  profile: {},
 };
 
 const authSlice = createSlice({
@@ -153,6 +157,45 @@ const authSlice = createSlice({
         state.message = payload.message;
       })
       .addCase(verifyEmail.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload.message;
+      });
+
+    builder
+      .addCase(userProfile.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(userProfile.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.profile = payload.data;
+      })
+      .addCase(userProfile.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload.message;
+      });
+
+    builder
+      .addCase(changePassword.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(changePassword.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.message = payload.message || "Password has been changed";
+      })
+      .addCase(changePassword.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload.message;
+      });
+
+    builder
+      .addCase(updateProfile.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateProfile.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.message = payload.message || "Profile Updated Successfully";
+      })
+      .addCase(updateProfile.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload.message;
       });

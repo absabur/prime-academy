@@ -105,7 +105,7 @@ const AdminPanelPolicies = () => {
 
   return (
     <div>
-      {loadingPolicies && <LoadingDashboard />}
+      <LoadingDashboard loading={loadingPolicies} />
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

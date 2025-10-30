@@ -25,7 +25,7 @@ const AdminPanelFooter = () => {
 
   return (
     <div>
-      {loadingFooters && <LoadingDashboard />}
+      <LoadingDashboard loading={loadingFooters} />
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

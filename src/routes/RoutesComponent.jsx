@@ -7,7 +7,7 @@
  * - Includes all project pages with fallback 404
  */
 
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
 // Layouts
@@ -41,6 +41,7 @@ import RegisterStudent from '@/pages/Root/RegisterStudent/RegisterStudent';
 import VerifyEmail from '@/pages/Root/VerifyStudent/VerifyEmail';
 
 // 🧭 Dashboard (Protected Pages)
+// for admin
 import AdminPanelDashboard from '@/pages/Dashboard/AdminDashboard/AdminPanelDashboard/AdminPanelDashboard';
 import AdminPanelCourses from '@/pages/Dashboard/AdminDashboard/AdminPanelCourses/AdminPanelCourses';
 import AdminPanelStudents from '@/pages/Dashboard/AdminDashboard/AdminPanelStudents/AdminPanelStudents';
@@ -58,7 +59,11 @@ import AdminContactMessages from '@/pages/Dashboard/AdminDashboard/AdminContactM
 import FaqManager from '@/pages/Dashboard/AdminDashboard/AdminPanelFaqs/AdminPanelFaqs';
 import AdminPanelSkills from '@/pages/Dashboard/AdminDashboard/AdminPanelSkills/AdminPanelSkills';
 import AdminPanelPolicies from '@/pages/Dashboard/AdminDashboard/AdminPanelPolicies/AdminPanelPolicies';
-import Policy from '../pages/Root/Policies/Policy';
+//for student
+import StudentClassJoining from '../pages/Dashboard/StudentDashboard/StudentClassJoining/StudentClassJoining';
+import StudentMyCourses from '../pages/Dashboard/StudentDashboard/StudentMyCourses/StudentMyCourses';
+import StudentRecording from '../pages/Dashboard/StudentDashboard/StudentRecording/StudentRecording';
+import StudentResources from '../pages/Dashboard/StudentDashboard/StudentResources/StudentResources';
 
 function RoutesComponent() {
   const { pathname } = useLocation();
@@ -82,7 +87,6 @@ function RoutesComponent() {
         <Route path="refund-policy" element={<RefundPolicy />} />
         <Route path="courses" element={<CoursesPage />} />
         <Route path="courses/:id" element={<SingleCourse />} />
-        <Route path="policy/:page_name" element={<Policy />} />
       </Route>
 
       {/* 🚀 LANDING PAGE */}
@@ -105,26 +109,36 @@ function RoutesComponent() {
         {/* Admin Routes */}
         <Route element={<RoleBasedLayout roles={['admin']} />}>
           {/* main menues  */}
-          <Route path="/dashboard" element={<AdminPanelDashboard />} />
-          <Route path="/dashboard/courses" element={<AdminPanelCourses />} />
-          <Route path="/dashboard/students" element={<AdminPanelStudents />} />
-          <Route path="/dashboard/teachers" element={<AdminPanelTeachers />} />
-          <Route path="/dashboard/employees" element={<AdminPanelEmployees />} />
-          <Route path="/dashboard/blog" element={<AdminPanelBlogs />} />
-          <Route path="/dashboard/reports" element={<AdminPanelReports />} />
+          <Route path="/admin-dashboard" element={<AdminPanelDashboard />} />
+          <Route path="/admin-dashboard/courses" element={<AdminPanelCourses />} />
+          <Route path="/admin-dashboard/students" element={<AdminPanelStudents />} />
+          <Route path="/admin-dashboard/teachers" element={<AdminPanelTeachers />} />
+          <Route path="/admin-dashboard/employees" element={<AdminPanelEmployees />} />
+          <Route path="/admin-dashboard/blog" element={<AdminPanelBlogs />} />
+          <Route path="/admin-dashboard/reports" element={<AdminPanelReports />} />
           {/* sub menues */}
-          <Route path="/dashboard/footer" element={<AdminPanelFooter />} />
-          <Route path="/dashboard/partners" element={<AdminPanelPartner />} />
-          <Route path="/dashboard/hero-sections" element={<AdminPanelHero />} />
-          <Route path="/dashboard/messages" element={<AdminContactMessages />} />
-          <Route path="/dashboard/faqs" element={<FaqManager />} />
-          <Route path="/dashboard/policies" element={<AdminPanelPolicies />} />
-          <Route path="/dashboard/skills" element={<AdminPanelSkills />} />
+          <Route path="/admin-dashboard/footer" element={<AdminPanelFooter />} />
+          <Route path="/admin-dashboard/partners" element={<AdminPanelPartner />} />
+          <Route path="/admin-dashboard/hero-sections" element={<AdminPanelHero />} />
+          <Route path="/admin-dashboard/messages" element={<AdminContactMessages />} />
+          <Route path="/admin-dashboard/faqs" element={<FaqManager />} />
+          <Route path="/admin-dashboard/policies" element={<AdminPanelPolicies />} />
+          <Route path="/admin-dashboard/skills" element={<AdminPanelSkills />} />
         </Route>
 
         {/* Teacher Routes */}
 
         {/* Student Routes */}
+        <Route element={<RoleBasedLayout roles={['student']} />}>
+          <Route
+            path="/student-dashboard"
+            element={<Navigate replace to={`/student-dashboard/my-courses`} />}
+          />
+          <Route path="/student-dashboard/class-joining" element={<StudentClassJoining />} />
+          <Route path="/student-dashboard/my-courses" element={<StudentMyCourses />} />
+          <Route path="/student-dashboard/recording" element={<StudentRecording />} />
+          <Route path="/student-dashboard/resources" element={<StudentResources />} />
+        </Route>
 
         {/* Account Routes */}
 

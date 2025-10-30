@@ -15,7 +15,7 @@ import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
 import { RoleButton } from '../../../components/Root/login/RoleButton';
 
 export default function LoginRole() {
-  const { error, isAuthenticated, loading } = useSelector((state) => state.auth);
+  const { error, isAuthenticated, loading, user } = useSelector((state) => state.auth);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
@@ -43,7 +43,7 @@ export default function LoginRole() {
   }, [error]);
   // Navigate when login is successful
   useEffect(() => {
-    if (isAuthenticated) navigate('/dashboard');
+    if (isAuthenticated) navigate(`/${user?.role}-dashboard`);
   }, [isAuthenticated]);
 
   useEffect(() => {

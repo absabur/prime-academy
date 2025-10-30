@@ -14,16 +14,15 @@ import {
   FaUserGraduate,
   FaUsers,
   FaRegEdit,
-  FaTags,
   FaHandshake,
   FaImage,
   FaEnvelope,
-  FaFolderOpen,
-  FaFileAlt,
   FaQuestionCircle,
   FaBook,
   FaStar,
-  FaSearch,
+  FaVideo,
+  FaFolderOpen,
+  FaSignInAlt,
 } from 'react-icons/fa';
 import { IoIosArrowDown } from 'react-icons/io';
 
@@ -35,26 +34,32 @@ export default function SideBar() {
 
   const menuByRole = {
     admin: [
-      { name: 'Dashboard', icon: FaTachometerAlt, path: '/dashboard' },
-      { name: 'Courses', icon: FaBookOpen, path: '/dashboard/courses' },
-      { name: 'Students', icon: FaUserGraduate, path: '/dashboard/students' },
-      { name: 'Teachers', icon: FaChalkboardTeacher, path: '/dashboard/teachers' },
-      { name: 'Employee List', icon: FaUsers, path: '/dashboard/employees' },
-      { name: 'Blog', icon: FaBlog, path: '/dashboard/blog' },
-      { name: 'Reports Generate', icon: FaClipboardList, path: '/dashboard/reports' },
+      { name: 'Dashboard', icon: FaTachometerAlt, path: '/admin-dashboard' },
+      { name: 'Courses', icon: FaBookOpen, path: '/admin-dashboard/courses' },
+      { name: 'Students', icon: FaUserGraduate, path: '/admin-dashboard/students' },
+      { name: 'Teachers', icon: FaChalkboardTeacher, path: '/admin-dashboard/teachers' },
+      { name: 'Employee List', icon: FaUsers, path: '/admin-dashboard/employees' },
+      { name: 'Blog', icon: FaBlog, path: '/admin-dashboard/blog' },
+      { name: 'Reports Generate', icon: FaClipboardList, path: '/admin-dashboard/reports' },
       {
         name: 'Settings',
         icon: FaCogs,
         children: [
-          { name: 'Footer', icon: FaRegEdit, path: '/dashboard/footer' },
-          { name: 'Partners', icon: FaHandshake, path: '/dashboard/partners' },
-          { name: 'Hero Headers', icon: FaImage, path: '/dashboard/hero-sections' },
-          { name: 'Messages', icon: FaEnvelope, path: '/dashboard/messages' },
-          { name: 'FAQs', icon: FaQuestionCircle, path: '/dashboard/faqs' },
-          { name: 'Policies', icon: FaBook, path: '/dashboard/policies' },
-          { name: 'Skills', icon: FaStar, path: '/dashboard/skills' },
+          { name: 'Footer', icon: FaRegEdit, path: '/admin-dashboard/footer' },
+          { name: 'Partners', icon: FaHandshake, path: '/admin-dashboard/partners' },
+          { name: 'Hero Headers', icon: FaImage, path: '/admin-dashboard/hero-sections' },
+          { name: 'Messages', icon: FaEnvelope, path: '/admin-dashboard/messages' },
+          { name: 'FAQs', icon: FaQuestionCircle, path: '/admin-dashboard/faqs' },
+          { name: 'Policies', icon: FaBook, path: '/admin-dashboard/policies' },
+          { name: 'Skills', icon: FaStar, path: '/admin-dashboard/skills' },
         ],
       },
+    ],
+    student: [
+      { name: 'Class Joining', icon: FaSignInAlt, path: '/student-dashboard/class-joining' },
+      { name: 'My Courses', icon: FaBookOpen, path: '/student-dashboard/my-courses' },
+      { name: 'Recording', icon: FaVideo, path: '/student-dashboard/recording' },
+      { name: 'Resources', icon: FaFolderOpen, path: '/student-dashboard/resources' },
     ],
   };
 
@@ -72,9 +77,9 @@ export default function SideBar() {
           sidebarIsOpen ? 'translate-x-0' : '-translate-x-full'
         } md:translate-x-0`}
       >
-        <div className="flex items-center justify-center py-lg border-b border-white/20 font-bold">
+        <div className="flex items-center justify-start px-lg py-md border-b border-white/20 font-bold">
           <Link to={'/'}>
-            <img src="/assets/prime-academy-logo-full.png" width={150} alt="Prime Academy" />
+            <img src="/assets/prime-academy-logo-full.png" width={180} alt="Prime Academy" />
           </Link>
         </div>
 
@@ -103,7 +108,7 @@ export default function SideBar() {
                         key={child.path}
                         to={child.path}
                         className={({ isActive }) =>
-                          `flex items-center gap-md px-3 py-2 rounded-md text-sm ${
+                          `flex items-center gap-md px-md py-2 rounded-md text-sm ${
                             isActive
                               ? 'bg-secondary-light text-primary font-semibold'
                               : 'hover:bg-white/10'

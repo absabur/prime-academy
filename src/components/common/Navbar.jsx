@@ -19,7 +19,7 @@ import { capitalizeFirst } from '@/utils/capitalizeFirst';
 import './css/navbar.css';
 
 const Navbar = () => {
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
@@ -58,7 +58,7 @@ const Navbar = () => {
     { text: 'Contact', url: '/contact' },
     {
       text: isAuthenticated ? 'Dashboard' : 'Login',
-      url: isAuthenticated ? '/dashboard' : '/login',
+      url: isAuthenticated ? `/${user?.role}-dashboard` : '/login',
     },
   ];
 

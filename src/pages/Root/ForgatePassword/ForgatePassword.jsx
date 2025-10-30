@@ -14,7 +14,7 @@ import { fetchSeos } from '@/redux/seo/seoAction';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
 
 export default function ForgatePassword() {
-  const { error, message, isAuthenticated, loading } = useSelector((state) => state.auth);
+  const { error, message, isAuthenticated, loading, user } = useSelector((state) => state.auth);
   const [email, setEmail] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ export default function ForgatePassword() {
 
   // Navigate when forgot is successful
   useEffect(() => {
-    if (isAuthenticated) navigate('/');
+    if (isAuthenticated) navigate(`/${user?.role}-dashboard`);
   }, [isAuthenticated]);
 
   useEffect(() => {

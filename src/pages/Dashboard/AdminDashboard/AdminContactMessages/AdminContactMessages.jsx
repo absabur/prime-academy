@@ -79,7 +79,7 @@ const AdminContactMessages = () => {
 
   return (
     <div>
-      {loadingMessages && <LoadingDashboard />}
+      <LoadingDashboard loading={loadingMessages} />
       <DashBoardHeader title={'Messages'} />
       {modal && (
         <Modal setModal={setModal} noClose={true}>

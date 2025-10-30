@@ -14,7 +14,7 @@ import { fetchSeos } from '@/redux/seo/seoAction';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
 
 export default function ResetPassword() {
-  const { error, message, isAuthenticated, loading } = useSelector((state) => state.auth);
+  const { error, message, isAuthenticated, loading, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -59,7 +59,7 @@ export default function ResetPassword() {
 
   // ✅ Redirect if already authenticated
   useEffect(() => {
-    if (isAuthenticated) navigate('/');
+    if (isAuthenticated) navigate(`/${user?.role}-dashboard`);
   }, [isAuthenticated]);
 
   // ✅ SEO Fetch

@@ -119,7 +119,7 @@ const AdminPanelSkills = () => {
 
   return (
     <div>
-      {loadingSkills && <LoadingDashboard />}
+      <LoadingDashboard loading={loadingSkills} />
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

@@ -126,7 +126,7 @@ const AdminPanelBlogs = () => {
 
   return (
     <div>
-      {loadingBlogs && <LoadingDashboard />}
+      <LoadingDashboard loading={loadingBlogs} />
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

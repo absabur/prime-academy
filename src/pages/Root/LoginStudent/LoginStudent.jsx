@@ -14,7 +14,7 @@ import { fetchSeos } from '@/redux/seo/seoAction';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
 
 export default function LoginStudent() {
-  const { error, isAuthenticated, loading } = useSelector((state) => state.auth);
+  const { error, isAuthenticated, loading, user } = useSelector((state) => state.auth);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
@@ -40,7 +40,7 @@ export default function LoginStudent() {
 
   // Navigate when login is successful
   useEffect(() => {
-    if (isAuthenticated) navigate('/dashboard');
+    if (isAuthenticated) navigate(`/${user?.role}-dashboard`);
   }, [isAuthenticated]);
 
   useEffect(() => {

@@ -2,6 +2,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import DashBroadNavbar from '@/components/Dashboard/common/DashBroadNavbar';
 import SideBar from '@/components/Dashboard/common/SideBar';
+import NotFound from '../components/common/NotFound';
 
 export default function ProtectedLayout() {
   const { isAuthenticated, authLoaded } = useSelector((state) => state.auth);
@@ -16,7 +17,8 @@ export default function ProtectedLayout() {
   }
 
   // 🔹 Redirect if unauthenticated
-  if (!isAuthenticated) return <Navigate to="/" replace />;
+  // if (!isAuthenticated) return <Navigate to="/" replace />;
+  if (!isAuthenticated) return <NotFound />;
 
   // 🔹 Main Dashboard Layout
   return (

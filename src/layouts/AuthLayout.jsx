@@ -4,10 +4,10 @@ import { useSelector } from 'react-redux';
 import { Navigate, Outlet } from 'react-router-dom';
 
 export default function AuthLayout() {
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   return isAuthenticated ? (
-    <Navigate to="/dashboard" replace />
+    <Navigate to={`/${user?.role}-dashboard`} replace />
   ) : (
     <div className="w-full flex flex-col min-h-screen">
       {/* Persistent navigation bar at the top */}

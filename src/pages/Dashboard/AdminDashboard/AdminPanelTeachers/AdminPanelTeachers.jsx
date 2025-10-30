@@ -130,7 +130,7 @@ const AdminPanelTeachers = () => {
 
   return (
     <div>
-      {loadingTeachers && <LoadingDashboard />}
+      <LoadingDashboard loading={loadingTeachers} />
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

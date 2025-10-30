@@ -110,7 +110,7 @@ const AdminPanelEmployees = () => {
 
   return (
     <div>
-      {loadingEmployees && <LoadingDashboard />}
+      <LoadingDashboard loading={loadingEmployees} />
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>
