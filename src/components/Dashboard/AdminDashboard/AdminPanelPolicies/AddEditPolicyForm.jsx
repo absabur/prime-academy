@@ -1,5 +1,3 @@
-'use client';
-
 import PrimaryButton from '@/components/common/PrimaryButton';
 import SecondaryButton from '@/components/common/SecondaryButton';
 import { useEffect } from 'react';

@@ -100,17 +100,6 @@ export default function EditUserForm({
             />
           </div>
 
-          {/* Bio */}
-          <div className="md:col-span-2">
-            <label className="block mb-sm font-medium">Bio</label>
-            <textarea
-              {...register('profile.bio')}
-              rows={3}
-              className="w-full border border-black/10 px-md py-sm rounded-md focus:outline-none focus:shadow-lg"
-              placeholder="Enter short bio"
-            ></textarea>
-          </div>
-
           {/* Image Upload */}
 
           <div className="md:col-span-2">

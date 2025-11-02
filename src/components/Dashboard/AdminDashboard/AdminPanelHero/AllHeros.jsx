@@ -9,13 +9,16 @@ import Modal from '@/components/common/Modal';
 import EditHeroForm from './EditHeroForm';
 import { clearError, clearMessage } from '@/redux/hero/heroSlice';
 import HeroDetailsView from './HeroDetailsView';
+import { useSearchParams } from 'react-router-dom';
 
 export default function AllHeros() {
   const { message, error, heros } = useSelector((state) => state.hero);
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
   const [modalType, setModalType] = useState('');
+  const [searchParams] = useSearchParams();
   const [hero, setHero] = useState({});
+  const order = searchParams.get('order') || '';
 
   // handle edit modal
   const handleEditModal = async (id) => {

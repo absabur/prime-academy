@@ -13,6 +13,7 @@ import MessageDetails from '../../../../components/Dashboard/AdminDashboard/Admi
 import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMessages } from '../../../../redux/messages/messagesAction';
+import TableFilter from '../../../../components/Dashboard/common/TableFilter';
 
 const AdminContactMessages = () => {
   const { messages, messagePagination, pageSize, loadingMessages } = useSelector(
@@ -23,6 +24,9 @@ const AdminContactMessages = () => {
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
   const search = searchParams.get('search') || '';
+  const order = searchParams.get('order') || '';
+  const created_at_after = searchParams.get('created_at_after') || '';
+  const created_at_before = searchParams.get('created_at_before') || '';
   const dispatch = useDispatch();
 
   // ✅ কলাম ডেফিনিশন
@@ -58,19 +62,33 @@ const AdminContactMessages = () => {
     {
       key: 'created_at',
       label: 'Message Date',
+      sort: true,
       render: (r, c, i) => dateConvertionHomePageBlogCard(r[c.key]),
     },
   ];
 
+  const messageFilterFields = [
+    {
+      name: 'search',
+      type: 'text',
+      label: 'Sender Name/Message',
+      placeholder: 'Sender Name/Message',
+    },
+    { name: 'created_at_after', type: 'date', label: 'Sending After Date' },
+    { name: 'created_at_before', type: 'date', label: 'Sending Before Date' },
+  ];
+
   useEffect(() => {
     const handler = setTimeout(() => {
-      dispatch(fetchMessages({ search, currentPage, pageSize }));
+      dispatch(
+        fetchMessages({ search, currentPage, pageSize, order, created_at_after, created_at_before })
+      );
     }, 600); // debounce delay 600ms
 
     return () => {
       clearTimeout(handler); // cleanup old timer before new one
     };
-  }, [currentPage, pageSize, search]);
+  }, [currentPage, pageSize, search, order, created_at_after, created_at_before]);
 
   const handleView = (id) => {
     setModal(true);
@@ -88,6 +106,8 @@ const AdminContactMessages = () => {
           </div>
         </Modal>
       )}
+
+      <TableFilter fields={messageFilterFields} />
       <DataTables
         data={messages}
         columns={columns}

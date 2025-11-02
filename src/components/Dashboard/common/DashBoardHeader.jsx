@@ -9,13 +9,13 @@ const DashBoardHeader = ({
   handeleAdd,
   searchBar = true,
 }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  // const [searchParams, setSearchParams] = useSearchParams();
   return (
     <div className="flex justify-between items-center mb-lg gap-lg">
       <h1 className="font-bold text-primary text-2xl flex-1">{title}</h1>
 
       <div className="flex gap-xl">
-        {searchBar && (
+        {/* {searchBar && (
           <input
             type="text"
             className=" hidden md:inline-block flex-1 border border-black/10 shadow bg-white w-full px-md py-sm rounded-md focus:outline-none focus:shadow-xl"
@@ -29,7 +29,7 @@ const DashBoardHeader = ({
               })
             }
           />
-        )}
+        )} */}
         {buttonText && (
           <PrimaryButton
             text={buttonText}

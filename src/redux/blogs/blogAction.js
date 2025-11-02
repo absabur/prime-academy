@@ -13,6 +13,19 @@ export const fetchBlogCategories = createAsyncThunk(
   }
 );
 
+export const addBlogCategories = createAsyncThunk(
+  'blog/addCategories',
+  async (data, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await api.post(`${import.meta.env.VITE_API_URL}/api/blog-categories/`, data);
+      dispatch(fetchBlogCategories());
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const fetchBlogs = createAsyncThunk(
   'blog/fetchBlogs',
   async (
@@ -26,6 +39,7 @@ export const fetchBlogs = createAsyncThunk(
       const response = await api.get(
         `${import.meta.env.VITE_API_URL}/api/blogs/?page=${page}&page_size=${page_size}&status=published${categoryParam}${searchParam}${orderParams}`
       );
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Something went wrong');
@@ -50,6 +64,36 @@ export const fetchSingleBlog = createAsyncThunk(
   async (blogIdOrSlug, { rejectWithValue }) => {
     try {
       const response = await api.get(`${import.meta.env.VITE_API_URL}/api/blogs/${blogIdOrSlug}/`);
+      return response.data; // the blog data
+    } catch (error) {
+      // handle network or API errors
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+
+  // add blog
+);
+
+export const addBlog = createAsyncThunk('blog/addBlog', async (formData, { rejectWithValue }) => {
+  try {
+    console.log(formData);
+    const response = await api.post(`${import.meta.env.VITE_API_URL}/api/blogs/`, formData);
+    return response.data; // the blog data
+  } catch (error) {
+    console.log(error);
+    // handle network or API errors
+    return rejectWithValue(error.response?.data || error.message);
+  }
+});
+
+export const editBlog = createAsyncThunk(
+  'blog/editBlog',
+  async ({ id, formData }, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(
+        `${import.meta.env.VITE_API_URL}/api/blogs/${id}/`,
+        formData
+      );
       return response.data; // the blog data
     } catch (error) {
       // handle network or API errors

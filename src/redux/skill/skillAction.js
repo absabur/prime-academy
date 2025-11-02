@@ -3,16 +3,23 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchSkills = createAsyncThunk(
   'skill/fetchSkills',
-  async ({ page = 1, page_size = 10, search = null, order = null }, { rejectWithValue }) => {
+  async (
+    { page = 1, page_size = 10, search = null, order = null, isActive = null },
+    { rejectWithValue }
+  ) => {
     try {
       const searchParam = search ? `&search=${search}` : '';
       const orderParams = order ? `&ordering=${order}` : '';
       const currentPage = page ? `page=${page}` : '';
       const pageSize = page_size ? `&page_size=${page_size}` : '';
+      const isActiveParams = isActive ? `&is_active=${isActive}` : '';
+
+      console.log(isActive);
 
       const response = await api.get(
-        `${import.meta.env.VITE_API_URL}/api/skills/?${currentPage}${pageSize}${searchParam}${orderParams}`
+        `${import.meta.env.VITE_API_URL}/api/skills/?${currentPage}${pageSize}${searchParam}${orderParams}${isActiveParams}`
       );
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Something went wrong');

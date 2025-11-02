@@ -1,5 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchBlogCategories, fetchBlogs, fetchLatestBlogs, fetchSingleBlog } from './blogAction';
+import {
+  addBlog,
+  addBlogCategories,
+  editBlog,
+  fetchBlogCategories,
+  fetchBlogs,
+  fetchLatestBlogs,
+  fetchSingleBlog,
+} from './blogAction';
 
 const blogSlice = createSlice({
   name: 'blog',
@@ -91,6 +99,51 @@ const blogSlice = createSlice({
       })
       .addCase(fetchSingleBlog.rejected, (state, action) => {
         state.loadingBlog = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // add blog
+    builder
+      .addCase(addBlog.pending, (state) => {
+        state.loadingBlogs = true;
+        state.error = null;
+      })
+      .addCase(addBlog.fulfilled, (state, action) => {
+        state.loadingBlogs = false;
+        state.message = action.payload.message;
+      })
+      .addCase(addBlog.rejected, (state, action) => {
+        state.loadingBlogs = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // add addBlogCategories
+    builder
+      .addCase(addBlogCategories.pending, (state) => {
+        state.loadingBlogs = true;
+        state.error = null;
+      })
+      .addCase(addBlogCategories.fulfilled, (state, action) => {
+        state.loadingBlogs = false;
+        state.message = action.payload.message;
+      })
+      .addCase(addBlogCategories.rejected, (state, action) => {
+        state.loadingBlogs = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // editblog
+    builder
+      .addCase(editBlog.pending, (state) => {
+        state.loadingBlogs = true;
+        state.error = null;
+      })
+      .addCase(editBlog.fulfilled, (state, action) => {
+        state.loadingBlogs = false;
+        state.message = action.payload.message;
+      })
+      .addCase(editBlog.rejected, (state, action) => {
+        state.loadingBlogs = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
   },

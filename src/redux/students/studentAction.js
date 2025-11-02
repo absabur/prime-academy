@@ -3,13 +3,29 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchStudents = createAsyncThunk(
   'student/fetchStudents',
-  async ({ page = 1, page_size = 10, search = null, order = null }, { rejectWithValue }) => {
+  async (
+    {
+      page = 1,
+      page_size = 10,
+      search = null,
+      order = null,
+      date_joined_before = null,
+      date_joined_after = null,
+      is_enabled = null,
+      
+    },
+    { rejectWithValue }
+  ) => {
     try {
       const searchParam = search ? `&search=${search}` : '';
       const orderParams = order ? `&ordering=${order}` : '';
+      const joinedBefore = date_joined_before ? `&date_joined_before=${date_joined_before}` : '';
+      const joinedAfter = date_joined_after ? `&date_joined_after=${date_joined_after}` : '';
+      const isEnable = is_enabled ? `&is_enabled=${is_enabled}` : '';
       const response = await api.get(
-        `${import.meta.env.VITE_API_URL}/api/admin/students/?page=${page}&page_size=${page_size}${searchParam}${orderParams}`
+        `${import.meta.env.VITE_API_URL}/api/admin/students/?page=${page}&page_size=${page_size}${searchParam}${orderParams}${joinedBefore}${joinedAfter}${isEnable}`
       );
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Something went wrong');

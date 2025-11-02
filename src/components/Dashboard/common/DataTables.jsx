@@ -2,6 +2,7 @@ import PaginationSection from '@/components/common/PaginationSection';
 import TableHeading from './TableHeading';
 import DashBroadActionButton from './DashBroadActionButton';
 import './table.css';
+import { ChevronDown } from 'lucide-react';
 
 export default function DataTables({
   columns,
@@ -17,6 +18,7 @@ export default function DataTables({
   statusKey = 'is_active',
   statusChange,
   statusShow = true,
+  from = '',
 }) {
   return (
     <div className="overflow-x-auto bg-white shadow-around-sm rounded-lg border border-primary/30">
@@ -52,24 +54,46 @@ export default function DataTables({
                   </td>
                 ))}
                 {statusShow && (
-                  <td className="py-md px-md text-black/80 whitespace-nowrap">
+                  <td className="py-3 px-4 whitespace-nowrap text-sm">
                     <div
-                      className={`relative inline-flex items-center justify-between w-28 px-md py-sm rounded-full border transition-all duration-200 cursor-pointer
-                        ${
-                          row[statusKey] === 'true' || row[statusKey] === true
-                            ? 'bg-green-100 border-green-400 text-green-700'
-                            : 'bg-red-100 border-red-400 text-red-700'
-                        }`}
+                      className={`relative inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-medium transition-colors duration-200 ${
+                        /* --- Inlined color logic --- */
+                        row[statusKey] === 'published' ||
+                        row[statusKey] === true ||
+                        row[statusKey] === 'true'
+                          ? 'bg-green-100 text-green-800 ' // Active/Published
+                          : 'bg-red-100 text-red-800 ' // Draft
+                      }`}
                     >
+                      {/* 1. The Status Dot with inlined color logic */}
+                      <span
+                        className={`h-2 w-2 rounded-full ${
+                          row[statusKey] === 'published' ||
+                          row[statusKey] === true ||
+                          row[statusKey] === 'true'
+                            ? 'bg-green-500' // Active/Published
+                            : 'bg-red-500' // Inactive
+                        }`}
+                      ></span>
+
+                      {/* 2. The Select Element with inlined values/labels */}
                       <select
                         onChange={(e) => statusChange(row.id, statusKey, e.target.value)}
                         value={row[statusKey]}
-                        className="appearance-none bg-transparent w-full font-medium text-sm focus:outline-none cursor-pointer pr-5 tableStatusDropDown"
+                        className="appearance-none bg-transparent border-none p-0 focus:outline-none focus:ring-0 pr-5 cursor-pointer text-sm font-medium text-center "
                       >
-                        <option value={true}>Active</option>
-                        <option value={false}>Inactive</option>
+                        <option value={from === 'blog' ? 'published' : true}>
+                          {from === 'blog' ? 'Published' : 'Enable'}
+                        </option>
+                        <option value={from === 'blog' ? 'draft' : false}>
+                          {from === 'blog' ? 'Draft' : 'Disable'}
+                        </option>
                       </select>
-                      <span className="absolute right-2 text-gray-600 pointer-events-none">▼</span>
+
+                      {/* 3. The lucide-react Chevron Icon */}
+                      <span className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <ChevronDown size={16} className="opacity-70" />
+                      </span>
                     </div>
                   </td>
                 )}

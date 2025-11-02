@@ -171,13 +171,9 @@ const DashBroadNavbar = () => {
                 SwalUtils.confirm(() => {
                   dispatch(logout());
                   if (user?.role !== 'student') {
-                    setTimeout(() => {
-                      navigate('/auth/login/verify-role');
-                    }, 100);
+                    navigate('/auth/login/verify-role');
                   } else {
-                    setTimeout(() => {
-                      navigate('/login');
-                    }, 100);
+                    navigate('/login');
                   }
                 }, 'Logout');
               }}

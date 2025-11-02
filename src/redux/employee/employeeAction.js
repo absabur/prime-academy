@@ -3,13 +3,19 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchEmployees = createAsyncThunk(
   'employee/fetchEmployees',
-  async ({ search = null, order = null }, { rejectWithValue }) => {
+  async (
+    { search = null, order = null, department = null, isActive = null },
+    { rejectWithValue }
+  ) => {
     try {
       const searchParam = search ? `&search=${search}` : '';
       const orderParams = order ? `&ordering=${order}` : '';
+      const departmentParams = department ? `&department=${department}` : '';
+      const isActiveParams = isActive ? `&is_active=${isActive}` : '';
       const response = await api.get(
-        `${import.meta.env.VITE_API_URL}/api/employees/?${searchParam}${orderParams}`
+        `${import.meta.env.VITE_API_URL}/api/employees/?${searchParam}${orderParams}${departmentParams}${isActiveParams}`
       );
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Something went wrong');

@@ -131,6 +131,7 @@ const AdminPanelPolicies = () => {
       <DashBoardHeader
         buttonText={'Add Policy'}
         title={'Policies'}
+        searchBar={false}
         prefixIcon={<FaPlus />}
         handeleAdd={() => {
           setModal(true);

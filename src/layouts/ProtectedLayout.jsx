@@ -27,7 +27,7 @@ export default function ProtectedLayout() {
       <SideBar />
 
       {/* Main Content */}
-      <div className="flex flex-col w-full max-w-[100vw] md:max-w-[calc(100vw_-_300px)] transition-all duration-300">
+      <div className="bg-secondary-bg flex flex-col w-full max-w-[100vw] md:max-w-[calc(100vw_-_300px)] transition-all duration-300">
         <DashBroadNavbar />
 
         <main className="flex-1 p-lg md:p-6 overflow-x-hidden bg-gray-50">

@@ -1,11 +1,6 @@
 import Modal from '@/components/common/Modal';
 import DataTable from '@/components/Dashboard/common/DataTables';
-import {
-  createStudent,
-  fetchSingleStudent,
-  fetchStudents,
-  updateStudent,
-} from '@/redux/students/studentAction';
+import { createStudent, fetchStudents, updateStudent } from '@/redux/students/studentAction';
 import { clearError, clearMessage } from '@/redux/students/studentSlice';
 import SwalUtils from '@/utils/sweetAlert';
 import { useEffect, useState } from 'react';
@@ -16,6 +11,8 @@ import DashBoardHeader from '@/components/Dashboard/common/DashBoardHeader';
 import AddUserForm from '@/components/Dashboard/AdminDashboard/AdminPanelStudent/AddUserForm';
 import EditUserForm from '@/components/Dashboard/AdminDashboard/AdminPanelStudent/EditUserForm';
 import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
+import UserProfileCard from '../../../../components/Dashboard/common/UserProfileCard';
+import TableFilter from '../../../../components/Dashboard/common/TableFilter';
 
 const AdminPanelStudents = () => {
   const { students, loadingStudents, pageSize, studentPagination, error, message } = useSelector(
@@ -31,6 +28,9 @@ const AdminPanelStudents = () => {
   const category = searchParams.get('category') || null;
   const search = searchParams.get('search') || '';
   const order = searchParams.get('order') || '';
+  const date_joined_before = searchParams.get('date_joined_before') || '';
+  const is_enabled = searchParams.get('is_enabled') || null;
+  const date_joined_after = searchParams.get('date_joined_after') || '';
 
   // addStudent Function
   const handleAddStudent = async (data) => {
@@ -80,6 +80,13 @@ const AdminPanelStudents = () => {
   const handelStatus = async (id, statusKey, value) => {
     dispatch(updateStudent({ id, studentData: { [statusKey]: value } }));
   };
+  // preview function
+  const handelPreview = (id) => {
+    const singleStudent = students.find((s) => s.id === id);
+    setStudent(singleStudent);
+    setModal(true);
+    setModalType('view');
+  };
 
   // ✅ কলাম ডেফিনিশন
   const columns = [
@@ -89,13 +96,35 @@ const AdminPanelStudents = () => {
       render: (_, __, index) => (currentPage - 1) * pageSize + (index + 1), // index+1 দেখাবে
     },
     { key: 'full_name', label: 'Full Name' },
-    { key: 'email', label: 'Email' },
+    { key: 'email', label: 'Email', sort: true },
     { key: 'phone', label: 'Phone' },
     {
       key: 'education',
       label: 'Education',
       render: (row) => row.profile?.education || 'N/A',
     },
+  ];
+
+  // student filter field
+
+  const studentFilterFields = [
+    {
+      name: 'search',
+      type: 'text',
+      label: 'Student Name/ID/Email',
+      placeholder: 'Student Name/ID/Email',
+    },
+    {
+      name: 'is_enabled',
+      type: 'select',
+      label: 'Is Enabled',
+      options: [
+        { name: 'Enable', value: true },
+        { name: 'Disable', value: false },
+      ],
+    },
+    { name: 'date_joined_after', type: 'date', label: 'Joined After Date' },
+    { name: 'date_joined_before', type: 'date', label: 'Joined Before Date' },
   ];
 
   // show error  message
@@ -119,6 +148,9 @@ const AdminPanelStudents = () => {
           page_size: pageSize,
           search,
           order: !order ? 'published_at' : order,
+          date_joined_before,
+          date_joined_after,
+          is_enabled,
         })
       );
     }, 600);
@@ -126,13 +158,23 @@ const AdminPanelStudents = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [search, category, currentPage, dispatch, order, message]);
+  }, [
+    search,
+    category,
+    currentPage,
+    dispatch,
+    order,
+    message,
+    date_joined_before,
+    date_joined_after,
+    is_enabled,
+  ]);
 
   return (
     <div>
       <LoadingDashboard loading={loadingStudents} />
       {modal && (
-        <Modal setModal={setModal} noClose={true}>
+        <Modal setModal={setModal} noClose={modalType == 'view' ? false : true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>
             {modalType === 'add' && (
               <AddUserForm
@@ -149,6 +191,8 @@ const AdminPanelStudents = () => {
                 loading={loadingStudents}
               />
             )}
+
+            {modalType === 'view' && <UserProfileCard user={student} />}
           </div>
         </Modal>
       )}
@@ -161,6 +205,7 @@ const AdminPanelStudents = () => {
           setModalType('add');
         }}
       />
+      <TableFilter fields={studentFilterFields} />
       <DataTable
         data={students}
         columns={columns}
@@ -171,6 +216,7 @@ const AdminPanelStudents = () => {
         handelEdit={singleStudent}
         statusChange={handelStatus}
         statusKey="is_enabled"
+        handleView={handelPreview}
       />
     </div>
   );

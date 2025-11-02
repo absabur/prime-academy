@@ -1,7 +1,7 @@
 import Modal from '@/components/common/Modal';
 import DashBoardHeader from '@/components/Dashboard/common/DashBoardHeader';
 import DataTables from '@/components/Dashboard/common/DataTables';
-import { fetchBlogCategories, fetchBlogs, fetchSingleBlog } from '@/redux/blogs/blogAction';
+import { fetchBlogCategories, fetchBlogs } from '@/redux/blogs/blogAction';
 import { clearError, clearMessage } from '@/redux/blogs/blogSlice';
 import SwalUtils from '@/utils/sweetAlert';
 import { dateConvertionBlogsPageBlogCard } from '@/utils/timeFormat';
@@ -10,13 +10,18 @@ import { FaPlus } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
+import BlogAddEditFrom from '../../../../components/Dashboard/AdminDashboard/AdminBlogs/BlogAddEditFrom';
+import { addBlog, editBlog } from '../../../../redux/blogs/blogAction';
+import TableFilter from '../../../../components/Dashboard/common/TableFilter';
 
 const AdminPanelBlogs = () => {
-  const { blogs, loadingBlogs, pageSize, blogPagination, error, message, blog, categories } =
-    useSelector((state) => state.blog);
+  const { blogs, loadingBlogs, pageSize, blogPagination, error, message, categories } = useSelector(
+    (state) => state.blog
+  );
 
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
+  const [blog, setBlog] = useState({});
   const [modalType, setModalType] = useState(''); // 'add' or 'edit'
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
@@ -25,47 +30,37 @@ const AdminPanelBlogs = () => {
   const order = searchParams.get('order') || '';
 
   // addBlog Function
-  const handleAddBlog = async (data) => {
-    // dispatch(createBlog(data)).then((res) => {
-    //   if (res.type === 'blog/createBlog/fulfilled') {
-    //     setModal(false);
-    //   }
-    // });
+  const handleAddBlog = (data) => {
+    dispatch(addBlog(data)).then((res) => {
+      if (res.type === 'blog/createBlog/fulfilled') {
+        setModal(false);
+      }
+    });
   };
 
   // editBlog Function
-  const singleBlog = async (id) => {
-    dispatch(fetchSingleBlog(id));
+  const singleBlog = (id) => {
+    setBlog(blogs.find((b) => b.id === id));
     setModal(true);
     setModalType('edit');
   };
 
-  const handelEditBlog = async (data) => {
-    const formData = new FormData();
-
-    // 🔹 object কে সহজে FormData তে যোগ করা
-    Object.entries({
-      first_name: data.first_name,
-      last_name: data.last_name,
-      'profile.title': data.profile?.title,
-      'profile.education': data.profile?.education,
-      'profile.bio': data.profile?.bio,
-    }).forEach(([key, value]) => {
-      formData.append(key, value || '');
-    });
-
-    // 🔹 ফাইল থাকলে যুক্ত করা
-    const file = data.profile?.image?.[0];
-    if (file instanceof File) {
-      formData.append('profile.image', file);
-    }
-
+  const handelEditBlog = (formData, id) => {
     // 🔹 Redux dispatch
-    // dispatch(updateBlog({ id: data.id, blogData: formData })).then((res) => {
-    //   if (res.type.endsWith('/fulfilled')) {
-    //     setModal(false);
-    //   }
-    // });
+    dispatch(editBlog({ id, formData })).then((res) => {
+      if (res.type.endsWith('/fulfilled')) {
+        setModal(false);
+      }
+    });
+  };
+
+  const handelBlogStatusChange = (id, key, value) => {
+    // 🔹 Redux dispatch
+    dispatch(editBlog({ id, formData: { [key]: value } })).then((res) => {
+      if (res.type.endsWith('/fulfilled')) {
+        setModal(false);
+      }
+    });
   };
 
   const dataWithFormated = blogs.map((blog) => {
@@ -84,9 +79,24 @@ const AdminPanelBlogs = () => {
       label: 'SL',
       render: (_, __, index) => (currentPage - 1) * pageSize + (index + 1), // index+1 দেখাবে
     },
-    { key: 'title', label: 'Blog Title' },
+    { key: 'title', label: 'Blog Title', sort: true },
     { key: 'category', label: 'Category' },
-    { key: 'published_at', label: 'Published On' },
+    { key: 'published_at', label: 'Published On', sort: true },
+  ];
+
+  const blogsFilterFields = [
+    {
+      name: 'search',
+      type: 'text',
+      label: 'Blog Name',
+      placeholder: 'Blog Name',
+    },
+    {
+      name: 'category',
+      type: 'select',
+      label: 'Category Name',
+      options: categories.map((category) => ({ value: category.slug, name: category.name })),
+    },
   ];
 
   // show error  message
@@ -114,6 +124,7 @@ const AdminPanelBlogs = () => {
           page_size: pageSize,
           search,
           order: !order ? 'published_at' : order,
+          category,
         })
       );
       dispatch(fetchBlogCategories());
@@ -122,7 +133,7 @@ const AdminPanelBlogs = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [search, category, currentPage, dispatch, order]);
+  }, [search, category, currentPage, dispatch, order, message]);
 
   return (
     <div>
@@ -131,14 +142,18 @@ const AdminPanelBlogs = () => {
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>
             {modalType === 'add' && (
-              <BlogForm
+              <BlogAddEditFrom
                 onCancel={() => setModal(false)}
                 title="Add New Blog"
                 onSubmit={handleAddBlog}
               />
             )}
             {modalType === 'edit' && (
-              <EditBlogForm onCancel={() => setModal(false)} onSubmit={handelEditBlog} />
+              <BlogAddEditFrom
+                onCancel={() => setModal(false)}
+                onSubmit={handelEditBlog}
+                defaultValues={blog}
+              />
             )}
           </div>
         </Modal>
@@ -152,6 +167,7 @@ const AdminPanelBlogs = () => {
           setModalType('add');
         }}
       />
+      <TableFilter fields={blogsFilterFields} />
       <DataTables
         data={dataWithFormated}
         columns={columns}
@@ -160,6 +176,9 @@ const AdminPanelBlogs = () => {
         error={error || null}
         deleteButton={false}
         handelEdit={singleBlog}
+        statusKey={'status'}
+        from={'blog'}
+        statusChange={handelBlogStatusChange}
       />
     </div>
   );

@@ -302,14 +302,18 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
         </div>
 
         {/* Buttons */}
-        <div className="md:col-span-2 flex justify-end gap-sm mt-md">
+        <div className="md:col-span-2 flex justify-end gap-sm mt-md flex-wrap">
           <SecondaryButton
-            className="text-black border-primary hover:bg-secondary hover:text-white hover:border-secondary"
+            className="text-black border-primary hover:bg-secondary hover:text-white hover:border-secondary w-full md:w-fit"
             onClick={onCancel}
             text={`Cancel`}
             type="button"
           />
-          <PrimaryButton type="submit" text={`${loading ? 'Updating ... ' : 'Update Profile'}`} />
+          <PrimaryButton
+            className="w-full md:w-fit"
+            type="submit"
+            text={`${loading ? 'Updating ... ' : 'Update Profile'}`}
+          />
         </div>
       </div>
     </form>

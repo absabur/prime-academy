@@ -11,7 +11,7 @@ const RoleBasedLayout = ({ roles }) => {
   if (!user) return <NotFound />;
 
   // If user role not allowed, redirect
-  if (!roles.includes(user.role)) {
+  if (!roles.includes(user?.role)) {
     return <Navigate to={`/${user?.role}-dashboard`} replace />;
   }
 

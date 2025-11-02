@@ -11,6 +11,7 @@ import { FaPlus } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
+import TableFilter from '../../../../components/Dashboard/common/TableFilter';
 
 const AdminPanelSkills = () => {
   const { skills, loadingSkills, pageSize, skillPagination, error, message, skill } = useSelector(
@@ -24,6 +25,7 @@ const AdminPanelSkills = () => {
   const currentPage = Number(searchParams.get('page')) || 1;
   const search = searchParams.get('search') || '';
   const order = searchParams.get('order') || '';
+  const isActive = searchParams.get('is_active') || '';
 
   // addSkill Function
   const handleAddSkill = async (data) => {
@@ -72,7 +74,25 @@ const AdminPanelSkills = () => {
       label: 'ID',
       render: (_, __, index) => (currentPage - 1) * pageSize + (index + 1),
     },
-    { key: 'name', label: 'Skill Name' },
+    { key: 'name', label: 'Skill Name', sort: true },
+  ];
+
+  const skillsFilterFields = [
+    {
+      name: 'search',
+      type: 'text',
+      label: 'Skills Name',
+      placeholder: 'Skills Name',
+    },
+    {
+      name: 'is_active',
+      type: 'select',
+      label: 'Is Enabled',
+      options: [
+        { name: 'Enable', value: true },
+        { name: 'Disable', value: false },
+      ],
+    },
   ];
 
   // show error  message
@@ -93,11 +113,12 @@ const AdminPanelSkills = () => {
           page_size: pageSize,
           search,
           order: !order ? 'published_at' : order,
+          isActive,
         })
       );
       dispatch(clearMessage());
     }
-  }, [message]);
+  }, [message, isActive]);
 
   // ✅ Debounce সহ ডেটা ফেচ
   useEffect(() => {
@@ -108,6 +129,7 @@ const AdminPanelSkills = () => {
           page_size: pageSize,
           search,
           order: !order ? 'published_at' : order,
+          isActive,
         })
       );
     }, 600);
@@ -115,7 +137,7 @@ const AdminPanelSkills = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [search, pageSize, currentPage, dispatch, order]);
+  }, [search, pageSize, currentPage, dispatch, order, isActive]);
 
   return (
     <div>
@@ -150,6 +172,8 @@ const AdminPanelSkills = () => {
           setModalType('add');
         }}
       />
+
+      <TableFilter fields={skillsFilterFields} />
       <DataTables
         data={skills}
         columns={columns}

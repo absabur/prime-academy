@@ -16,6 +16,8 @@ import { FaPlus } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
+import UserProfileCard from '../../../../components/Dashboard/common/UserProfileCard';
+import TableFilter from '../../../../components/Dashboard/common/TableFilter';
 
 const AdminPanelTeachers = () => {
   const { teachers, loadingTeachers, pageSize, teacherPagination, error, message } = useSelector(
@@ -31,6 +33,9 @@ const AdminPanelTeachers = () => {
   const category = searchParams.get('category') || null;
   const search = searchParams.get('search') || '';
   const order = searchParams.get('order') || '';
+  const date_joined_before = searchParams.get('date_joined_before') || '';
+  const is_enabled = searchParams.get('is_enabled') || null;
+  const date_joined_after = searchParams.get('date_joined_after') || '';
 
   // addTeacher Function
   const handleAddTeacher = async (data) => {
@@ -81,6 +86,13 @@ const AdminPanelTeachers = () => {
     dispatch(updateTeacher({ id, teacherData: { [statusKey]: value } }));
   };
 
+  const handelPreview = (id) => {
+    const singleTeacher = teachers.find((s) => s.id === id);
+    setTeacher(singleTeacher);
+    setModal(true);
+    setModalType('view');
+  };
+
   // ✅ কলাম ডেফিনিশন
   const columns = [
     {
@@ -89,13 +101,33 @@ const AdminPanelTeachers = () => {
       render: (_, __, index) => (currentPage - 1) * pageSize + (index + 1), // index+1 দেখাবে
     },
     { key: 'full_name', label: 'Full Name' },
-    { key: 'email', label: 'Email' },
+    { key: 'email', label: 'Email', sort: true },
     { key: 'phone', label: 'Phone' },
     {
       key: 'education',
       label: 'Education',
       render: (row) => row.profile?.education || 'N/A',
     },
+  ];
+
+  const teachersFilterFields = [
+    {
+      name: 'search',
+      type: 'text',
+      label: 'Teacher Name/ID/Email',
+      placeholder: 'Teacher Name/ID/Email',
+    },
+    {
+      name: 'is_enabled',
+      type: 'select',
+      label: 'Is Enabled',
+      options: [
+        { name: 'Enable', value: true },
+        { name: 'Disable', value: false },
+      ],
+    },
+    { name: 'date_joined_after', type: 'date', label: 'Joined After Date' },
+    { name: 'date_joined_before', type: 'date', label: 'Joined Before Date' },
   ];
 
   // show error  message
@@ -119,6 +151,9 @@ const AdminPanelTeachers = () => {
           page_size: pageSize,
           search,
           order: !order ? 'published_at' : order,
+          date_joined_before,
+          date_joined_after,
+          is_enabled,
         })
       );
     }, 600);
@@ -126,13 +161,23 @@ const AdminPanelTeachers = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [search, category, currentPage, dispatch, order, message]);
+  }, [
+    search,
+    category,
+    currentPage,
+    dispatch,
+    order,
+    message,
+    date_joined_before,
+    date_joined_after,
+    is_enabled,
+  ]);
 
   return (
     <div>
       <LoadingDashboard loading={loadingTeachers} />
       {modal && (
-        <Modal setModal={setModal} noClose={true}>
+        <Modal setModal={setModal} noClose={modalType == 'view' ? false : true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>
             {modalType === 'add' && (
               <AddUserForm
@@ -150,6 +195,7 @@ const AdminPanelTeachers = () => {
                 loading={loadingTeachers}
               />
             )}
+            {modalType === 'view' && <UserProfileCard user={teacher} />}
           </div>
         </Modal>
       )}
@@ -162,6 +208,7 @@ const AdminPanelTeachers = () => {
           setModalType('add');
         }}
       />
+      <TableFilter fields={teachersFilterFields} />
       <DataTables
         data={teachers}
         columns={columns}
@@ -172,6 +219,7 @@ const AdminPanelTeachers = () => {
         handelEdit={singleTeacher}
         statusChange={handelStatus}
         statusKey="is_enabled"
+        handleView={handelPreview}
       />
     </div>
   );

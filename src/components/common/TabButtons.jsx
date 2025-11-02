@@ -1,11 +1,14 @@
 import React from 'react';
 import './css/tabButton.css';
 
-const TabButtons = ({ data, selected, setSelected }) => {
+const TabButtons = ({ data, selected, setSelected, style }) => {
   return (
     <div>
       {/* Desktop tabs */}
-      <div className="hidden md:flex border-b-primary border-b-1 space-x-5 flex-wrap mb-xl">
+      <div
+        className="hidden md:flex border-b-primary border-b-1 space-x-5 flex-wrap mb-xl"
+        style={style}
+      >
         {data?.map((item, index) => (
           <button
             key={index}
@@ -22,7 +25,7 @@ const TabButtons = ({ data, selected, setSelected }) => {
       </div>
 
       {/* Mobile dropdown */}
-      <div className="md:hidden mb-4">
+      <div className="md:hidden mb-4" style={style}>
         <select
           className="w-full border px-4 py-2 rounded"
           onChange={(e) => setSelected(e.target.value)}
