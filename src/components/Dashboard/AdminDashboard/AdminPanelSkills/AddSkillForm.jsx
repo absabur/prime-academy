@@ -1,11 +1,9 @@
 import PrimaryButton from '@/components/common/PrimaryButton';
 import SecondaryButton from '@/components/common/SecondaryButton';
-import { createDepartment, fetchDepartments } from '@/redux/department/departmentAction';
-import SwalUtils from '@/utils/sweetAlert';
-import { useEffect, useState } from 'react';
+import { fetchDepartments } from '@/redux/department/departmentAction';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaPlus } from 'react-icons/fa6';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 export default function AddSkillForm({
   title = 'Add New Skill',
@@ -19,11 +17,6 @@ export default function AddSkillForm({
     formState: { errors },
     reset,
   } = useForm({ defaultValues });
-  // state
-  const [preview, setPreview] = useState(defaultValues.skill_image || null);
-  const [departmentDropDown, setdepartmentDropDown] = useState(false);
-  const [departmentName, setDepartmentName] = useState('');
-  const { departments } = useSelector((state) => state.department);
 
   // 🧠 যখন defaultValues পরিবর্তন হবে (Edit এর সময়), তখন ফর্ম আপডেট করো
   useEffect(() => {
@@ -34,7 +27,6 @@ export default function AddSkillForm({
       };
 
       reset(formattedValues);
-      setPreview(defaultValues.skill_image || null);
     }
   }, [defaultValues, reset]);
 
@@ -50,7 +42,6 @@ export default function AddSkillForm({
     onSubmit(data, id);
     // Reset form & preview
     reset();
-    setPreview(null);
   };
 
   return (

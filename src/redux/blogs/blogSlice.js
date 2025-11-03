@@ -19,6 +19,7 @@ const blogSlice = createSlice({
     blogPagination: {},
     pageSize: 9,
     loadingBlogs: true,
+    loadingActionBlogs: false,
     loadingBlog: true,
     loadingBlogCategory: true,
     loadingLatestBlogs: true,
@@ -40,7 +41,7 @@ const blogSlice = createSlice({
     // Blog categories
     builder
       .addCase(fetchBlogCategories.pending, (state) => {
-        state.loadingBlogCategory = true;
+        // state.loadingBlogCategory = true;
         state.error = null;
       })
       .addCase(fetchBlogCategories.fulfilled, (state, action) => {
@@ -55,7 +56,7 @@ const blogSlice = createSlice({
     // Blogs
     builder
       .addCase(fetchBlogs.pending, (state) => {
-        state.loadingBlogs = true;
+        // state.loadingBlogs = true;
         state.error = null;
       })
       .addCase(fetchBlogs.fulfilled, (state, action) => {
@@ -75,7 +76,7 @@ const blogSlice = createSlice({
     // Latest Blogs
     builder
       .addCase(fetchLatestBlogs.pending, (state) => {
-        state.loadingLatestBlogs = true;
+        // state.loadingLatestBlogs = true;
         state.error = null;
       })
       .addCase(fetchLatestBlogs.fulfilled, (state, action) => {
@@ -105,45 +106,45 @@ const blogSlice = createSlice({
     // add blog
     builder
       .addCase(addBlog.pending, (state) => {
-        state.loadingBlogs = true;
+        state.loadingActionBlogs = true;
         state.error = null;
       })
       .addCase(addBlog.fulfilled, (state, action) => {
-        state.loadingBlogs = false;
+        state.loadingActionBlogs = false;
         state.message = action.payload.message;
       })
       .addCase(addBlog.rejected, (state, action) => {
-        state.loadingBlogs = false;
+        state.loadingActionBlogs = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 
     // add addBlogCategories
     builder
       .addCase(addBlogCategories.pending, (state) => {
-        state.loadingBlogs = true;
+        state.loadingActionBlogs = true;
         state.error = null;
       })
       .addCase(addBlogCategories.fulfilled, (state, action) => {
-        state.loadingBlogs = false;
+        state.loadingActionBlogs = false;
         state.message = action.payload.message;
       })
       .addCase(addBlogCategories.rejected, (state, action) => {
-        state.loadingBlogs = false;
+        state.loadingActionBlogs = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 
     // editblog
     builder
       .addCase(editBlog.pending, (state) => {
-        state.loadingBlogs = true;
+        state.loadingActionBlogs = true;
         state.error = null;
       })
       .addCase(editBlog.fulfilled, (state, action) => {
-        state.loadingBlogs = false;
+        state.loadingActionBlogs = false;
         state.message = action.payload.message;
       })
       .addCase(editBlog.rejected, (state, action) => {
-        state.loadingBlogs = false;
+        state.loadingActionBlogs = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
   },

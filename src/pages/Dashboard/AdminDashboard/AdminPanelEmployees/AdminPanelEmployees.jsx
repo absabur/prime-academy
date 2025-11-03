@@ -17,9 +17,15 @@ import { fetchDepartments } from '../../../../redux/department/departmentAction'
 import TableFilter from '../../../../components/Dashboard/common/TableFilter';
 
 const AdminPanelEmployees = () => {
-  const { employees, loadingEmployees, pageSize, employeePagination, error, message } = useSelector(
-    (state) => state.employee
-  );
+  const {
+    employees,
+    loadingEmployees,
+    loadingActionEmployees,
+    pageSize,
+    employeePagination,
+    error,
+    message,
+  } = useSelector((state) => state.employee);
   const { departments } = useSelector((state) => state.department);
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
@@ -147,7 +153,7 @@ const AdminPanelEmployees = () => {
 
   return (
     <div>
-      <LoadingDashboard loading={loadingEmployees} />
+      <LoadingDashboard loading={loadingEmployees || loadingActionEmployees} />
       {modal && (
         <Modal setModal={setModal} noClose={modalType == 'view' ? false : true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

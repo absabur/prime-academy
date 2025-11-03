@@ -6,6 +6,7 @@ const brandSlice = createSlice({
   initialState: {
     brands: [],
     loadingbrands: true,
+    loadingActionbrands: false,
     error: null,
     message: null,
   },
@@ -21,7 +22,7 @@ const brandSlice = createSlice({
     // brands
     builder
       .addCase(fetchBrands.pending, (state) => {
-        state.loadingbrands = true;
+        // state.loadingbrands = true;
         state.error = null;
       })
       .addCase(fetchBrands.fulfilled, (state, action) => {
@@ -36,46 +37,48 @@ const brandSlice = createSlice({
     // update brand
     builder
       .addCase(updateBrand.pending, (state) => {
-        state.loadingbrands = true;
+        state.loadingActionbrands = true;
         state.error = null;
       })
       .addCase(updateBrand.fulfilled, (state, action) => {
-        state.loadingbrands = false;
+        state.loadingActionbrands = false;
         state.message = action.payload.message;
       })
       .addCase(updateBrand.rejected, (state, action) => {
-        state.loadingbrands = false;
+        state.loadingActionbrands = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 
     // create brand
     builder
       .addCase(createBrand.pending, (state) => {
-        state.loadingbrands = true;
+        state.loadingActionbrands = true;
         state.error = null;
       })
       .addCase(createBrand.fulfilled, (state, action) => {
-        state.loadingbrands = false;
+        state.loadingActionbrands = false;
         state.message = action.payload.message;
       })
       .addCase(createBrand.rejected, (state, action) => {
-        state.loadingbrands = false;
+        state.loadingActionbrands = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 
     // create brand
     builder
       .addCase(deleteBrand.pending, (state) => {
-        state.loadingbrands = true;
+        state.loadingActionbrands = true;
         state.error = null;
       })
       .addCase(deleteBrand.fulfilled, (state, action) => {
-        state.loadingbrands = false;
+        state.loadingActionbrands = false;
         state.message = 'Brand Deleted Successfully';
       })
       .addCase(deleteBrand.rejected, (state, action) => {
-        state.loadingbrands = false;
-        state.error = action.payload?.message ? action.payload?.message : action.payload.message || 'Unable to delete';
+        state.loadingActionbrands = false;
+        state.error = action.payload?.message
+          ? action.payload?.message
+          : action.payload.message || 'Unable to delete';
       });
   },
 });

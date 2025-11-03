@@ -20,9 +20,15 @@ import UserProfileCard from '../../../../components/Dashboard/common/UserProfile
 import TableFilter from '../../../../components/Dashboard/common/TableFilter';
 
 const AdminPanelTeachers = () => {
-  const { teachers, loadingTeachers, pageSize, teacherPagination, error, message } = useSelector(
-    (state) => state.teacher
-  );
+  const {
+    teachers,
+    loadingTeachers,
+    loadingActionTeachers,
+    pageSize,
+    teacherPagination,
+    error,
+    message,
+  } = useSelector((state) => state.teacher);
 
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
@@ -175,7 +181,7 @@ const AdminPanelTeachers = () => {
 
   return (
     <div>
-      <LoadingDashboard loading={loadingTeachers} />
+      <LoadingDashboard loading={loadingTeachers || loadingActionTeachers} />
       {modal && (
         <Modal setModal={setModal} noClose={modalType == 'view' ? false : true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

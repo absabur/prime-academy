@@ -15,7 +15,7 @@ const skillSlice = createSlice({
     pageSize: 10,
     skillPagination: {},
     loadingSkills: true,
-    loadingSkill: true,
+    loadingActionSkills: false,
     error: null,
     message: null,
   },
@@ -31,7 +31,7 @@ const skillSlice = createSlice({
     // Skills
     builder
       .addCase(fetchSkills.pending, (state) => {
-        state.loadingSkills = true;
+        // state.loadingSkills = true;
         state.error = null;
       })
       .addCase(fetchSkills.fulfilled, (state, action) => {
@@ -50,49 +50,58 @@ const skillSlice = createSlice({
     //single skill
     builder
       .addCase(fetchSingleSkill.pending, (state) => {
-        state.loadingSkill = true;
+        // state.loadingSkills = true;
         state.error = null;
       })
       .addCase(fetchSingleSkill.fulfilled, (state, action) => {
-        state.loadingSkill = false;
+        state.loadingSkills = false;
         state.skill = action.payload.data; // store single skill
       })
       .addCase(fetchSingleSkill.rejected, (state, action) => {
-        state.loadingSkill = false;
+        state.loadingSkills = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     // create skill
     builder
       .addCase(createSkill.pending, (state) => {
+        state.loadingActionSkills = true;
         state.error = null;
       })
       .addCase(createSkill.fulfilled, (state, action) => {
+        state.loadingActionSkills = false;
         state.message = 'Skill created successfully';
       })
       .addCase(createSkill.rejected, (state, action) => {
+        state.loadingActionSkills = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload.message;
       });
     // delete skill
     builder
       .addCase(deleteSkill.pending, (state) => {
+        state.loadingActionSkills = true;
         state.error = null;
       })
       .addCase(deleteSkill.fulfilled, (state, action) => {
         if (action.payload.status === 204) {
+          state.loadingActionSkills = false;
           state.message = 'Skill deleted successfully';
         }
       })
       .addCase(deleteSkill.rejected, (state, action) => {
+        state.loadingActionSkills = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     builder
       .addCase(updateSkill.pending, (state) => {
+        state.loadingActionSkills = true;
         state.error = null;
       })
       .addCase(updateSkill.fulfilled, (state, action) => {
+        state.loadingActionSkills = false;
         state.message = 'Skill updated successfully';
       })
       .addCase(updateSkill.rejected, (state, action) => {
+        state.loadingActionSkills = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
   },

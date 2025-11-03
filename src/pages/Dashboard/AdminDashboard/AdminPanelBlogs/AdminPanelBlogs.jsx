@@ -15,9 +15,16 @@ import { addBlog, editBlog } from '../../../../redux/blogs/blogAction';
 import TableFilter from '../../../../components/Dashboard/common/TableFilter';
 
 const AdminPanelBlogs = () => {
-  const { blogs, loadingBlogs, pageSize, blogPagination, error, message, categories } = useSelector(
-    (state) => state.blog
-  );
+  const {
+    blogs,
+    loadingBlogs,
+    loadingActionBlogs,
+    pageSize,
+    blogPagination,
+    error,
+    message,
+    categories,
+  } = useSelector((state) => state.blog);
 
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
@@ -137,7 +144,7 @@ const AdminPanelBlogs = () => {
 
   return (
     <div>
-      <LoadingDashboard loading={loadingBlogs} />
+      <LoadingDashboard loading={loadingBlogs || loadingActionBlogs} />
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

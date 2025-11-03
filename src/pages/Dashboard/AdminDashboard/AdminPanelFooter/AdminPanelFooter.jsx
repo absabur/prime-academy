@@ -10,7 +10,7 @@ import FooterDataDisplay from '../../../../components/Dashboard/AdminDashboard/A
 import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
 
 const AdminPanelFooter = () => {
-  const { error, loadingFooters } = useSelector((state) => state.footer);
+  const { error, loadingFooters, loadingActionFooters } = useSelector((state) => state.footer);
 
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
@@ -25,7 +25,7 @@ const AdminPanelFooter = () => {
 
   return (
     <div>
-      <LoadingDashboard loading={loadingFooters} />
+      <LoadingDashboard loading={loadingFooters || loadingActionFooters} />
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

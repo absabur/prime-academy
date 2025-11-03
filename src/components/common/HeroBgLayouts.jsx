@@ -18,7 +18,10 @@ const HeroBgLayouts = ({ image }) => {
       {/* bg shape image of left side */}
       <div
         className="absolute left-0 top-0 w-full bg-cover bg-center h-[100%] z-4"
-        style={{ backgroundImage: `url(/assets/hero-pattern.png)` }}
+        style={{
+          backgroundImage: `url(/assets/banner-left.png)`,
+          backgroundPosition: 'center -15px center',
+        }}
       ></div>
 
       {/* bg image from backend right side */}

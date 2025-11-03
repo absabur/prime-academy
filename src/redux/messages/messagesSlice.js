@@ -23,7 +23,7 @@ const messageSlice = createSlice({
     // messages
     builder
       .addCase(fetchMessages.pending, (state) => {
-        state.loadingMessages = true;
+        // state.loadingMessages = true;
         state.error = null;
       })
       .addCase(fetchMessages.fulfilled, (state, action) => {

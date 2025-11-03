@@ -13,6 +13,7 @@ const employeeSlice = createSlice({
     employees: [],
     employee: {},
     loadingEmployees: true,
+    loadingActionEmployees: false,
     loadingEmployee: true,
     error: null,
     message: null,
@@ -29,7 +30,7 @@ const employeeSlice = createSlice({
     // Employees
     builder
       .addCase(fetchEmployees.pending, (state) => {
-        state.loadingEmployees = true;
+        // state.loadingEmployees = true;
         state.error = null;
       })
       .addCase(fetchEmployees.fulfilled, (state, action) => {
@@ -57,35 +58,45 @@ const employeeSlice = createSlice({
     // create employee
     builder
       .addCase(createEmployee.pending, (state) => {
+        state.loadingActionEmployees = true;
         state.error = null;
       })
       .addCase(createEmployee.fulfilled, (state, action) => {
+        state.loadingActionEmployees = false;
         state.message = 'Employee created successfully';
       })
       .addCase(createEmployee.rejected, (state, action) => {
+        state.loadingActionEmployees = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload.message;
       });
     // delete employee
     builder
       .addCase(deleteEmployee.pending, (state) => {
+        state.loadingActionEmployees = true;
         state.error = null;
       })
       .addCase(deleteEmployee.fulfilled, (state, action) => {
+        state.loadingActionEmployees = false;
         if (action.payload.status === 204) {
           state.message = 'Employee deleted successfully';
         }
       })
       .addCase(deleteEmployee.rejected, (state, action) => {
+        state.loadingActionEmployees = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
+    // update employee
     builder
       .addCase(updateEmployee.pending, (state) => {
+        state.loadingActionEmployees = true;
         state.error = null;
       })
       .addCase(updateEmployee.fulfilled, (state, action) => {
+        state.loadingActionEmployees = false;
         state.message = 'Employee updated successfully';
       })
       .addCase(updateEmployee.rejected, (state, action) => {
+        state.loadingActionEmployees = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
   },

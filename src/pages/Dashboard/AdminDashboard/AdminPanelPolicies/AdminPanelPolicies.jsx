@@ -14,8 +14,9 @@ import ViewPolicy from '../../../../components/Dashboard/AdminDashboard/AdminPan
 import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
 
 const AdminPanelPolicies = () => {
-  const { policies, loadingPolicies, error, message } = useSelector((state) => state.policies);
-
+  const { policies, loadingPolicies, loadingActionPolicies, error, message } = useSelector(
+    (state) => state.policies
+  );
   const dispatch = useDispatch();
   const [policy, setPolicy] = useState({});
   const [modal, setModal] = useState(false);
@@ -105,7 +106,7 @@ const AdminPanelPolicies = () => {
 
   return (
     <div>
-      <LoadingDashboard loading={loadingPolicies} />
+      <LoadingDashboard loading={loadingPolicies || loadingActionPolicies} />
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

@@ -14,9 +14,16 @@ import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDas
 import TableFilter from '../../../../components/Dashboard/common/TableFilter';
 
 const AdminPanelSkills = () => {
-  const { skills, loadingSkills, pageSize, skillPagination, error, message, skill } = useSelector(
-    (state) => state.skill
-  );
+  const {
+    skills,
+    loadingSkills,
+    loadingActionSkills,
+    pageSize,
+    skillPagination,
+    error,
+    message,
+    skill,
+  } = useSelector((state) => state.skill);
 
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
@@ -141,7 +148,7 @@ const AdminPanelSkills = () => {
 
   return (
     <div>
-      <LoadingDashboard loading={loadingSkills} />
+      <LoadingDashboard loading={loadingSkills || loadingActionSkills} />
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

@@ -8,6 +8,11 @@ import { Trash2, Plus, X } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSkills } from '../../../redux/skill/skillAction'; // Assumed path
 import { CKEDITOR_CONFIG } from '../../../utils/ckeditor';
+import AddSkillDropdown from './AddSkillDropdown';
+
+import SwalUtils from '@/utils/sweetAlert';
+
+import { clearError, clearMessage } from '@/redux/skill/skillSlice';
 
 // -----------------
 
@@ -23,7 +28,7 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
         ...defaultValues.profile,
         // Extract the 'name' from each skill object, or use the value if it's already a string
         skills: (defaultValues.profile?.skills || []).map((skill) =>
-          typeof skill === 'object' && skill.name ? skill.name : skill
+          typeof skill === 'object' && skill.id ? skill.id : skill
         ),
       },
     };
@@ -39,42 +44,70 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
   } = useForm({ defaultValues: formattedDefaultValues });
 
   const dispatch = useDispatch();
+  const [searchTerm, setSearchTerm] = useState('');
   // Get skills from Redux store
-  const { skills: dbSkills } = useSelector((state) => state.skill);
+  const { skills: dbSkills, pageSize, error, message } = useSelector((state) => state.skill);
   const { loading } = useSelector((state) => state.auth);
 
   // --- Skills Array Logic ---
+  // --- Skills Section ---
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'profile.skills',
+    name: 'profile.skills', // will hold an array of skill IDs
   });
 
-  // This is an array of strings, e.g., ['React', 'Node.js']
-  const currentSkills = watch('profile.skills') || [];
+  const currentSkillIds = watch('profile.skills') || [];
 
-  // --- FIXED: Use dbSkills (array of objects) ---
-  const availableSkillsList = (dbSkills || []) // Ensure dbSkills is an array
-    .filter((skill) => skill.is_active) // 1. Only show active skills
-    .filter((skill) => !currentSkills.includes(skill.name)); // 2. Filter out already selected skills by name
+  // Map IDs → full skill objects
+  const selectedSkills = (dbSkills || []).filter((s) => currentSkillIds.includes(s.id));
+
+  // Filter out selected skills from available list
+  const availableSkillsList = (dbSkills || [])
+    .filter((skill) => skill.is_active)
+    .filter((skill) => !currentSkillIds.includes(skill.id));
 
   // State for image preview
   const [preview, setPreview] = useState(defaultValues.profile?.image || null);
 
   // Update form when defaultValues (from parent) change
   useEffect(() => {
-    reset(formattedDefaultValues);
-    setPreview(defaultValues.profile?.image || null);
-  }, [defaultValues, reset, formattedDefaultValues]);
+    if (dbSkills?.length > 0) {
+      reset(formattedDefaultValues);
+      setPreview(defaultValues.profile?.image || null);
+    }
+  }, [defaultValues, reset, formattedDefaultValues, dbSkills]);
 
   //  skill fetch
   useEffect(() => {
-    dispatch(
-      fetchSkills({
-        page: 1,
-        page_size: 100,
-      })
-    );
-  }, []);
+    const delayDebounce = setTimeout(() => {
+      dispatch(
+        fetchSkills({
+          page: 1,
+          page_size: pageSize,
+          search: searchTerm || '', // send search term to backend
+          isActive: true,
+        })
+      );
+    }, 400); // debounce 400ms
+
+    return () => clearTimeout(delayDebounce);
+  }, [searchTerm, dispatch, message]);
+
+  // show error  message
+  useEffect(() => {
+    if (error) {
+      SwalUtils.error(error);
+      dispatch(clearError());
+    }
+  }, [error]);
+
+  // show error  message
+  useEffect(() => {
+    if (message) {
+      SwalUtils.success(message);
+      dispatch(clearMessage());
+    }
+  }, [message]);
 
   // Handle image preview
   const handleImageChange = (e) => {
@@ -216,58 +249,58 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
           <div className="p-3 border border-gray-200 rounded-md min-h-[60px] bg-gray-50">
             <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2">Selected</h4>
             <div className="flex flex-wrap gap-2">
-              {fields.map((field, index) => (
+              {selectedSkills.map((skillObj, index) => (
                 <div
-                  key={field.id}
+                  key={skillObj.id}
                   className="flex items-center gap-1.5 bg-blue-600 text-white text-sm font-medium rounded-full px-3 py-1"
                 >
-                  <span>{currentSkills[index]}</span>
+                  <span>{skillObj.name}</span>
                   <button
                     type="button"
-                    onClick={() => remove(index)}
+                    onClick={() => remove(currentSkillIds.indexOf(skillObj.id))}
                     className="text-blue-200 hover:text-white"
                   >
                     <X size={16} />
                   </button>
-                  <input
-                    type="hidden"
-                    {...register(`profile.skills[${index}]`)}
-                    defaultValue={currentSkills[index]}
-                  />
                 </div>
               ))}
-              {fields.length === 0 && <p className="text-sm text-gray-400">No skills selected.</p>}
+              {selectedSkills.length === 0 && (
+                <p className="text-sm text-gray-400">No skills selected.</p>
+              )}
             </div>
           </div>
 
-          {/* Available Skills --- FIXED */}
+          {/* Available Skills */}
           <div className="p-3 border border-gray-200 rounded-md">
             <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2">Available to Add</h4>
+
+            {/* 🔍 Search box */}
+            <input
+              type="text"
+              placeholder="Search skills..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full mb-3 border border-gray-200 px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
             <div className="flex flex-wrap gap-2">
-              {availableSkillsList.map(
-                (
-                  skillObj // 'skillObj' is now {id, name, ...}
-                ) => (
-                  <button
-                    type="button"
-                    key={skillObj.id} // Use the unique ID from the DB
-                    onClick={() => append(skillObj.name)} // Append the name (string)
-                    className="flex items-center gap-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-full px-3 py-1 hover:bg-gray-300"
-                  >
-                    <Plus size={14} />
-                    <span>{skillObj.name}</span> {/* Display the name */}
-                  </button>
-                )
-              )}
-              {availableSkillsList.length === 0 && dbSkills.length > 0 && (
-                <p className="text-sm text-gray-400">All available skills added.</p>
-              )}
-              {(!dbSkills || dbSkills.length === 0) && (
-                <p className="text-sm text-gray-400">Loading skills...</p>
-              )}
+              {availableSkillsList.map((skillObj) => (
+                <button
+                  type="button"
+                  key={skillObj.id}
+                  onClick={() => append(skillObj.id)}
+                  className="flex items-center gap-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-full px-3 py-1 hover:bg-gray-300"
+                >
+                  <Plus size={14} />
+                  <span>{skillObj.name}</span>
+                </button>
+              ))}
+
+              {availableSkillsList.length === 0 && dbSkills.length == 0 && <AddSkillDropdown />}
             </div>
           </div>
         </div>
+
         {/* -------------------- */}
 
         {/* Image (File Upload) */}

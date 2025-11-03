@@ -12,7 +12,9 @@ import SwalUtils from '@/utils/sweetAlert';
 import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
 
 const AdminPanelPartner = () => {
-  const { message, error, loadingbrands } = useSelector((state) => state.brands);
+  const { message, error, loadingbrands, loadingActionbrands } = useSelector(
+    (state) => state.brands
+  );
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
   const [singlePartner, setSinglePartner] = useState({});
@@ -59,7 +61,7 @@ const AdminPanelPartner = () => {
 
   return (
     <div>
-      <LoadingDashboard loading={loadingbrands} />
+      <LoadingDashboard loading={loadingbrands || loadingActionbrands} />
       {modal && (
         <Modal setModal={setModal} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>

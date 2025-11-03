@@ -1,24 +1,35 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import DashBroadNavbar from '@/components/Dashboard/common/DashBroadNavbar';
 import SideBar from '@/components/Dashboard/common/SideBar';
 import NotFound from '../components/common/NotFound';
+import LoadingDashboard from '../components/Dashboard/common/LoadingDashboard';
 
 export default function ProtectedLayout() {
   const { isAuthenticated, authLoaded } = useSelector((state) => state.auth);
+  const { pathname } = useLocation();
 
   // 🔹 Wait for Redux auth state
   if (!authLoaded) {
-    return (
-      <div className="flex items-center justify-center min-h-screen text-lg font-semibold">
-        Loading...
-      </div>
-    );
+    return <LoadingDashboard loading={true} />;
   }
 
   // 🔹 Redirect if unauthenticated
   // if (!isAuthenticated) return <Navigate to="/" replace />;
-  if (!isAuthenticated) return <NotFound />;
+  if (!isAuthenticated) {
+    if (
+      pathname == '/admin-dashboard' ||
+      pathname == '/teacher-dashboard' ||
+      pathname == '/stuff-dashboard'
+    ) {
+      return <Navigate to="/auth/login/verify-role" replace />;
+    }
+
+    if (pathname == '/student-dashboard') {
+      return <Navigate to="/login" replace />;
+    }
+    return <NotFound />;
+  }
 
   // 🔹 Main Dashboard Layout
   return (

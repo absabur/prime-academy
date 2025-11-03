@@ -4,10 +4,10 @@ import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDas
 import { useSelector } from 'react-redux';
 
 const AdminPanelHero = () => {
-  const { loadingHeros } = useSelector((state) => state.hero);
+  const { loadingHeros, loadingActionHeros } = useSelector((state) => state.hero);
   return (
     <div>
-      <LoadingDashboard loading={loadingHeros} />
+      <LoadingDashboard loading={loadingHeros || loadingActionHeros} />
       <DashBoardHeader title={'Heros'} searchBar={false} />
       <AllHeros />
     </div>

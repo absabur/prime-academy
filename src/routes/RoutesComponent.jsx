@@ -26,10 +26,10 @@ import Blog from '../pages/Root/Blog/Blog';
 import Contact from '../pages/Root/Contact/Contact';
 import FAQs from '../pages/Root/FAQs/FAQs';
 import About from '../pages/Root/About/About';
-import PrivacyPolicy from '../pages/Root/PrivacyPolicy/PrivacyPolicy';
-import RefundPolicy from '../pages/Root/RefundPolicy/RefundPolicy';
 import SingleCourse from '@/pages/Root/singleCourse/SingleCourse';
 import CoursesPage from '@/pages/Root/Courses/Courses';
+
+import Policy from '../pages/Root/Policy/Policy';
 
 // 🌟 Landing Page
 import LandingPage from '@/pages/Root/Landing/Landing';
@@ -64,6 +64,7 @@ import StudentClassJoining from '../pages/Dashboard/StudentDashboard/StudentClas
 import StudentMyCourses from '../pages/Dashboard/StudentDashboard/StudentMyCourses/StudentMyCourses';
 import StudentRecording from '../pages/Dashboard/StudentDashboard/StudentRecording/StudentRecording';
 import StudentResources from '../pages/Dashboard/StudentDashboard/StudentResources/StudentResources';
+import RoleLoginLayout from '../layouts/RoleLoginLayout';
 
 function RoutesComponent() {
   const { pathname } = useLocation();
@@ -83,8 +84,7 @@ function RoutesComponent() {
         <Route path="contact" element={<Contact />} />
         <Route path="faqs" element={<FAQs />} />
         <Route path="about" element={<About />} />
-        <Route path="privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="refund-policy" element={<RefundPolicy />} />
+        <Route path=":policy" element={<Policy />} />
         <Route path="courses" element={<CoursesPage />} />
         <Route path="courses/:id" element={<SingleCourse />} />
       </Route>
@@ -96,12 +96,16 @@ function RoutesComponent() {
 
       {/* 🔑 AUTH ROUTES */}
       <Route element={<AuthLayout />}>
-        <Route path="/auth/login/verify-role" element={<LoginRole />} />
         <Route path="/login" element={<LoginStudent />} />
         <Route path="/register" element={<RegisterStudent />} />
         <Route path="/verify-student" element={<VerifyEmail />} />
         <Route path="/forgot-password" element={<ForgatePassword />} />
         <Route path="/password-reset-confirm" element={<ResetPassword />} />
+      </Route>
+
+      {/* 🔑 Role Login */}
+      <Route element={<RoleLoginLayout />}>
+        <Route path="/auth/login/verify-role" element={<LoginRole />} />
       </Route>
 
       {/* 🔐 PROTECTED ROUTES (DASHBOARD) */}
@@ -146,6 +150,7 @@ function RoutesComponent() {
       </Route>
 
       {/* 🚫 404 - Not Found */}
+      <Route path="/404" element={<NotFound />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

@@ -6,6 +6,7 @@ const footerSlice = createSlice({
   initialState: {
     footer: {},
     loadingFooters: true,
+    loadingActionFooters: false,
     error: null,
     message: null,
   },
@@ -21,7 +22,7 @@ const footerSlice = createSlice({
     // footer
     builder
       .addCase(fetchFooters.pending, (state) => {
-        state.loadingFooters = true;
+        // state.loadingFooters = true;
         state.error = null;
       })
       .addCase(fetchFooters.fulfilled, (state, action) => {
@@ -34,16 +35,16 @@ const footerSlice = createSlice({
       });
     builder
       .addCase(updateFooter.pending, (state) => {
-        state.loadingFooters = true;
+        state.loadingActionFooters = true;
         state.error = null;
       })
       .addCase(updateFooter.fulfilled, (state, action) => {
-        state.loadingFooters = false;
+        state.loadingActionFooters = false;
         state.footer = action.payload.data;
         state.message = action.payload.message;
       })
       .addCase(updateFooter.rejected, (state, action) => {
-        state.loadingFooters = false;
+        state.loadingActionFooters = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
   },

@@ -14,8 +14,6 @@ export const fetchSkills = createAsyncThunk(
       const pageSize = page_size ? `&page_size=${page_size}` : '';
       const isActiveParams = isActive ? `&is_active=${isActive}` : '';
 
-      console.log(isActive);
-
       const response = await api.get(
         `${import.meta.env.VITE_API_URL}/api/skills/?${currentPage}${pageSize}${searchParam}${orderParams}${isActiveParams}`
       );
@@ -42,7 +40,7 @@ export const fetchSingleSkill = createAsyncThunk(
 
 export const createSkill = createAsyncThunk(
   'skill/createSkill',
-  async (skillData, { rejectWithValue, dispatch }) => {
+  async (skillData, { rejectWithValue }) => {
     try {
       const response = await api.post(`${import.meta.env.VITE_API_URL}/api/skills/`, skillData);
       return response.data; // return the created skill data

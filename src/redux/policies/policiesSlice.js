@@ -6,6 +6,7 @@ const policiesSlice = createSlice({
   initialState: {
     policies: [],
     loadingPolicies: true,
+    loadingActionPolicies: false,
     error: null,
     message: null,
   },
@@ -21,7 +22,7 @@ const policiesSlice = createSlice({
     // policies
     builder
       .addCase(fetchPolicies.pending, (state) => {
-        state.loadingPolicies = true;
+        // state.loadingPolicies = true;
         state.error = null;
       })
       .addCase(fetchPolicies.fulfilled, (state, action) => {
@@ -35,30 +36,30 @@ const policiesSlice = createSlice({
     // policies add
     builder
       .addCase(createPolicy.pending, (state) => {
-        state.loadingPolicies = true;
+        state.loadingActionPolicies = true;
         state.error = null;
       })
       .addCase(createPolicy.fulfilled, (state, action) => {
-        state.loadingPolicies = false;
+        state.loadingActionPolicies = false;
         state.message = action.payload.message;
       })
       .addCase(createPolicy.rejected, (state, action) => {
-        state.loadingPolicies = false;
+        state.loadingActionPolicies = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 
     // policies update
     builder
       .addCase(updatePolicy.pending, (state) => {
-        state.loadingPolicies = true;
+        state.loadingActionPolicies = true;
         state.error = null;
       })
       .addCase(updatePolicy.fulfilled, (state, action) => {
-        state.loadingPolicies = false;
+        state.loadingActionPolicies = false;
         state.message = action.payload.message;
       })
       .addCase(updatePolicy.rejected, (state, action) => {
-        state.loadingPolicies = false;
+        state.loadingActionPolicies = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
   },

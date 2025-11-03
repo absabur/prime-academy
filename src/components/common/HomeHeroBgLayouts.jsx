@@ -17,8 +17,11 @@ const HomeHeroBgLayouts = ({ image }) => {
     <>
       {/* Hero Pattern Background */}
       <div
-        className="absolute right-0 top-0 w-full h-[800px] bg-cover bg-center z-4 scale-x-[-1]"
-        style={{ backgroundImage: `url(/assets/hero-pattern.png)` }}
+        className="absolute right-0 top-0 w-full h-[800px] bg-cover bg-center z-4"
+        style={{
+          backgroundImage: `url(/assets/banner-right.png)`,
+          backgroundPosition: 'center -15px center',
+        }}
       ></div>
 
       {/* Main Image */}

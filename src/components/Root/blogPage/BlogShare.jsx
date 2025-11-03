@@ -28,7 +28,7 @@ const BlogShare = ({ cardData }) => {
   const encodedUrl = encodeURIComponent(fullUrl);
   const encodedText = encodeURIComponent(blog?.title || '');
   return (
-    <aside className="flex-1 bg-secondary-bg px-lg py-xl space-y-md self-start">
+    <aside className="flex-1 bg-secondary-bg px-lg py-xl space-y-md self-start w-full">
       {/* Share Section */}
       <div>
         <h2 className="font-bold text-black text-xl mb-2">Share This Article</h2>

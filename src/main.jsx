@@ -1,13 +1,3 @@
-/**
- * Entry point for the React application
- * -------------------------------------
- * Responsibilities:
- *  - Render the React app into the DOM
- *  - Wraps the app with essential providers (ErrorBoundary, Redux, Router)
- *  - Ensures a clean, maintainable setup for production
- */
-
-import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';

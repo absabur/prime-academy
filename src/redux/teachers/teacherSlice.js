@@ -15,7 +15,7 @@ const teacherSlice = createSlice({
     teacherPagination: {},
     pageSize: 10,
     loadingTeachers: true,
-    loadingTeacher: true,
+    loadingActionTeachers: false,
     error: null,
     message: null,
   },
@@ -31,7 +31,7 @@ const teacherSlice = createSlice({
     // Teachers
     builder
       .addCase(fetchTeachers.pending, (state) => {
-        state.loadingTeachers = true;
+        // state.loadingTeachers = true;
         state.error = null;
       })
       .addCase(fetchTeachers.fulfilled, (state, action) => {
@@ -50,49 +50,59 @@ const teacherSlice = createSlice({
     //single teacher
     builder
       .addCase(fetchSingleTeacher.pending, (state) => {
-        state.loadingTeacher = true;
+        // state.loadingTeachers = true;
         state.error = null;
       })
       .addCase(fetchSingleTeacher.fulfilled, (state, action) => {
-        state.loadingTeacher = false;
+        state.loadingTeachers = false;
         state.teacher = action.payload.data; // store single teacher
       })
       .addCase(fetchSingleTeacher.rejected, (state, action) => {
-        state.loadingTeacher = false;
+        state.loadingTeachers = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     // create teacher
     builder
       .addCase(createTeacher.pending, (state) => {
+        state.loadingActionTeachers = true;
         state.error = null;
       })
       .addCase(createTeacher.fulfilled, (state, action) => {
+        state.loadingActionTeachers = false;
         state.message = 'Teacher created successfully';
       })
       .addCase(createTeacher.rejected, (state, action) => {
+        state.loadingActionTeachers = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload.message;
       });
     // delete teacher
     builder
       .addCase(deleteTeacher.pending, (state) => {
+        state.loadingActionTeachers = true;
         state.error = null;
       })
       .addCase(deleteTeacher.fulfilled, (state, action) => {
         if (action.payload.status === 204) {
+          state.loadingActionTeachers = false;
           state.message = 'Teacher deleted successfully';
         }
       })
       .addCase(deleteTeacher.rejected, (state, action) => {
+        state.loadingActionTeachers = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
+    // update teacher
     builder
       .addCase(updateTeacher.pending, (state) => {
+        state.loadingActionTeachers = true;
         state.error = null;
       })
       .addCase(updateTeacher.fulfilled, (state, action) => {
+        state.loadingActionTeachers = false;
         state.message = 'Teacher updated successfully';
       })
       .addCase(updateTeacher.rejected, (state, action) => {
+        state.loadingActionTeachers = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
   },

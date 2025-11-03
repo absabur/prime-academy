@@ -15,7 +15,7 @@ const studentSlice = createSlice({
     studentPagination: {},
     pageSize: 10,
     loadingStudents: true,
-    loadingStudent: true,
+    loadingActionStudents: false,
     error: null,
     message: null,
   },
@@ -31,7 +31,7 @@ const studentSlice = createSlice({
     // Students
     builder
       .addCase(fetchStudents.pending, (state) => {
-        state.loadingStudents = true;
+        // state.loadingStudents = true;
         state.error = null;
       })
       .addCase(fetchStudents.fulfilled, (state, action) => {
@@ -50,49 +50,58 @@ const studentSlice = createSlice({
     //single student
     builder
       .addCase(fetchSingleStudent.pending, (state) => {
-        state.loadingStudent = true;
+        state.loadingStudents = true;
         state.error = null;
       })
       .addCase(fetchSingleStudent.fulfilled, (state, action) => {
-        state.loadingStudent = false;
+        // state.loadingStudents = false;
         state.student = action.payload.data; // store single student
       })
       .addCase(fetchSingleStudent.rejected, (state, action) => {
-        state.loadingStudent = false;
+        state.loadingStudents = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     // create student
     builder
       .addCase(createStudent.pending, (state) => {
+        state.loadingActionStudents = true;
         state.error = null;
       })
       .addCase(createStudent.fulfilled, (state, action) => {
+        state.loadingActionStudents = false;
         state.message = 'Student created successfully';
       })
       .addCase(createStudent.rejected, (state, action) => {
+        state.loadingActionStudents = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload.message;
       });
     // delete student
     builder
       .addCase(deleteStudent.pending, (state) => {
+        state.loadingActionStudents = true;
         state.error = null;
       })
       .addCase(deleteStudent.fulfilled, (state, action) => {
         if (action.payload.status === 204) {
+          state.loadingActionStudents = false;
           state.message = 'Student deleted successfully';
         }
       })
       .addCase(deleteStudent.rejected, (state, action) => {
+        state.loadingActionStudents = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
     builder
       .addCase(updateStudent.pending, (state) => {
+        state.loadingActionStudents = true;
         state.error = null;
       })
       .addCase(updateStudent.fulfilled, (state, action) => {
+        state.loadingActionStudents = false;
         state.message = 'Student updated successfully';
       })
       .addCase(updateStudent.rejected, (state, action) => {
+        state.loadingActionStudents = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
   },

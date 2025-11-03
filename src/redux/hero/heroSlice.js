@@ -6,6 +6,7 @@ const heroSlice = createSlice({
   initialState: {
     heros: [],
     loadingHeros: true,
+    loadingActionHeros: false,
     message: null,
     error: null,
   },
@@ -21,7 +22,7 @@ const heroSlice = createSlice({
     // heros
     builder
       .addCase(fetchHeros.pending, (state) => {
-        state.loadingHeros = true;
+        // state.loadingHeros = true;
         state.error = null;
       })
       .addCase(fetchHeros.fulfilled, (state, action) => {
@@ -36,15 +37,15 @@ const heroSlice = createSlice({
     // update
     builder
       .addCase(updateHero.pending, (state) => {
-        state.loadingHeros = true;
+        state.loadingActionHeros = true;
         state.error = null;
       })
       .addCase(updateHero.fulfilled, (state, action) => {
-        state.loadingHeros = false;
+        state.loadingActionHeros = false;
         state.message = action.payload.message;
       })
       .addCase(updateHero.rejected, (state, action) => {
-        state.loadingHeros = false;
+        state.loadingActionHeros = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload.message;
       });
   },

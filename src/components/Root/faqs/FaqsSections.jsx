@@ -33,61 +33,64 @@ const FaqsSections = () => {
         {faqs.length &&
           [...faqs]
             ?.sort((a, b) => a.faq_nav_order - b.faq_nav_order)
-            ?.map((category) => (
-              <div
-                key={category.faq_nav_slug}
-                id={category.faq_nav_slug}
-                className="w-full my-xl pt-xl"
-              >
-                <h2 className="uppercase font-heading font-bold text-3xl mb-sm">
-                  {category.faq_nav}
-                </h2>
+            ?.map((category) => {
+              if (category.is_active)
+                return (
+                  <div
+                    key={category.faq_nav_slug}
+                    id={category.faq_nav_slug}
+                    className="w-full my-xl pt-xl"
+                  >
+                    <h2 className="uppercase font-heading font-bold text-3xl mb-sm">
+                      {category.faq_nav}
+                    </h2>
 
-                {/* FAQ Questions */}
-                {[...category?.faqs]
-                  ?.sort((a, b) => a.order - b.order)
-                  ?.map((qna) => {
-                    const isOpen = activeFaq === qna?.id;
-
-                    return (
-                      <div
-                        key={qna?.id}
-                        className="flex w-full flex-col border-b border-black/50 py-md"
-                      >
-                        {/* Question Header */}
-                        <button
-                          onClick={() => toggleFaq(qna?.id)}
-                          className="flex justify-between gap-lg items-center text-lg cursor-pointer font-bold font-heading text-left w-full"
-                          aria-expanded={isOpen}
-                          aria-controls={`faq-${qna?.id}`}
-                        >
-                          <span>{qna?.question}</span>
-                          <span className="text-xl font-bold">{isOpen ? '−' : '+'}</span>
-                        </button>
-
-                        {/* Answer with smooth transition */}
-                        <div
-                          id={`faq-${qna?.id}`}
-                          className={`grid transition-all duration-500 ease-in-out overflow-hidden ${
-                            isOpen
-                              ? 'grid-rows-[1fr] opacity-100 mt-2'
-                              : 'grid-rows-[0fr] opacity-0'
-                          }`}
-                        >
-                          <div className="overflow-hidden ml-sm">
+                    {/* FAQ Questions */}
+                    {[...category?.faqs]
+                      ?.sort((a, b) => a.order - b.order)
+                      ?.map((qna) => {
+                        const isOpen = activeFaq === qna?.id;
+                        if (qna.is_active)
+                          return (
                             <div
-                              className="policy-wrapper text-sm text-gray-700 leading-relaxed"
-                              dangerouslySetInnerHTML={{
-                                __html: DOMPurify.sanitize(qna?.answer),
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-              </div>
-            ))}
+                              key={qna?.id}
+                              className="flex w-full flex-col border-b border-black/50 py-md"
+                            >
+                              {/* Question Header */}
+                              <button
+                                onClick={() => toggleFaq(qna?.id)}
+                                className="flex justify-between gap-lg items-center text-lg cursor-pointer font-bold font-heading text-left w-full"
+                                aria-expanded={isOpen}
+                                aria-controls={`faq-${qna?.id}`}
+                              >
+                                <span>{qna?.question}</span>
+                                <span className="text-xl font-bold">{isOpen ? '−' : '+'}</span>
+                              </button>
+
+                              {/* Answer with smooth transition */}
+                              <div
+                                id={`faq-${qna?.id}`}
+                                className={`grid transition-all duration-500 ease-in-out overflow-hidden ${
+                                  isOpen
+                                    ? 'grid-rows-[1fr] opacity-100 mt-2'
+                                    : 'grid-rows-[0fr] opacity-0'
+                                }`}
+                              >
+                                <div className="overflow-hidden ml-sm">
+                                  <div
+                                    className="prose prose-sm text-gray-700 leading-relaxed max-w-none"
+                                    dangerouslySetInnerHTML={{
+                                      __html: DOMPurify.sanitize(qna?.answer),
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          );
+                      })}
+                  </div>
+                );
+            })}
       </InnerSection>
     </OuterSection>
   );
