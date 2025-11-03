@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
 import Content from '../../../components/Root/Policy/PolicyContent';
 import PolicyHero from '../../../components/Root/Policy/PolicyHero';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { fetchHeros } from '@/redux/hero/heroAction';
 import { fetchPolicies } from '@/redux/policies/policiesAction';
 import LoadingDashboard from '../../../components/Dashboard/common/LoadingDashboard';
@@ -18,8 +18,8 @@ const Policy = () => {
   const { heros } = useSelector((state) => state.hero);
 
   const dispatch = useDispatch();
-  const { pathname } = useLocation();
-  const policyName = pathname.replace('/', '');
+  const params = useParams();
+  const policyName = params.policy;
 
   // --- Local State ---
   // Use `null` to represent "not yet processed"

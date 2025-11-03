@@ -33,9 +33,6 @@ const TableFilter = ({ fields = [] }) => {
   const handleChange = useCallback(
     (e) => {
       const { name, value } = e.target;
-      if (name === 'search') {
-        setSearchParams({ ...Object.fromEntries(searchParams), [name]: value, page: 1 });
-      }
       setFilterState((prev) => ({ ...prev, [name]: value }));
     },
     [setSearchParams]
@@ -139,8 +136,8 @@ const TableFilter = ({ fields = [] }) => {
     });
   }, [fields, handleChange, filterState]);
 
-  const visibleFields = isCollapsed ? filterFields.slice(0, 3) : filterFields;
-  const hasMoreFields = filterFields.length > 3;
+  const visibleFields = isCollapsed ? filterFields.slice(0, 4) : filterFields;
+  const hasMoreFields = filterFields.length > 4;
 
   return (
     <form
@@ -177,12 +174,12 @@ const TableFilter = ({ fields = [] }) => {
       </div>
 
       {/* Buttons */}
-      <div className="pt-4 border-t border-gray-100 flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-3">
-        <PrimaryButton type="submit" text="Search" />
+      <div className="pt-4 border-t border-gray-100 flex flex-col sm:flex-row sm:justify-start space-y-2 sm:space-y-0 sm:space-x-3">
+        <PrimaryButton type="submit" text="Filter" />
         <SecondaryButton
           type="button"
           onClick={handleReset}
-          text="Reset"
+          text="Reset Filter"
           className="text-primary border-2 border-primary hover:bg-secondary hover:border-secondary hover:text-white"
         />
       </div>

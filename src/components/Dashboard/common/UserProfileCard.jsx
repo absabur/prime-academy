@@ -11,6 +11,8 @@ import {
   Hash,
 } from 'lucide-react';
 
+import avatar from '/assets/avatar.png';
+
 // This is the main component
 const UserProfileCard = ({ user }) => {
   const { email, phone, full_name, is_enabled, student_id, role, profile } = user;
@@ -22,7 +24,7 @@ const UserProfileCard = ({ user }) => {
         <div className="bg-primary p-6 md:p-8">
           <div className="flex flex-col sm:flex-row items-center sm:space-x-6">
             <img
-              src={profile.image || 'https://via.placeholder.com/150'}
+              src={profile.image || avatar}
               alt={`${full_name}'s profile`}
               className="w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border-4 border-secondary shadow-lg flex-shrink-0"
             />

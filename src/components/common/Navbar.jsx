@@ -1,19 +1,9 @@
-/**
- * Navbar Component
- * ----------------
- * - Displays the application logo and main navigation links
- * - Changes style dynamically based on:
- *    1. Current route (home vs. other pages)
- *    2. Scroll position (transparent vs. solid background on home)
- * - Provides consistent navigation across all pages
- */
-
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import OuterSection from './OuterSection';
 import InnerSection from './InnerSection';
-import { FiMenu, FiX } from 'react-icons/fi'; // ✅ react-icons
+import { FiMenu, FiX } from 'react-icons/fi';
 import { useSelector } from 'react-redux';
 import { capitalizeFirst } from '@/utils/capitalizeFirst';
 import './css/navbar.css';
@@ -25,30 +15,39 @@ const Navbar = () => {
   const location = useLocation();
   const isHome = location.pathname === '/';
 
-  // Scroll effect only on home
+  // ✅ UPDATED: This effect now handles all logic based on route changes
   useEffect(() => {
-    if (!isHome) return;
+    if (isHome) {
+      // We are ON the home page
+      const handleScroll = () => setScrolled(window.scrollY > 20);
 
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isHome]);
+      // Check scroll position immediately on navigation to home
+      handleScroll();
+
+      // Add listener for scrolling
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    } else {
+      // We are NOT on the home page
+      // Force the "scrolled" state (solid background, dark text)
+      setScrolled(true);
+    }
+  }, [isHome]); // This effect re-runs every time `isHome` changes (i.e., on navigation)
+
+  // ✅ REFACTORED: Simplified logic
+  // The navbar is only transparent if we are on the home page AND not scrolled
+  const isTransparent = isHome && !scrolled;
 
   // Background class
-  const bgClass = isHome
-    ? scrolled
-      ? 'bg-white shadow-lg'
-      : 'bg-transparent'
-    : 'bg-white shadow-lg';
+  const bgClass = isTransparent ? 'bg-transparent' : 'bg-white shadow-lg';
 
   // Logo change
-  const logoSrc =
-    isHome && !scrolled
-      ? '/assets/prime-academy-logo-full.png'
-      : '/assets/prime-academy-logo-full-dark.png';
+  const logoSrc = isTransparent
+    ? '/assets/prime-academy-logo-full.png'
+    : '/assets/prime-academy-logo-full-dark.png';
 
-  // Text color on home
-  const textColor = isHome && !scrolled ? 'text-white' : 'text-black';
+  // Text color
+  const textColor = isTransparent ? 'text-white' : 'text-black';
 
   const navLinks = [
     { text: 'About', url: '/about' },
@@ -83,7 +82,7 @@ const Navbar = () => {
                 to={url}
                 className={`navbar-item font-semibold transition-colors duration-200 ${
                   isActive ? 'text-primary navbar-active' : textColor
-                } ${isHome && !scrolled ? 'no-scroll' : ''}`}
+                } ${isTransparent ? 'no-scroll' : ''}`} // ✅ Uses refactored variable
               >
                 {capitalizeFirst(text)}
               </Link>
@@ -118,7 +117,7 @@ const Navbar = () => {
                   onClick={() => setMenuOpen(false)}
                   className={`text-center navbar-item font-semibold text-lg ${
                     isActive ? 'text-primary navbar-active' : 'text-black'
-                  } ${isHome && !scrolled ? 'no-scroll' : ''}`}
+                  } ${isTransparent ? 'no-scroll' : ''}`} // ✅ Uses refactored variable
                 >
                   {capitalizeFirst(text)}
                 </Link>

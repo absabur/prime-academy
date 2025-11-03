@@ -1,19 +1,16 @@
+import DOMPurify from 'dompurify';
 import {
-  User,
+  BookOpen,
+  Briefcase, // Skills
+  Info,
   Mail,
   Phone,
-  ShieldCheck, // Admin role
-  UserCheck, // Active status
-  UserX, // Disabled status
-  Hash,
-  BookOpen, // Education
-  Sparkles, // Skills
-  Info,
-  Briefcase,
+  ShieldCheck, // Education
+  Sparkles,
 } from 'lucide-react';
-import DOMPurify from 'dompurify';
 import { getInitials } from '../../../utils/getInitials';
 import PrimaryButton from '../../common/PrimaryButton';
+import avatar from '/assets/avatar.png';
 
 // Helper component for displaying metadata items
 const InfoItem = ({ icon, label, children }) => (
@@ -54,7 +51,11 @@ export const UserProfileView = ({ data, onUpdate }) => {
         {/* Profile Card */}
         <div className="bg-white rounded-lg border border-black/20 p-6 flex flex-col items-center text-center shadow-sm">
           {image ? (
-            <img src={image} alt={full_name} className="w-24 h-24 rounded-full object-cover mb-4" />
+            <img
+              src={image || avatar}
+              alt={full_name}
+              className="w-24 h-24 rounded-full object-cover mb-4"
+            />
           ) : (
             <div className="w-24 h-24 rounded-full bg-primary/10 text-primary flex items-center justify-center text-4xl font-semibold mb-4">
               {getInitials(first_name, last_name)}
@@ -76,38 +77,6 @@ export const UserProfileView = ({ data, onUpdate }) => {
           )}
           <PrimaryButton onClick={onUpdate} className="mt-sm" text={`Edit Profile`} />
         </div>
-
-        {/* Status Card */}
-        <div className="bg-white rounded-lg border border-black/20 p-4 shadow-sm">
-          <h3 className="text-xs font-medium text-black/50 uppercase tracking-wider mb-3">
-            Status
-          </h3>
-          {is_enabled ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
-              <UserCheck className="h-4 w-4" />
-              Active
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-800">
-              <UserX className="h-4 w-4" />
-              Disabled
-            </span>
-          )}
-        </div>
-
-        {/* System Info Card */}
-        <div className="bg-white rounded-lg border border-black/20 p-4 space-y-4 shadow-sm">
-          <InfoItem icon={<Hash size={16} />} label="User ID">
-            <span className="text-xs font-mono bg-black/10 p-1 rounded">{id}</span>
-          </InfoItem>
-          <InfoItem icon={<Hash size={16} />} label="Student ID">
-            {student_id || 'N/A'}
-          </InfoItem>
-        </div>
-      </div>
-
-      {/* --- Main Content Column --- */}
-      <div className="lg:col-span-2 space-y-5">
         {/* Contact Card */}
         <div className="bg-white rounded-lg border border-black/20 p-6 shadow-sm">
           <h3 className="text-lg font-semibold text-black mb-4">Contact Information</h3>
@@ -124,7 +93,9 @@ export const UserProfileView = ({ data, onUpdate }) => {
             </InfoItem>
           </div>
         </div>
-
+      </div>
+      {/* --- Main Content Column --- */}
+      <div className="lg:col-span-2 space-y-5">
         {/* Bio Card */}
         <div className="bg-white rounded-lg border border-black/20 p-6 shadow-sm">
           <div className="flex items-center gap-2 mb-3">

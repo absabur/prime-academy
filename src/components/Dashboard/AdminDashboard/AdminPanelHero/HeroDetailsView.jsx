@@ -25,7 +25,7 @@ const InfoItem = ({ icon, label, children }) => (
 
 // Your main modal content component
 // Pass your JSON object to this component as the `data` prop
-export default function ({ data }) {
+export default function HeroPreview({ data }) {
   const {
     id,
     page_name,
@@ -114,10 +114,6 @@ export default function ({ data }) {
         <div className="p-4 bg-white rounded-lg border border-gray-200 space-y-4">
           <InfoItem icon={<LayoutTemplate size={16} />} label="Page Name">
             <span className="font-medium">{page_name}</span>
-          </InfoItem>
-
-          <InfoItem icon={<Hash size={16} />} label="ID">
-            <span className="text-xs font-mono bg-black/10 p-1 rounded">{id}</span>
           </InfoItem>
 
           <InfoItem icon={<CalendarPlus size={16} />} label="Created On">

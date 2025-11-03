@@ -65,6 +65,7 @@ import StudentMyCourses from '../pages/Dashboard/StudentDashboard/StudentMyCours
 import StudentRecording from '../pages/Dashboard/StudentDashboard/StudentRecording/StudentRecording';
 import StudentResources from '../pages/Dashboard/StudentDashboard/StudentResources/StudentResources';
 import RoleLoginLayout from '../layouts/RoleLoginLayout';
+import SingleCourseStudent from '../pages/Dashboard/StudentDashboard/StudentSingleCourse/SingleCourseStudent';
 
 function RoutesComponent() {
   const { pathname } = useLocation();
@@ -140,6 +141,10 @@ function RoutesComponent() {
           />
           <Route path="/student-dashboard/class-joining" element={<StudentClassJoining />} />
           <Route path="/student-dashboard/my-courses" element={<StudentMyCourses />} />
+          <Route
+            path="/student-dashboard/my-course/:courseSlug"
+            element={<SingleCourseStudent />}
+          />
           <Route path="/student-dashboard/recording" element={<StudentRecording />} />
           <Route path="/student-dashboard/resources" element={<StudentResources />} />
         </Route>

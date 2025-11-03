@@ -1,7 +1,4 @@
-import React from 'react';
-import { ChevronRight, Play } from 'lucide-react';
-
-const ModuleTable = ({ modules = [], tableColumns = [] }) => {
+const ModuleTable = ({ modules = [], tableColumns = [], colEarly = false }) => {
   // Calculate the total number of grid columns by summing colSpans
   // This is crucial for the dynamic CSS grid
   const totalGridCols = tableColumns.reduce((acc, col) => acc + col.colSpan, 0);
@@ -12,9 +9,11 @@ const ModuleTable = ({ modules = [], tableColumns = [] }) => {
       {modules.map((module) => (
         <div
           key={module.moduleNumber}
-          className="mb-lg p-4 bg-white rounded-md shadow-sm border border-black/10"
+          className={`mb-lg bg-white rounded-md shadow-sm border border-black/10 ${colEarly ? 'p-0' : 'p-md'}`}
         >
-          <h3 className="text-xl font-semibold text-black mb-4">Module {module.moduleNumber}</h3>
+          {!colEarly && (
+            <h3 className="text-xl font-semibold text-black mb-4">Module {module.moduleNumber}</h3>
+          )}
           <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-black/10">
             {/* Table Header (Dynamic) */}
             <div
@@ -40,7 +39,7 @@ const ModuleTable = ({ modules = [], tableColumns = [] }) => {
               <div
                 key={sessionIndex}
                 className={`flex flex-col gap-4 p-4 
-                            lg:grid lg:gap-4 lg:items-center lg:px-6 lg:py-4 text-black/80 ${
+                            ${colEarly ? 'xl:grid xl:gap-md xl:items-center xl:px-md xl:py-md' : 'lg:grid lg:gap-md lg:items-center lg:px-md lg:py-md'} text-black/80 ${
                               sessionIndex < module.sessions.length - 1
                                 ? 'border-b border-black/10'
                                 : ''

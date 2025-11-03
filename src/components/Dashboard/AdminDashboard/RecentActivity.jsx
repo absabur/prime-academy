@@ -52,7 +52,7 @@ const activities = [
 
 const RecentActivity = () => {
   return (
-    <ChartCard title={'Recent Activity'} buttontext={'view all'}>
+    <ChartCard title={'Recent Enrolled'} buttontext={'view all'}>
       <ul className=" ">
         {activities.map((activity) => (
           <li

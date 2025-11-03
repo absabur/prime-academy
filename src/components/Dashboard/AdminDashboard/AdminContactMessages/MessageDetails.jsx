@@ -89,10 +89,6 @@ export default function MessageDetails({ data }) {
           <MetaItem icon={<CalendarClock size={16} />} label="Submitted At">
             {new Date(created_at).toLocaleString()}
           </MetaItem>
-
-          <MetaItem icon={<Hash size={16} />} label="Submission ID">
-            <span className="text-xs font-mono bg-black/10 p-xs rounded">{id}</span>
-          </MetaItem>
         </div>
       </footer>
     </div>
