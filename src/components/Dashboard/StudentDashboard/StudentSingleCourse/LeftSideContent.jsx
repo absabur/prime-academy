@@ -7,6 +7,13 @@ import {
   studentDashboardAssignmentTabColumnData,
   studentDashboardAssignmentTabTableData,
 } from '../../../../utils/studentDashboardAssignmentTab';
+import { studentRecordingTableData } from '../../../../utils/studentRecordingTableData';
+import { studentRecordingColumnData } from '../../../../utils/studentRecordingColumnData';
+import {
+  studentDashboardResourceTabColumnData,
+  studentDashboardResourceTabTableData,
+} from '../../../../utils/studentDashboardResourceTab';
+import ExamTab from './ExamTab';
 
 const LeftSideContent = () => {
   const { courseSlug } = useParams();
@@ -34,12 +41,72 @@ const LeftSideContent = () => {
       {currentTab == 'Assignment' && (
         <ModuleTable
           colEarly={true}
+          noParent={true}
           modules={studentDashboardAssignmentTabTableData}
           tableColumns={studentDashboardAssignmentTabColumnData}
         />
+      )}
+
+      {/* Recording Tab Show */}
+      {currentTab == 'Recording' && (
+        <ModuleTable
+          colEarly={true}
+          modules={studentRecordingTableData}
+          tableColumns={studentRecordingColumnData}
+        />
+      )}
+
+      {/* Resource Tab Show */}
+      {currentTab == 'Resource' && (
+        <ModuleTable
+          colEarly={true}
+          noParent={true}
+          modules={studentDashboardResourceTabTableData}
+          tableColumns={studentDashboardResourceTabColumnData}
+        />
+      )}
+
+      {/* Exam Tab Show */}
+      {currentTab == 'Exam' && (
+        <>
+          {demoQuizData.map((item, index) => (
+            <ExamTab data={item} key={index} />
+          ))}
+        </>
+      )}
+
+      {/* Certificate Tab Show */}
+      {currentTab == 'Certificate' && (
+        <div className="mt-md">
+          <CertificateCard />
+        </div>
       )}
     </div>
   );
 };
 
 export default LeftSideContent;
+
+const demoQuizData = [
+  {
+    moduleTitle: 'Module 1',
+    quizTitle: 'Module 1 Quiz',
+    dateRange: '11 Apr - 17 Apr',
+    description: 'Please check result for Answer sheet.',
+    mark: '10/10',
+  },
+  {
+    moduleTitle: 'Module 2',
+    quizTitle: 'Module 2 Quiz',
+    dateRange: '11 Apr - 17 Apr',
+    description: 'Please check result for Answer sheet.',
+    mark: '10/10',
+  },
+  {
+    moduleTitle: 'Module 3',
+    quizTitle: 'Module 3 Quiz',
+    dateRange: '11 Apr - 17 Apr',
+    description: 'Please check result for Answer sheet.',
+    mark: '',
+  },
+];

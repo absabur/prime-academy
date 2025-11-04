@@ -1,4 +1,4 @@
-const ModuleTable = ({ modules = [], tableColumns = [], colEarly = false }) => {
+const ModuleTable = ({ modules = [], tableColumns = [], colEarly = false, noParent = false }) => {
   // Calculate the total number of grid columns by summing colSpans
   // This is crucial for the dynamic CSS grid
   const totalGridCols = tableColumns.reduce((acc, col) => acc + col.colSpan, 0);
@@ -9,9 +9,9 @@ const ModuleTable = ({ modules = [], tableColumns = [], colEarly = false }) => {
       {modules.map((module) => (
         <div
           key={module.moduleNumber}
-          className={`mb-lg bg-white rounded-md shadow-sm border border-black/10 ${colEarly ? 'p-0' : 'p-md'}`}
+          className={`mb-lg bg-white rounded-md shadow-sm border border-black/10 ${noParent ? 'p-0' : 'p-md'}`}
         >
-          {!colEarly && (
+          {!noParent && (
             <h3 className="text-xl font-semibold text-black mb-4">Module {module.moduleNumber}</h3>
           )}
           <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-black/10">

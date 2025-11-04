@@ -74,7 +74,7 @@ export const NavigationTabs = () => {
           { key: 'Modules', text: 'Modules' },
           { key: 'Assignment', text: 'Assignment' },
           { key: 'Recording', text: 'Recording' },
-          { key: 'Resourse', text: 'Resourse' },
+          { key: 'Resource', text: 'Resource' },
           { key: 'Exam', text: 'Exam' },
           { key: 'Certificate', text: 'Certificate' },
         ].map((item, index) => {

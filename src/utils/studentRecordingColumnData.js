@@ -14,7 +14,7 @@ export const studentRecordingColumnData = [
     accessor: 'duration',
     colSpan: 2,
     icon: Clock,
-    className: '',
+    className: 'text-center',
     mobileLabel: 'Duration: ', // Label for mobile view
   },
   {
@@ -22,7 +22,7 @@ export const studentRecordingColumnData = [
     accessor: 'time',
     colSpan: 3,
     icon: Calendar,
-    className: '',
+    className: 'text-center',
     mobileLabel: null,
   },
   {

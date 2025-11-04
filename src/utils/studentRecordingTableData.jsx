@@ -110,7 +110,7 @@ export const studentRecordingTableData = [
     watch: (
       <button
         onClick={() => session.show.call(session)}
-        className="flex gap-sm items-center justify-center w-full lg:w-auto bg-secondary hover:bg-primary text-white font-semibold py-2 px-4 rounded-md text-sm transition-colors duration-200"
+        className="flex ml-auto gap-sm items-center justify-center w-full lg:w-auto bg-secondary hover:bg-primary text-white font-semibold py-2 px-4 rounded-md text-sm transition-colors duration-200"
       >
         <Play size={20} /> Play
       </button>
