@@ -8,15 +8,15 @@ const OutLineData = ({ course, handelOpen, index, length }) => {
       </div>
       <div className="flex-1 hidden md:flex flex-col mt-2 relative">
         <div
-          className={`z-1 w-6 h-6 rounded-full border-[3px] border-[#553982] shrink-0 ${
-            course.active ? 'bg-[#553982]' : 'bg-white'
+          className={`z-1 w-6 h-6 rounded-full border-[3px] border-primary shrink-0 ${
+            course.active ? 'bg-primary' : 'bg-white'
           }`}
         ></div>
         {index < length - 1 && (
-          <div className="z-0 w-[3px] bg-[#553982] flex-1 absolute left-[11px] h-full top-2"></div>
+          <div className="z-0 w-[3px] bg-primary flex-1 absolute left-[11px] h-full top-2"></div>
         )}
       </div>
-      <div className="flex-5 bg-[#f6f6f6] mb-3 px-4 py-3 rounded-2xl space-y-2 containBox relative ">
+      <div className="flex-5 bg-white mb-3 px-4 py-3 rounded-2xl space-y-2 containBox relative ">
         <h1
           onClick={() => handelOpen(course.id)}
           className="font-bold text-lg select-none cursor-pointer"

@@ -4,25 +4,27 @@ import { FaArrowRight } from 'react-icons/fa';
 
 const CourseFeatureCard = ({ course }) => {
   return (
-    <BaseCard>
+    <BaseCard
+      className={`gap-xl hover:bg-gradient-to-br hover:from-primary hover:to-primary-light transition-colors duration-300 hover:text-white`}
+    >
       <div className="space-y-4">
-        {course?.image ? (
-          <img src={course?.image} alt={course?.title} width={50} />
+        {course?.header_image ? (
+          <img src={course?.header_image} alt={course?.title} width={50} />
         ) : (
           <div className="w-12 h-12 bg-gray-200 rounded" />
         )}
-        <h3 className="font-heading font-bold text-xl">{course?.title}</h3>
-        <p className="text-base text-black/70 line-clamp-6">{course?.content}</p>
+        <Link to={`/courses/${course.slug}`}>
+          <h3 className="font-heading font-bold text-xl line-clamp-2">{course?.title}</h3>
+        </Link>
+        <p className="text-base opacity-75 mt-md line-clamp-6">{course?.short_description}</p>
       </div>
 
-      {course?.button_link && (
-        <Link
-          to={`${course?.button_link}`}
-          className="flex items-center gap-2 mt-auto text-primary font-heading font-bold"
-        >
-          Learn More <FaArrowRight />
-        </Link>
-      )}
+      <Link
+        to={`/courses/${course.slug}`}
+        className="flex items-center gap-2 mt-auto font-heading font-bold"
+      >
+        Learn More <FaArrowRight />
+      </Link>
     </BaseCard>
   );
 };

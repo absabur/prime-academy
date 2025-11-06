@@ -8,7 +8,7 @@ const courseSlice = createSlice({
     courses: [],
     course: {},
     coursePagination: {},
-    pageSize: 9,
+    pageSize: 12,
     loadingCourses: true,
     loadingCourse: true,
     loadingCourseCategory: false,

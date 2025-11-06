@@ -11,6 +11,7 @@ import {
   LayoutTemplate,
   ExternalLink,
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 // Helper component for displaying metadata items in the sidebar
 const InfoItem = ({ icon, label, children }) => (
@@ -132,27 +133,27 @@ export default function HeroPreview({ data }) {
           </h3>
           <div className="space-y-3">
             {button1_text && (
-              <a
-                href={button1_url}
+              <Link
+                to={button1_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-sm font-medium text-primary-light hover:text-primary hover:underline"
               >
                 <ExternalLink size={16} />
                 {button1_text}
-              </a>
+              </Link>
             )}
 
             {button2_text && (
-              <a
-                href={button2_url}
+              <Link
+                to={button2_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-sm font-medium text-primary-light hover:text-primary hover:underline"
               >
                 <ExternalLink size={16} />
                 {button2_text}
-              </a>
+              </Link>
             )}
           </div>
         </div>

@@ -9,7 +9,7 @@ import Modal from '@/components/common/Modal';
 import EditHeroForm from './EditHeroForm';
 import { clearError, clearMessage } from '@/redux/hero/heroSlice';
 import HeroDetailsView from './HeroDetailsView';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 export default function AllHeros() {
   const { message, error, heros } = useSelector((state) => state.hero);
@@ -123,14 +123,14 @@ const enhancedHeros = (heros) => {
       ></PrimaryButton>
     ),
     button1_url: hero.button1_url && (
-      <a
-        href={hero.button1_url}
+      <Link
+        to={hero.button1_url}
         target="_blank"
         rel="noopener noreferrer"
         className="text-primary-light underline"
       >
         {hero.button1_url}
-      </a>
+      </Link>
     ),
     button2_text: hero.button2_text && (
       <SecondaryButton
@@ -141,14 +141,14 @@ const enhancedHeros = (heros) => {
       ></SecondaryButton>
     ),
     button2_url: hero.button2_url && (
-      <a
-        href={hero.button2_url}
+      <Link
+        to={hero.button2_url}
         target="_blank"
         rel="noopener noreferrer"
         className="text-primary-light underline"
       >
         {hero.button2_url}
-      </a>
+      </Link>
     ),
   }));
 };

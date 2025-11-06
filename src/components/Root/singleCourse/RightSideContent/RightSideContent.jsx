@@ -1,6 +1,6 @@
 import React from 'react';
 import CourseValueHeading from '../CourseValueHeading';
-import TabContainSection from '@/components/common/TabContainSecton';
+import TabContainSection from '@/components/common/TabContentSection';
 import { singleCourseValues } from '@/data/singleCoursePageData';
 import CourseOutLine from '../CourseOutLine';
 import FactStat from '../FactStat';

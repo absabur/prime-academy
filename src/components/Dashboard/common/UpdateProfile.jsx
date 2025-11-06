@@ -26,7 +26,7 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
       ...defaultValues,
       profile: {
         ...defaultValues.profile,
-        // Extract the 'name' from each skill object, or use the value if it's already a string
+        // Extract the 'id' from each skill object
         skills: (defaultValues.profile?.skills || []).map((skill) =>
           typeof skill === 'object' && skill.id ? skill.id : skill
         ),
@@ -45,12 +45,11 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
 
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState('');
-  // Get skills from Redux store
+  // Get skills from Redux store (dbSkills is now just search results)
   const { skills: dbSkills, pageSize, error, message } = useSelector((state) => state.skill);
   const { loading } = useSelector((state) => state.auth);
 
   // --- Skills Array Logic ---
-  // --- Skills Section ---
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'profile.skills', // will hold an array of skill IDs
@@ -58,10 +57,35 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
 
   const currentSkillIds = watch('profile.skills') || [];
 
-  // Map IDs → full skill objects
-  const selectedSkills = (dbSkills || []).filter((s) => currentSkillIds.includes(s.id));
+  // --- 1. PRESERVE INITIAL SKILLS ---
+  // Store the full skill objects from the initial load
+  const initialSkillObjects = useMemo(
+    () => (defaultValues.profile?.skills || []).filter((s) => typeof s === 'object' && s.id),
+    [defaultValues]
+  );
 
-  // Filter out selected skills from available list
+  // --- 2. FIX SELECTED SKILLS LOGIC ---
+  // Build a stable 'selectedSkills' list by combining
+  // initial skills + any new skills found in the DB search results.
+  const selectedSkills = useMemo(() => {
+    const skillMap = new Map();
+
+    // 1. Add skills from the initial default values
+    initialSkillObjects.forEach((skill) => {
+      skillMap.set(skill.id, skill);
+    });
+
+    // 2. Add/overwrite with skills from the latest DB fetch (search results)
+    (dbSkills || []).forEach((skill) => {
+      skillMap.set(skill.id, skill);
+    });
+
+    // 3. Filter the map by the currentSkillIds
+    return currentSkillIds.map((id) => skillMap.get(id)).filter(Boolean); // Filter out 'undefined' if a skill (e.g., deleted) wasn't found
+  }, [currentSkillIds, initialSkillObjects, dbSkills]);
+
+  // --- 3. FIX AVAILABLE SKILLS LOGIC ---
+  // This is now *just* the search results, minus what's already selected.
   const availableSkillsList = (dbSkills || [])
     .filter((skill) => skill.is_active)
     .filter((skill) => !currentSkillIds.includes(skill.id));
@@ -71,27 +95,27 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
 
   // Update form when defaultValues (from parent) change
   useEffect(() => {
-    if (dbSkills?.length > 0) {
+    if (dbSkills?.length > 0 || initialSkillObjects.length > 0) {
       reset(formattedDefaultValues);
       setPreview(defaultValues.profile?.image || null);
     }
-  }, [defaultValues, reset, formattedDefaultValues, dbSkills]);
+  }, [defaultValues, reset, formattedDefaultValues, dbSkills, initialSkillObjects]);
 
-  //  skill fetch
+  // --- 4. RE-IMPLEMENT BACKEND SEARCH ---
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       dispatch(
         fetchSkills({
           page: 1,
           page_size: pageSize,
-          search: searchTerm || '', // send search term to backend
+          search: searchTerm || '', // Use the searchTerm
           isActive: true,
         })
       );
-    }, 400); // debounce 400ms
+    }, 400); // 400ms debounce
 
     return () => clearTimeout(delayDebounce);
-  }, [searchTerm, dispatch, message]);
+  }, [searchTerm, dispatch, pageSize, message]); // Re-add message to refetch if a new skill is added
 
   // show error  message
   useEffect(() => {
@@ -99,16 +123,17 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
       SwalUtils.error(error);
       dispatch(clearError());
     }
-  }, [error]);
+  }, [error, dispatch]);
 
-  // show error  message
+  // show success message
   useEffect(() => {
     if (message) {
       SwalUtils.success(message);
       dispatch(clearMessage());
     }
-  }, [message]);
+  }, [message, dispatch]);
 
+  // ... (handleImageChange and handleFormSubmit are unchanged) ...
   // Handle image preview
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
@@ -120,7 +145,6 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
   };
 
   // --- Form Submit Handler (Unchanged) ---
-  // This logic is correct. `data.profile.skills` will be a string array.
   const handleFormSubmit = (data) => {
     const isFileSelected = data.profile?.image && data.profile.image[0] instanceof File;
 
@@ -245,7 +269,7 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
         <div className="md:col-span-2 space-y-4">
           <label className="block mb-sm font-medium">Skills</label>
 
-          {/* Selected Skills */}
+          {/* Selected Skills (This will no longer break on search) */}
           <div className="p-3 border border-gray-200 rounded-md min-h-[60px] bg-gray-50">
             <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2">Selected</h4>
             <div className="flex flex-wrap gap-2">
@@ -285,18 +309,26 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
 
             <div className="flex flex-wrap gap-2">
               {availableSkillsList.map((skillObj) => (
-                <button
+                <p
+                  style={{ textTransform: 'none' }}
                   type="button"
                   key={skillObj.id}
                   onClick={() => append(skillObj.id)}
-                  className="flex items-center gap-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-full px-3 py-1 hover:bg-gray-300"
+                  className="cursor-pointer flex items-center gap-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-full px-3 py-1 hover:bg-gray-300"
                 >
                   <Plus size={14} />
                   <span>{skillObj.name}</span>
-                </button>
+                </p>
               ))}
 
-              {availableSkillsList.length === 0 && dbSkills.length == 0 && <AddSkillDropdown />}
+              {/* --- 5. "ADD SKILL" LOGIC --- */}
+              {/* This logic is now correct because dbSkills = search results */}
+              {availableSkillsList.length === 0 &&
+                dbSkills.length == 0 &&
+                searchTerm.length > 0 && <AddSkillDropdown />}
+              {availableSkillsList.length === 0 &&
+                dbSkills.length !== 0 &&
+                searchTerm.length > 0 && <p>Already Selected</p>}
             </div>
           </div>
         </div>
@@ -323,7 +355,10 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
               <button
                 type="button"
                 onClick={() => {
-                  reset({ ...watch(), profile: { ...watch('profile'), image: null } });
+                  reset({
+                    ...watch(),
+                    profile: { ...watch('profile'), image: null },
+                  });
                   setPreview(null);
                 }}
                 className="absolute top-0 right-0 -mt-2 -mr-2 bg-red-600 text-white rounded-full p-1 shadow-md hover:bg-red-700"

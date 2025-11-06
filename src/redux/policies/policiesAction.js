@@ -30,10 +30,10 @@ export const createPolicy = createAsyncThunk(
 
 export const updatePolicy = createAsyncThunk(
   'policy/updatePolicy',
-  async ({ page_name, policyData }, { rejectWithValue }) => {
+  async ({ id, policyData }, { rejectWithValue }) => {
     try {
       const response = await api.patch(
-        `${import.meta.env.VITE_API_URL}/api/policy-pages/${page_name}/`,
+        `${import.meta.env.VITE_API_URL}/api/policy-pages/${id}/`,
         policyData
       );
       return response.data; // return the updated policy data

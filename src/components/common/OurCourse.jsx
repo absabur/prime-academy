@@ -1,65 +1,87 @@
-/**
- * OurCourse Component
- * -------------------
- * - Displays a list of courses categorized by levels (Level 3, 5, 6)
- * - Supports desktop tabs and mobile dropdown for category selection
- * - Uses OuterSection + InnerSection for consistent spacing and layout
- * - Displays course cards dynamically based on selected category
- */
-
 import OuterSection from './OuterSection';
 import InnerSection from './InnerSection';
 import PrimaryButton from './PrimaryButton';
 import CourseFeatureCard from './CourseFeatureCard';
-import { useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import 'swiper/css';
-import { coursesData } from '../../data/courseData';
 import TabButtons from './TabButtons';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCourses } from '../../redux/courses/courseAction';
 
+// ✅ New prop-based version — expects flat course array as `courses`
 const OurCourse = () => {
-  const [selectedCategory, setSelectedCategory] = useState(coursesData[0].category);
+  const { courses, pageSize } = useSelector((state) => state.course);
+  const dispatch = useDispatch();
+  // --- Step 1: Group by category name ---
+  const groupedCourses = useMemo(() => {
+    const groups = {};
+    courses.forEach((course) => {
+      const catName = course.category?.name || 'Uncategorized';
+      if (!groups[catName]) groups[catName] = [];
+      groups[catName].push(course);
+    });
+    // convert to old compatible format
+    return Object.entries(groups).map(([category, courseList]) => ({
+      category,
+      courses: courseList,
+    }));
+  }, [courses]);
 
-  // Filter courses based on selected category
-  const selectedCourses = coursesData.find((c) => c.category === selectedCategory).courses;
+  useEffect(() => {
+    dispatch(
+      fetchCourses({
+        page: 1,
+        page_size: 100,
+      })
+    );
+  }, [pageSize]);
+
+  // --- Step 2: Use first category as default ---
+  const [selectedCategory, setSelectedCategory] = useState(groupedCourses[0]?.category || '');
+
+  useEffect(() => {
+    setSelectedCategory(groupedCourses[0]?.category);
+  }, [groupedCourses]);
+
+  // --- Step 3: Filter current courses ---
+  const selectedCourses =
+    groupedCourses.find((c) => c.category === selectedCategory)?.courses || [];
 
   const swiperRef = useRef(null);
   const [canSlidePrev, setCanSlidePrev] = useState(false);
   const [canSlideNext, setCanSlideNext] = useState(false);
 
   const handleSlideChange = (swiper) => {
-    // Show next/prev buttons only if scrolling is actually possible
     const atStart = swiper.isBeginning;
     const atEnd = swiper.isEnd;
-    const canScroll = !(atStart && atEnd); // if both true, no scroll needed
-
+    const canScroll = !(atStart && atEnd);
     setCanSlidePrev(canScroll && !atStart);
     setCanSlideNext(canScroll && !atEnd);
   };
 
   const handleSwiperInit = (swiper) => {
     swiperRef.current = swiper;
-    handleSlideChange(swiper); // initialize button state immediately
+    handleSlideChange(swiper);
   };
 
   return (
     <OuterSection>
       <InnerSection className="space-y-lg">
-        {/* Section title and description */}
-        <h2 className="heading-4xl uppercase">Our Course</h2>
+        <h2 className="heading-4xl uppercase">Explore Our Professional Courses</h2>
         <p className="w-full md:w-3/4 lg:w-1/2 font-heading font-normal text-base text-black/70 leading-lg text-justify">
-          UK-certified training in English, IT, and Professional Skills — designed to sharpen your
-          talent and accelerate career growth
+          Choose from our selection of industry-recognized qualifications designed to advance your
+          career
         </p>
 
+        {/* ✅ Compatible with new grouped data */}
         <TabButtons
-          data={coursesData}
+          data={groupedCourses}
           selected={selectedCategory}
           setSelected={setSelectedCategory}
         />
 
-        {/* Course cards grid */}
         <div className="relative w-full">
           <Swiper
             key={selectedCategory}
@@ -86,7 +108,6 @@ const OurCourse = () => {
             ))}
           </Swiper>
 
-          {/* Prev Button */}
           {canSlidePrev && (
             <button
               onClick={() => swiperRef.current?.slidePrev()}
@@ -96,7 +117,6 @@ const OurCourse = () => {
             </button>
           )}
 
-          {/* Next Button */}
           {canSlideNext && (
             <button
               onClick={() => swiperRef.current?.slideNext()}
@@ -107,7 +127,6 @@ const OurCourse = () => {
           )}
         </div>
 
-        {/* View all courses button */}
         <div className="flex justify-center items-center">
           <PrimaryButton className="rounded-lg" text={'View All Courses'} href={`/courses`} />
         </div>

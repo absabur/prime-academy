@@ -125,7 +125,7 @@ const ImageContent = ({ data, ip }) => {
 
           <div className="w-full space-y-sm">
             <div
-              className="prose prose-sm max-w-none text-black/80"
+              className="prose prose-sm max-w-none text-black/80 text-justify"
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(data?.content),
               }}

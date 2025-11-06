@@ -9,6 +9,7 @@ import {
   User,
   XCircle,
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 // Helper function to format the date
 const formatDate = (dateString) => {
@@ -137,18 +138,18 @@ const EmployeeViewCard = ({ employee }) => {
               <span>Contact Information</span>
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mt-4 text-black/60">
-              <a href={`mailto:${email}`} className="flex items-center space-x-3 group">
+              <Link to={`mailto:${email}`} className="flex items-center space-x-3 group">
                 <Mail className="w-5 h-5 text-primary-light" />
                 <span className="group-hover:text-primary font-medium">
                   {email || 'user@example.com'}
                 </span>
-              </a>
-              <a href={`tel:${phone_number}`} className="flex items-center space-x-3 group">
+              </Link>
+              <Link to={`tel:${phone_number}`} className="flex items-center space-x-3 group">
                 <Phone className="w-5 h-5 text-primary-light" />
                 <span className="group-hover:text-primary font-medium">
                   {phone_number || '+1 234 567 890'}
                 </span>
-              </a>
+              </Link>
             </div>
           </div>
 

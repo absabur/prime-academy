@@ -11,6 +11,7 @@ import {
 import { getInitials } from '../../../utils/getInitials';
 import PrimaryButton from '../../common/PrimaryButton';
 import avatar from '/assets/avatar.png';
+import { Link } from 'react-router-dom';
 
 // Helper component for displaying metadata items
 const InfoItem = ({ icon, label, children }) => (
@@ -82,14 +83,14 @@ export const UserProfileView = ({ data, onUpdate }) => {
           <h3 className="text-lg font-semibold text-black mb-4">Contact Information</h3>
           <div className="space-y-4">
             <InfoItem icon={<Mail size={16} />} label="Email">
-              <a href={`mailto:${email}`} className="text-pirmary-light/60 hover:underline">
+              <Link to={`mailto:${email}`} className="text-pirmary-light/60 hover:underline">
                 {email}
-              </a>
+              </Link>
             </InfoItem>
             <InfoItem icon={<Phone size={16} />} label="Phone">
-              <a href={`tel:${phone}`} className="text-pirmary-light/60 hover:underline">
+              <Link to={`tel:${phone}`} className="text-pirmary-light/60 hover:underline">
                 {phone}
-              </a>
+              </Link>
             </InfoItem>
           </div>
         </div>

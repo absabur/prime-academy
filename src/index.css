@@ -21,6 +21,9 @@ body {
   --width-max-w: 1480px;
 
   --spacing-navbar: 90px;
+  --spacing-tnavbar: 40px;
+
+  --spacing-fnavbar: 130px;
 
   --spacing-xs: 2px;
   --spacing-xsm: 4px;

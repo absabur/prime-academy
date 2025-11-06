@@ -18,6 +18,7 @@ import { fetchSeos } from '@/redux/seo/seoAction';
 import { useDispatch, useSelector } from 'react-redux';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
 import { fetchImgIconContents } from '@/redux/imgIconContent/imgIconContentAction';
+import KnowUs from '../../../components/Root/about/KnowUs';
 
 const About = () => {
   const [pageSeo, setPageSeo] = useState(null);
@@ -49,6 +50,9 @@ const About = () => {
       {/* Core values of the academy */}
 
       <OurValues />
+
+      {/* know us */}
+      <KnowUs />
 
       {/* Largest provider showcase */}
       <ImageContentMiddle />

@@ -14,3 +14,15 @@ export const fetchImgIconContents = createAsyncThunk(
     }
   }
 );
+
+export const fetchOurValues = createAsyncThunk(
+  'imgIconContent/fetchOurValues',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/api/our-values/contents/`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
+  }
+);

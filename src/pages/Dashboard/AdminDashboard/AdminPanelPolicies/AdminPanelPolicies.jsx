@@ -32,23 +32,33 @@ const AdminPanelPolicies = () => {
   };
 
   // editPolicy Function
-  const singlePolicy = async (page_name) => {
-    setPolicy(policies.find((item) => item.page_name == page_name));
+  const singlePolicy = async (id) => {
+    setPolicy(policies.find((item) => item.id == id));
     setModal(true);
     setModalType('edit');
   };
 
   // handleView Function
-  const handleView = async (page_name) => {
-    setPolicy(policies.find((item) => item.page_name == page_name));
+  const handleView = async (id) => {
+    console.log(policies, id);
+    setPolicy(policies.find((item) => item.id == id));
     setModal(true);
     setModalType('view');
   };
 
-  const handelEditPolicy = async (data, page_name) => {
-    if (!page_name) return;
+  const handelEditPolicy = async (data, id) => {
+    if (!id) return;
     // 🔹 Redux dispatch
-    dispatch(updatePolicy({ page_name, policyData: data })).then((res) => {
+    dispatch(updatePolicy({ id, policyData: data })).then((res) => {
+      if (res.type.endsWith('/fulfilled')) {
+        setModal(false);
+      }
+    });
+  };
+  const handleStatusChange = async (id, key, value) => {
+    if (!id) return;
+    // 🔹 Redux dispatch
+    dispatch(updatePolicy({ id, policyData: { [key]: value } })).then((res) => {
       if (res.type.endsWith('/fulfilled')) {
         setModal(false);
       }
@@ -73,6 +83,10 @@ const AdminPanelPolicies = () => {
           }}
         />
       ),
+    },
+    {
+      key: 'is_active',
+      label: 'Status',
     },
   ];
 
@@ -146,8 +160,10 @@ const AdminPanelPolicies = () => {
         deleteButton={false}
         handelEdit={singlePolicy}
         paginationShow={false}
-        statusShow={false}
+        statusShow={true}
         handleView={handleView}
+        statusKey="is_active"
+        statusChange={handleStatusChange}
       />
     </div>
   );

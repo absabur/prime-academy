@@ -15,6 +15,7 @@ import {
   FaTelegram,
   FaLinkedin,
 } from 'react-icons/fa6';
+import { Link } from 'react-router-dom';
 
 const footerDisplay = () => {
   const { footer } = useSelector((state) => state.footer);
@@ -89,17 +90,17 @@ const footerDisplay = () => {
             <tr className="border-b border-black/20">
               <td className={`${tdStyle} font-medium`}>Email</td>
               <td className={tdStyle}>
-                <a href={`mailto:${email}`} className="text-blue-600">
+                <Link to={`mailto:${email}`} className="text-blue-600">
                   {email}
-                </a>
+                </Link>
               </td>
             </tr>
             <tr className="border-b border-black/20">
               <td className={`${tdStyle} font-medium`}>Phone</td>
               <td className={tdStyle}>
-                <a href={`tel:${phone}`} className="text-blue-600">
+                <Link to={`tel:${phone}`} className="text-blue-600">
                   {phone}
-                </a>
+                </Link>
               </td>
             </tr>
             <tr className="border-b border-black/20">
@@ -131,14 +132,14 @@ const footerDisplay = () => {
                     </span>
                   </td>
                   <td className={tdStyle}>
-                    <a
-                      href={link.url}
+                    <Link
+                      to={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600"
                     >
                       {link.url}
-                    </a>
+                    </Link>
                   </td>
                   <td className={tdStyle}>{link.order}</td>
                 </tr>

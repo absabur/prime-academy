@@ -22,7 +22,7 @@ const HeroSection = ({ title, description, bannerImage, slides, button1, button2
 
   return (
     <OuterSection
-      className="bg-primary relative min-h-[800px] pt-navbar items-start"
+      className="bg-primary relative min-h-[800px] pt-fnavbar items-start"
       style={{ zIndex: 40 }}
     >
       {/* Conditionally render the background image */}

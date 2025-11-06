@@ -45,6 +45,9 @@ const HomePage = () => {
       {/* Hero banner with CTA */}
       <HomeHero />
 
+      {/* About Prime Academy section */}
+      <ImageContentBottom />
+
       {/* Courses showcase */}
       <OurCourse />
 
@@ -55,10 +58,7 @@ const HomePage = () => {
       <ImageContentTop />
 
       {/* Key features of the academy */}
-      <IconContentsTop />
-
-      {/* About Prime Academy section */}
-      <ImageContentBottom />
+      {/* <IconContentsTop /> */}
 
       {/* Statistics and achievements */}
       <KnowUs />

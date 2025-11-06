@@ -36,9 +36,11 @@ export const fetchBlogs = createAsyncThunk(
       const categoryParam = category ? `&category=${category}` : '';
       const searchParam = search ? `&search=${search}` : '';
       const orderParams = order ? `&ordering=${order}` : '';
+      
       const response = await api.get(
         `${import.meta.env.VITE_API_URL}/api/blogs/?page=${page}&page_size=${page_size}&status=published${categoryParam}${searchParam}${orderParams}`
       );
+      
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Something went wrong');

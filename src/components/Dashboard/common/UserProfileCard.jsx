@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 
 import avatar from '/assets/avatar.png';
+import { Link } from 'react-router-dom';
 
 // This is the main component
 const UserProfileCard = ({ user }) => {
@@ -78,14 +79,14 @@ const UserProfileCard = ({ user }) => {
               <span>Contact Information</span>
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mt-4 text-black/60">
-              <a href={`mailto:${email}`} className="flex items-center space-x-3 group">
+              <Link to={`mailto:${email}`} className="flex items-center space-x-3 group">
                 <Mail className="w-5 h-5 text-primary-light" />
                 <span className="group-hover:text-primary ">{email || 'user@example.com'}</span>
-              </a>
-              <a href={`tel:${phone}`} className="flex items-center space-x-3 group">
+              </Link>
+              <Link to={`tel:${phone}`} className="flex items-center space-x-3 group">
                 <Phone className="w-5 h-5 text-primary-light" />
                 <span className="group-hover:text-primary ">{phone || '+1 234 567 890'}</span>
-              </a>
+              </Link>
             </div>
           </div>
 

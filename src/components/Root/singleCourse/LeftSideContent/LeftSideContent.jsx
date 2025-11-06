@@ -1,4 +1,4 @@
-import TabContainSection from '@/components/common/TabContainSecton';
+import TabContainSection from '@/components/common/TabContentSection';
 import { singleCourseValues } from '@/data/singleCoursePageData';
 import React from 'react';
 import CourseValueHeading from '../CourseValueHeading';

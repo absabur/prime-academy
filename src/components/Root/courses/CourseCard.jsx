@@ -4,13 +4,14 @@ import { FaArrowRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const CourseCard = ({ item, index }) => {
+  console.log(item)
   return (
     <Card
       key={index}
       className="flex flex-col h-full overflow-hidden rounded-xl transition-shadow duration-300 shadow-lg hover:shadow-2xl"
     >
       {/* Top: Image */}
-      <img src={item.featured_image} alt={item.title} className="w-full h-[180px] object-cover" />
+      <img src={item.header_image} alt={item.title} className="w-full h-[180px] object-cover" />
 
       {/* Content */}
       <CardContent className="flex flex-col flex-1 gap-sm">

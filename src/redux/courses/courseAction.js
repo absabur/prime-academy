@@ -5,7 +5,7 @@ export const fetchCourseCategories = createAsyncThunk(
   'course/fetchCategories',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get(`${import.meta.env.VITE_API_URL}/api/blog-categories/`);
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/api/course-categories/`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -20,7 +20,7 @@ export const fetchCourses = createAsyncThunk(
       const categoryParam = category ? `&category=${category}` : '';
       const searchParam = search ? `&search=${search}` : '';
       const response = await api.get(
-        `${import.meta.env.VITE_API_URL}/api/blogs/?page=${page}&page_size=${page_size}${categoryParam}${searchParam}`
+        `${import.meta.env.VITE_API_URL}/api/courses/?status=published&page=${page}&page_size=${page_size}${categoryParam}${searchParam}`
       );
       return response.data;
     } catch (error) {

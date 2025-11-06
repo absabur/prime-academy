@@ -82,7 +82,7 @@ const Policy = () => {
 
   // 2. If loading is done and policyData is `undefined`, it means
   //    the `find` method ran and found nothing.
-  if (!loadingPolicies && policyData === undefined) {
+  if (!loadingPolicies && !policyData.is_active) {
     return <Navigate replace to={'/404'} />;
   }
 

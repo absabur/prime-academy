@@ -28,12 +28,12 @@ export default function AddEditPolicyForm({
   }, [defaultValues, reset]);
 
   const handleFormSubmit = (data) => {
-    const page_name = data.page_name || null;
+    const id = data.id || null;
     const json_data = data;
     if (defaultValues.page_name) {
       delete json_data.page_name;
     }
-    onSubmit(json_data, page_name);
+    onSubmit(json_data, id);
     reset();
   };
 

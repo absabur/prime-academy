@@ -7,6 +7,7 @@ import {
   Hash,
   CalendarClock,
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 // Helper component for the header contact info
 const HeaderItem = ({ icon, label, children }) => (
@@ -47,15 +48,15 @@ export default function MessageDetails({ data }) {
           </HeaderItem>
 
           <HeaderItem icon={<Mail size={20} />} label="Email">
-            <a href={`mailto:${email}`} className="hover:underline text-primary">
+            <Link to={`mailto:${email}`} className="hover:underline text-primary">
               {email}
-            </a>
+            </Link>
           </HeaderItem>
 
           <HeaderItem icon={<Phone size={20} />} label="Phone">
-            <a href={`tel:${phone}`} className="hover:underline text-primary">
+            <Link to={`tel:${phone}`} className="hover:underline text-primary">
               {phone}
-            </a>
+            </Link>
           </HeaderItem>
         </div>
       </header>
