@@ -84,10 +84,6 @@ const AdminPanelPolicies = () => {
         />
       ),
     },
-    {
-      key: 'is_active',
-      label: 'Status',
-    },
   ];
 
   // show error  message

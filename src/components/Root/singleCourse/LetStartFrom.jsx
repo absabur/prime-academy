@@ -31,8 +31,8 @@ const LetStartFrom = () => {
           {/* Email Contact */}
           <div className="flex gap-md items-center">
             <MdEmail />
-            <Link to={`mailto:yourfuture@prime-academy-bd.vercel.app`} className="hover:text-white">
-              yourfuture@prime-academy-bd.vercel.app
+            <Link to={`mailto:info@primeacademy.org`} className="hover:text-white">
+              info@primeacademy.org
             </Link>
           </div>
         </div>

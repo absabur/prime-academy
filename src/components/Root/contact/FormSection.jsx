@@ -53,8 +53,8 @@ const FormSection = () => {
 
           <div className="flex gap-md items-center">
             <MdEmail />
-            <Link to={`mailto:example@gmail.com`} className="hover:text-primary-light">
-              example@gmail.com
+            <Link to={`mailto:info@primeacademy.org`} className="hover:text-primary-light">
+              info@primeacademy.org
             </Link>
           </div>
         </div>

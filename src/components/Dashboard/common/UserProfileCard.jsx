@@ -81,11 +81,11 @@ const UserProfileCard = ({ user }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mt-4 text-black/60">
               <Link to={`mailto:${email}`} className="flex items-center space-x-3 group">
                 <Mail className="w-5 h-5 text-primary-light" />
-                <span className="group-hover:text-primary ">{email || 'user@example.com'}</span>
+                <span className="group-hover:text-primary ">{email}</span>
               </Link>
               <Link to={`tel:${phone}`} className="flex items-center space-x-3 group">
                 <Phone className="w-5 h-5 text-primary-light" />
-                <span className="group-hover:text-primary ">{phone || '+1 234 567 890'}</span>
+                <span className="group-hover:text-primary ">{phone}</span>
               </Link>
             </div>
           </div>

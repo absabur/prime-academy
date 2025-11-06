@@ -19,7 +19,7 @@ const TabContainSection = ({ tabContain }) => {
 
   return (
     <OuterSection className="relative">
-      <RoundShape p="right" />
+      <RoundShape p="right" opacity={true} />
       <InnerSection>
         <TabButtons
           data={tabContain}

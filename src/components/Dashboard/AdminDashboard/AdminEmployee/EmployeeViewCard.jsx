@@ -141,7 +141,7 @@ const EmployeeViewCard = ({ employee }) => {
               <Link to={`mailto:${email}`} className="flex items-center space-x-3 group">
                 <Mail className="w-5 h-5 text-primary-light" />
                 <span className="group-hover:text-primary font-medium">
-                  {email || 'user@example.com'}
+                  {email}
                 </span>
               </Link>
               <Link to={`tel:${phone_number}`} className="flex items-center space-x-3 group">

@@ -101,7 +101,7 @@ const Navbar = () => {
   return (
     <>
       <OuterSection
-        className={`${isTransparent ? 'bg-transparent' : 'bg-primary'} transition-colors duration-300 max-h-tnavbar h-full w-full fixed top-0 left-0 z-100`}
+        className={`${isTransparent ? 'bg-transparent' : 'bg-primary'} max-h-tnavbar h-full w-full fixed top-0 left-0 z-100`}
       >
         <InnerSection className="py-xs flex items-center justify-between">
           <div className={`flex gap-lg text-sm items-center`}>
@@ -138,7 +138,7 @@ const Navbar = () => {
         </InnerSection>
       </OuterSection>
       <OuterSection
-        className={`fixed top-tnavbar left-0 w-full transition-colors duration-300 z-[100] ${bgClass}`}
+        className={`fixed top-tnavbar left-0 w-full z-[100] ${bgClass}`}
         style={{ overflow: 'visible' }}
       >
         <InnerSection Tag="header" className="h-navbar py-sm">
