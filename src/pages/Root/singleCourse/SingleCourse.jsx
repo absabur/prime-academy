@@ -9,8 +9,12 @@ import { fetchSeos } from '@/redux/seo/seoAction';
 import { useDispatch, useSelector } from 'react-redux';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
 import { fetchImgIconContents } from '@/redux/imgIconContent/imgIconContentAction';
+import { useParams } from 'react-router-dom';
+import { fetchSingleCourse } from '../../../redux/courses/courseAction';
 // SingleCourse page component
 const SingleCourse = () => {
+  const params = useParams();
+  const { course } = useSelector((state) => state.course);
   // tab handel state
   const [openTab, setOpenTab] = useState('left');
 
@@ -20,10 +24,8 @@ const SingleCourse = () => {
 
   useEffect(() => {
     dispatch(fetchImgIconContents({ page: 'single-course' }));
-  }, []);
-
-  useEffect(() => {
     dispatch(fetchSeos());
+    dispatch(fetchSingleCourse(params.id));
   }, []);
 
   useEffect(() => {

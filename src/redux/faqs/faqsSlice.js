@@ -1,10 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { addFaqs, deleteCategory, editFaq, fetchFaqs, updateFaqCategoryOrder } from './faqsAction';
+import {
+  addFaqs,
+  deleteCategory,
+  editFaq,
+  fetchFaqs,
+  fetchFaqsAdmin,
+  updateFaqCategoryOrder,
+} from './faqsAction';
 
 const faqSlice = createSlice({
   name: 'faq',
   initialState: {
     faqs: {},
+    adminPanelFaqs: {},
     loadingFaqs: true,
     loadingActionFaqs: false,
     error: null,
@@ -30,6 +38,21 @@ const faqSlice = createSlice({
         state.faqs = action.payload.data;
       })
       .addCase(fetchFaqs.rejected, (state, action) => {
+        state.loadingFaqs = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // faq admin
+    builder
+      .addCase(fetchFaqsAdmin.pending, (state) => {
+        // state.loadingFaqs = true;
+        state.error = null;
+      })
+      .addCase(fetchFaqsAdmin.fulfilled, (state, action) => {
+        state.loadingFaqs = false;
+        state.adminPanelFaqs = action.payload.data;
+      })
+      .addCase(fetchFaqsAdmin.rejected, (state, action) => {
         state.loadingFaqs = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });

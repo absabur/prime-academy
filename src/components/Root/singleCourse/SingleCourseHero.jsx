@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const SingleCourseHero = () => {
+  const { course } = useSelector((state) => state.course);
   const [courseHero, setCourseHero] = useState();
   const { heros } = useSelector((state) => state.hero);
   const dispatch = useDispatch();
@@ -13,28 +14,19 @@ const SingleCourseHero = () => {
   }, []);
 
   useEffect(() => {
-    let current = heros.filter((item) => item.page_name == "single-course");
+    let current = heros.filter((item) => item.page_name == 'single-course');
     setCourseHero(current[0]);
   }, [heros]);
 
   return (
     <HeroSection
       bannerImage={courseHero?.banner_image}
-      title={courseHero?.title}
-      description={courseHero?.description}
+      title={course?.detail?.hero_text}
+      description={course?.detail?.hero_description}
       className="relative"
-      breadcrumbs={[
-        { url: '/', text: 'Home' },
-        { url: '/course', text: 'Course' },
-        { url: '/course/1', text: '1' },
-      ]}
       button1={{
-        url: courseHero?.button1_url,
-        text: courseHero?.button1_text,
-      }}
-      button2={{
-        url: courseHero?.button2_url,
-        text: courseHero?.button2_text,
+        text: 'Enroll Now',
+        url: '#',
       }}
     />
   );

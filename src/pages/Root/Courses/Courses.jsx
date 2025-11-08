@@ -1,16 +1,3 @@
-/**
- * CoursesPage Component
- * ------------------
- * - Displays the main course listing page
- * - Sections include:
- *    1. Hero banner
- *    2. Top filter bar
- *    3. Grid/list of course cards
- *    4. Pagination controls
- *    5. Upper footer or CTA section
- * - Fully modular: each section is a separate component
- */
-
 import CourseHero from '../../../components/Root/courses/HeroSection';
 import UpperFooterCourses from '../../../components/Root/courses/UpperFooterSection';
 import { fetchCourseCategories } from '@/redux/courses/courseAction';

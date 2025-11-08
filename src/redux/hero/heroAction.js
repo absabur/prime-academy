@@ -1,14 +1,27 @@
 import api from '@/api/axios';
+import axios from "axios";
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchHeros = createAsyncThunk('heros/fetchHeros', async (_, { rejectWithValue }) => {
   try {
-    const response = await api.get(`${import.meta.env.VITE_API_URL}/api/hero/`);
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/hero/`);
     return response.data;
   } catch (error) {
     return rejectWithValue(error.response?.data || 'Something went wrong');
   }
 });
+
+export const fetchHerosAdmin = createAsyncThunk(
+  'heros/fetchHerosAdmin',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/api/hero/`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
+  }
+);
 
 export const updateHero = createAsyncThunk(
   'heros/updateHero',
@@ -16,6 +29,7 @@ export const updateHero = createAsyncThunk(
     try {
       const response = await api.patch(`${import.meta.env.VITE_API_URL}/api/hero/${id}/`, value);
       dispatch(fetchHeros());
+      dispatch(fetchHerosAdmin());
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Something went wrong');

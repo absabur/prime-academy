@@ -99,13 +99,17 @@ const OurCourse = () => {
             className="!items-stretch"
             style={{ padding: '10px' }}
           >
-            {selectedCourses.map((course) => (
-              <SwiperSlide key={course.id} className="flex items-stretch !h-auto">
-                <div className="flex-1 h-full">
-                  <CourseFeatureCard course={course} />
-                </div>
-              </SwiperSlide>
-            ))}
+            {selectedCourses.map((course) => {
+              if (course?.is_active) {
+                return (
+                  <SwiperSlide key={course.id} className="flex items-stretch !h-auto">
+                    <div className="flex-1 h-full">
+                      <CourseFeatureCard course={course} />
+                    </div>
+                  </SwiperSlide>
+                );
+              }
+            })}
           </Swiper>
 
           {canSlidePrev && (

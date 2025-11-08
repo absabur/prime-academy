@@ -1,11 +1,14 @@
 import InnerSection from '@/components/common/InnerSection';
 import OuterSection from '@/components/common/OuterSection';
-import { courseData } from '@/data/singleCoursePageData';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import OutLineData from './OutLineData';
+import { useSelector } from 'react-redux';
+import DOMPurify from 'dompurify';
+import { singleCourseModuleDataConversion } from '../../../utils/singleCourseModuleDataConversion';
 
 const CourseOutLine = () => {
-  const [courses, setCourses] = useState(courseData.courses);
+  const { course } = useSelector((state) => state.course);
+  const [courses, setCourses] = useState();
 
   const handelOpen = (id) => {
     const updateCourses = courses.map((course) => ({
@@ -14,18 +17,25 @@ const CourseOutLine = () => {
     }));
     setCourses(updateCourses);
   };
+
+  useEffect(() => {
+    setCourses(singleCourseModuleDataConversion(course?.detail?.modules));
+  }, [course]);
+
   return (
     <OuterSection>
       <InnerSection>
-        <div className="w-full md:w-1/2 mb-8 space-y-2">
+        <div className="w-full mb-8 space-y-2">
           <h1 className="font-bold  text-3xl ">TECHNICAL TRAINING</h1>
-          <p className="text-[16px] text-justify w-full md:w-3/4">
-            The technical training component of our Level 3 IT Support apprenticeship is split into
-            six practice-led courses. Each practice-led course is then split into two parts.
-          </p>
+          <div
+            className="prose prose-sm max-w-none text-black/80 text-justify"
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(course?.full_description),
+            }}
+          />
         </div>
         <div className="my-3">
-          {courses.map((course, index) => (
+          {courses?.map((course, index) => (
             <OutLineData
               key={course.id}
               course={course}

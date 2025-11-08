@@ -5,7 +5,7 @@ import { BsTelephoneFill } from 'react-icons/bs';
 import { MdEmail } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import PrimaryButton from '../../common/PrimaryButton';
-import api from '@/api/axios';
+import axios from 'axios';
 import SwalUtils from '@/utils/sweetAlert';
 
 const FormSection = () => {
@@ -19,7 +19,7 @@ const FormSection = () => {
   //form submit handeler
   const onSubmit = async (data) => {
     try {
-      let response = await api.post('/api/contact/', data);
+      let response = await axios.post('/api/contact/', data);
       if (response.data.success) {
         SwalUtils.success(
           response.data.message || 'Thank you for reaching out! We’ll get back to you soon',

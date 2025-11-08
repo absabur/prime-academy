@@ -1,7 +1,7 @@
 import Modal from '@/components/common/Modal';
 import DashBoardHeader from '@/components/Dashboard/common/DashBoardHeader';
 import DataTables from '@/components/Dashboard/common/DataTables';
-import { fetchBlogCategories, fetchBlogs } from '@/redux/blogs/blogAction';
+import { fetchBlogCategories } from '@/redux/blogs/blogAction';
 import { clearError, clearMessage } from '@/redux/blogs/blogSlice';
 import SwalUtils from '@/utils/sweetAlert';
 import { dateConvertionBlogsPageBlogCard } from '@/utils/timeFormat';
@@ -11,12 +11,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import LoadingDashboard from '../../../../components/Dashboard/common/LoadingDashboard';
 import BlogAddEditFrom from '../../../../components/Dashboard/AdminDashboard/AdminBlogs/BlogAddEditFrom';
-import { addBlog, editBlog } from '../../../../redux/blogs/blogAction';
+import { addBlog, editBlog, fetchBlogsAdmin } from '../../../../redux/blogs/blogAction';
 import TableFilter from '../../../../components/Dashboard/common/TableFilter';
 
 const AdminPanelBlogs = () => {
   const {
-    blogs,
+    adminPanelBlogs,
     loadingBlogs,
     loadingActionBlogs,
     pageSize,
@@ -47,7 +47,7 @@ const AdminPanelBlogs = () => {
 
   // editBlog Function
   const singleBlog = (id) => {
-    setBlog(blogs.find((b) => b.id === id));
+    setBlog(adminPanelBlogs.find((b) => b.id === id));
     setModal(true);
     setModalType('edit');
   };
@@ -70,7 +70,7 @@ const AdminPanelBlogs = () => {
     });
   };
 
-  const dataWithFormated = blogs.map((blog) => {
+  const dataWithFormated = adminPanelBlogs.map((blog) => {
     const formateBlog = {
       ...blog,
       published_at: dateConvertionBlogsPageBlogCard(blog.published_at),
@@ -126,7 +126,7 @@ const AdminPanelBlogs = () => {
   useEffect(() => {
     const handler = setTimeout(() => {
       dispatch(
-        fetchBlogs({
+        fetchBlogsAdmin({
           page: currentPage,
           page_size: pageSize,
           search,

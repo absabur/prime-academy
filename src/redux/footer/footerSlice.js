@@ -1,10 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchFooters, updateFooter } from './footerAction';
+import { fetchFooters, fetchFootersAdmin, updateFooter } from './footerAction';
 
 const footerSlice = createSlice({
   name: 'footer',
   initialState: {
     footer: {},
+    adminPanelFooter: {},
     loadingFooters: true,
     loadingActionFooters: false,
     error: null,
@@ -33,6 +34,23 @@ const footerSlice = createSlice({
         state.loadingFooters = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
+
+    // footer admin
+    builder
+      .addCase(fetchFootersAdmin.pending, (state) => {
+        // state.loadingFooters = true;
+        state.error = null;
+      })
+      .addCase(fetchFootersAdmin.fulfilled, (state, action) => {
+        state.loadingFooters = false;
+        state.adminPanelFooter = action.payload.data;
+      })
+      .addCase(fetchFootersAdmin.rejected, (state, action) => {
+        state.loadingFooters = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // update footer
     builder
       .addCase(updateFooter.pending, (state) => {
         state.loadingActionFooters = true;

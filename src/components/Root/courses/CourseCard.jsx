@@ -28,7 +28,7 @@ const CourseCard = ({ item, index }) => {
 
         {/* Read More at bottom */}
         <Link
-          to={item.slug}
+          to={item.id}
           className="font-bold w-[fit-content] text-base text-black flex gap-sm items-center mt-auto"
         >
           Read More <FaArrowRight />

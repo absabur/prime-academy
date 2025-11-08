@@ -41,7 +41,7 @@ const PartnerCarousel = () => {
         }}
       >
         {[...brands, ...brands, ...brands, ...brands, ...brands, ...brands, ...brands]
-          ?.filter((brand) => brand.is_active === true)
+          ?.filter((brand) => brand?.is_active)
           .map((partner, i) => (
             <SwiperSlide key={i} className="flex justify-center">
               <div className="p-6 flex justify-center items-center">

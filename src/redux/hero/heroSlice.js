@@ -1,10 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchHeros, updateHero } from './heroAction';
+import { fetchHeros, fetchHerosAdmin, updateHero } from './heroAction';
 
 const heroSlice = createSlice({
   name: 'hero',
   initialState: {
     heros: [],
+    adminPanelHeros: [],
     loadingHeros: true,
     loadingActionHeros: false,
     message: null,
@@ -30,6 +31,21 @@ const heroSlice = createSlice({
         state.heros = action.payload.data.results;
       })
       .addCase(fetchHeros.rejected, (state, action) => {
+        state.loadingHeros = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // heros admin
+    builder
+      .addCase(fetchHerosAdmin.pending, (state) => {
+        // state.loadingHeros = true;
+        state.error = null;
+      })
+      .addCase(fetchHerosAdmin.fulfilled, (state, action) => {
+        state.loadingHeros = false;
+        state.adminPanelHeros = action.payload.data.results;
+      })
+      .addCase(fetchHerosAdmin.rejected, (state, action) => {
         state.loadingHeros = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });

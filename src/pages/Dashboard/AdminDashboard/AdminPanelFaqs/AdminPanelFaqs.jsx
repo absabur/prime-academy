@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchFaqs, addFaqs, editFaq } from '@/redux/faqs/faqsAction';
+import { fetchFaqsAdmin, addFaqs, editFaq } from '@/redux/faqs/faqsAction';
 import { clearError, clearMessage } from '@/redux/faqs/faqsSlice';
 import DashBoardHeader from '@/components/Dashboard/common/DashBoardHeader';
 import LoadingDashboard from '@/components/Dashboard/common/LoadingDashboard';
@@ -13,7 +13,7 @@ import { updateFaqCategoryOrder } from '../../../../redux/faqs/faqsAction';
 
 // --- Main Component ---
 export default function FaqManager() {
-  const { faqs, loadingFaqs, loadingActionFaqs, error, message } = useSelector(
+  const { adminPanelFaqs, loadingFaqs, loadingActionFaqs, error, message } = useSelector(
     (state) => state.faq
   );
   const [categories, setCategories] = useState([]);
@@ -36,14 +36,14 @@ export default function FaqManager() {
   }, [message, dispatch]);
 
   useEffect(() => {
-    dispatch(fetchFaqs());
+    dispatch(fetchFaqsAdmin());
   }, [dispatch]);
 
   useEffect(() => {
-    if (Array.isArray(faqs)) {
-      setCategories(faqs);
+    if (Array.isArray(adminPanelFaqs)) {
+      setCategories(adminPanelFaqs);
     }
-  }, [faqs]);
+  }, [adminPanelFaqs]);
 
   const handleAddCategory = () => {
     if (!newCategoryName) {

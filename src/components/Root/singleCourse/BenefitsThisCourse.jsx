@@ -1,25 +1,17 @@
 import InnerSection from '@/components/common/InnerSection';
 import OuterSection from '@/components/common/OuterSection';
-import { benefitsThisCourse } from '@/data/singleCoursePageData';
-import React from 'react';
 import CourseQuestionCard from './CourseQuestionCard';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import { convertBenefitsArray } from '../../../utils/singleCourseBenefitCoversion';
 
 const BenefitsThisCourse = () => {
-  const [content, setContent] = useState({});
-  const { imgIconContents } = useSelector((state) => state.imgIconContent);
+  const [content, setContent] = useState([]);
+  const { course } = useSelector((state) => state.course);
 
   useEffect(() => {
-    setContent(
-      imgIconContents.filter(
-        (item) =>
-          item.page == 'single-course' &&
-          item.section_type == 'icon' &&
-          item.position_display == 'Bottom'
-      )
-    );
-  }, [imgIconContents]);
+    setContent(convertBenefitsArray(course?.detail?.benefits));
+  }, [course]);
 
   return (
     <OuterSection>

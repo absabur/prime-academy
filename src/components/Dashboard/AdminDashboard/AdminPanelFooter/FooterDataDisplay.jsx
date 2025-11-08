@@ -1,4 +1,4 @@
-import { fetchFooters } from '@/redux/footer/footerAction';
+import { fetchFootersAdmin } from '@/redux/footer/footerAction';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -18,13 +18,13 @@ import {
 import { Link } from 'react-router-dom';
 
 const footerDisplay = () => {
-  const { footer } = useSelector((state) => state.footer);
+  const { adminPanelFooter } = useSelector((state) => state.footer);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchFooters());
+    dispatch(fetchFootersAdmin());
   }, []);
 
-  if (!footer) {
+  if (!adminPanelFooter) {
     return <p>Loading data...</p>;
   }
 
@@ -38,7 +38,7 @@ const footerDisplay = () => {
     copyright_name,
     link_groups,
     social_links,
-  } = footer;
+  } = adminPanelFooter;
 
   // Helper styles for the tables
   const thStyle =

@@ -49,25 +49,29 @@ const LeftFilter = () => {
             All
           </button>
         </li>
-        {categories.map((item, index) => (
-          <li key={index}>
-            <button
-              onClick={() =>
-                setSearchParams({
-                  ...Object.fromEntries(searchParams.entries()),
-                  category: item.slug,
-                })
-              }
-              className={`cursor-pointer text-left w-full px-2 py-1 rounded focus:outline-none ${
-                String(category) === String(item.slug)
-                  ? 'text-white bg-primary-light font-semibold'
-                  : 'bg-black/5 hover:bg-black/15'
-              }`}
-            >
-              {item.name}
-            </button>
-          </li>
-        ))}
+        {categories.map((item, index) => {
+          if (item?.is_active) {
+            return (
+              <li key={index}>
+                <button
+                  onClick={() =>
+                    setSearchParams({
+                      ...Object.fromEntries(searchParams.entries()),
+                      category: item.slug,
+                    })
+                  }
+                  className={`cursor-pointer text-left w-full px-2 py-1 rounded focus:outline-none ${
+                    String(category) === String(item.slug)
+                      ? 'text-white bg-primary-light font-semibold'
+                      : 'bg-black/5 hover:bg-black/15'
+                  }`}
+                >
+                  {item.name}
+                </button>
+              </li>
+            );
+          }
+        })}
       </ul>
       <PrimaryButton
         text={`Reset Filter`}

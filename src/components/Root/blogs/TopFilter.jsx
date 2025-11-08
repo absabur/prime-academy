@@ -82,11 +82,15 @@ const TopFilter = () => {
             className="w-full px-lg py-sm rounded-md border border-black/10 bg-white text-black hover:border-primary focus:outline-none focus:shadow-xl transition-colors shadow"
           >
             <option value="">All Categories</option>
-            {categories.map((item) => (
-              <option key={item.id} value={item.slug}>
-                {item.name}
-              </option>
-            ))}
+            {categories.map((item) => {
+              if (item?.is_active) {
+                return (
+                  <option key={item.id} value={item.slug}>
+                    {item.name}
+                  </option>
+                );
+              }
+            })}
           </select>
         </div>
 

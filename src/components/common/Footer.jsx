@@ -58,6 +58,8 @@ const Footer = () => {
     telegram: <FaTelegram />,
   };
 
+  console.log(footer)
+
   return (
     <>
       <OuterSection className="mt-auto bg-primary">

@@ -1,22 +1,23 @@
 import BaseCard from '@/components/common/BaseCard';
 import SecondaryButton from '@/components/common/SecondaryButton';
-import React from 'react';
-import ReactMarkdown from 'react-markdown';
+import DOMPurify from 'dompurify';
 
 const StoryCard = ({ story }) => {
   return (
     <BaseCard className={`bg-transparent`}>
       <div className="space-y-xl">
-        {story.logo ? (
-          <img src={story.logo} alt={'success story'} width={50} />
+        {story?.icon ? (
+          <img src={story?.icon} alt={'success story'} width={50} />
         ) : (
           <div className="w-12 h-12 bg-gray-200 rounded" />
         )}
-        <ReactMarkdown>{story?.content || ''}</ReactMarkdown>
-        <p className='text-xs'>{story?.paragraph || ''}</p>
+        <div
+          className="prose prose-sm max-w-none text-black/80 text-left text-white"
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(story?.description),
+          }}
+        />
       </div>
-
-      <SecondaryButton className='mt-lg w-[fit-content]' text={'Learn More'} href={'#'} from={'hero'} />
     </BaseCard>
   );
 };

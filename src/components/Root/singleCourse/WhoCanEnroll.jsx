@@ -1,26 +1,21 @@
 import InnerSection from '@/components/common/InnerSection';
 import OuterSection from '@/components/common/OuterSection';
-import { whoEnrol } from '@/data/singleCoursePageData';
-import React from 'react';
 import CourseQuestionCard from './CourseQuestionCard';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 
 const WhoCanEnroll = () => {
   const [content, setContent] = useState({});
-  const { imgIconContents } = useSelector((state) => state.imgIconContent);
+  const { course } = useSelector((state) => state.course);
 
   useEffect(() => {
     setContent(
-      imgIconContents.filter(
-        (item) =>
-          item.page == 'single-course' &&
-          item.section_type == 'icon' &&
-          item.position_display == 'Top'
-      )
+      course?.detail?.why_enrol?.map((item) => {
+        return { ...item, image: item.icon, content: item.text };
+      })
     );
-  }, [imgIconContents]);
-  
+  }, [course?.detail?.why_enrol]);
+
   return (
     <OuterSection>
       <InnerSection className="space-y-lg">

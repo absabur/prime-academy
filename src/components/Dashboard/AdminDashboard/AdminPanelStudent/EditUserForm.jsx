@@ -139,8 +139,8 @@ export default function EditUserForm({
               type="submit"
               disabled={loading}
               text={`
-              ${title.toLocaleLowerCase().includes('teacher') && 'Update Teacher'}
-              ${title.toLocaleLowerCase().includes('student') && 'Update Student'}`}
+              ${title.toLocaleLowerCase().includes('teacher') ? 'Update Teacher' : ""}
+              ${title.toLocaleLowerCase().includes('student') ? 'Update Student' : ""}`}
             ></PrimaryButton>
           </div>
         </div>

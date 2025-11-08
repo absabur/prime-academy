@@ -143,7 +143,7 @@ export default function AddUserForm({
           />
           <PrimaryButton
             type="submit"
-            text={`${title.includes('Edit') ? 'Update' : 'Add'} Student`}
+            text={`${title.toLocaleLowerCase().includes('edit') ? 'Update' : 'Add'} ${title.toLocaleLowerCase().includes('teacher') ? 'Teacher' : 'Student'}`}
             minWidth="fit"
           />
         </div>

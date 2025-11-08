@@ -1,14 +1,27 @@
 import api from '@/api/axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 
 export const fetchFaqs = createAsyncThunk('faq/fetchFaqs', async (_, { rejectWithValue }) => {
   try {
-    const response = await api.get(`${import.meta.env.VITE_API_URL}/api/faqs/`);
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/faqs/`);
     return response.data;
   } catch (error) {
     return rejectWithValue(error.response?.data || 'Something went wrong');
   }
 });
+
+export const fetchFaqsAdmin = createAsyncThunk(
+  'faq/fetchFaqsAdmin',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/api/faqs/`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
+  }
+);
 
 export const addFaqs = createAsyncThunk(
   'faq/addFaqs',
@@ -16,6 +29,7 @@ export const addFaqs = createAsyncThunk(
     try {
       const response = await api.post(`${import.meta.env.VITE_API_URL}/api/faqs/`, data);
       dispatch(fetchFaqs());
+      dispatch(fetchFaqsAdmin());
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Something went wrong');
@@ -29,6 +43,7 @@ export const editFaq = createAsyncThunk(
     try {
       const response = await api.patch(`${import.meta.env.VITE_API_URL}/api/faqs/${id}/`, data);
       dispatch(fetchFaqs());
+      dispatch(fetchFaqsAdmin());
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Something went wrong');

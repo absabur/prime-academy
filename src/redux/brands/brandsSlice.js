@@ -1,10 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createBrand, deleteBrand, fetchBrands, updateBrand } from './brandsAction';
+import {
+  createBrand,
+  deleteBrand,
+  fetchBrands,
+  fetchBrandsAdmin,
+  updateBrand,
+} from './brandsAction';
 
 const brandSlice = createSlice({
   name: 'brands',
   initialState: {
     brands: [],
+    adminPanelBrands: [],
     loadingbrands: true,
     loadingActionbrands: false,
     error: null,
@@ -30,6 +37,21 @@ const brandSlice = createSlice({
         state.brands = action.payload.data;
       })
       .addCase(fetchBrands.rejected, (state, action) => {
+        state.loadingbrands = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // brands admin
+    builder
+      .addCase(fetchBrandsAdmin.pending, (state) => {
+        // state.loadingbrands = true;
+        state.error = null;
+      })
+      .addCase(fetchBrandsAdmin.fulfilled, (state, action) => {
+        state.loadingbrands = false;
+        state.adminPanelBrands = action.payload.data;
+      })
+      .addCase(fetchBrandsAdmin.rejected, (state, action) => {
         state.loadingbrands = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });

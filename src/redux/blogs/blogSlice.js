@@ -5,6 +5,7 @@ import {
   editBlog,
   fetchBlogCategories,
   fetchBlogs,
+  fetchBlogsAdmin,
   fetchLatestBlogs,
   fetchSingleBlog,
 } from './blogAction';
@@ -14,6 +15,7 @@ const blogSlice = createSlice({
   initialState: {
     categories: [],
     blogs: [],
+    adminPanelBlogs: [],
     latestBlogs: [],
     blog: {},
     blogPagination: {},
@@ -69,6 +71,26 @@ const blogSlice = createSlice({
         };
       })
       .addCase(fetchBlogs.rejected, (state, action) => {
+        state.loadingBlogs = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // Blogs
+    builder
+      .addCase(fetchBlogsAdmin.pending, (state) => {
+        // state.loadingBlogs = true;
+        state.error = null;
+      })
+      .addCase(fetchBlogsAdmin.fulfilled, (state, action) => {
+        state.loadingBlogs = false;
+        state.adminPanelBlogs = action.payload.data.results;
+        state.blogPagination = {
+          count: action.payload?.data?.count,
+          next: action.payload?.data?.next,
+          previous: action.payload?.data?.previous,
+        };
+      })
+      .addCase(fetchBlogsAdmin.rejected, (state, action) => {
         state.loadingBlogs = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });

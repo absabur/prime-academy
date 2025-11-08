@@ -15,7 +15,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { fetchFooters, updateFooter } from '@/redux/footer/footerAction';
+import { fetchFootersAdmin, updateFooter } from '@/redux/footer/footerAction';
 import { clearMessage } from '@/redux/footer/footerSlice';
 import SortableLinkGroup from './SortableLinkGroup';
 import SortableSocialLinkItem from './SortableSocialLinkItem';
@@ -23,11 +23,12 @@ import SwalUtils from '@/utils/sweetAlert';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import SecondaryButton from '@/components/common/SecondaryButton';
 import { FaPlus } from 'react-icons/fa';
+import { fetchFooters } from '../../../../redux/footer/footerAction';
 
 // Main Component
 const UpdateFooter = ({ setModal }) => {
   const dispatch = useDispatch();
-  const { footer, message } = useSelector((state) => state.footer);
+  const { adminPanelFooter, message } = useSelector((state) => state.footer);
 
   const [data, setData] = useState(null);
 
@@ -40,7 +41,7 @@ const UpdateFooter = ({ setModal }) => {
   );
 
   useEffect(() => {
-    dispatch(fetchFooters());
+    dispatch(fetchFootersAdmin());
   }, [dispatch]);
 
   // show message  message
@@ -49,20 +50,22 @@ const UpdateFooter = ({ setModal }) => {
       setModal(false);
       SwalUtils.success(message);
       dispatch(clearMessage());
+      dispatch(fetchFootersAdmin());
+      dispatch(fetchFooters());
     }
   }, [message]);
 
   // Process data on load to add unique IDs
   useEffect(() => {
-    if (footer) {
+    if (adminPanelFooter) {
       const processedFooter = {
-        ...footer,
+        ...adminPanelFooter,
         // ✅ FIX 1: Use crypto.randomUUID() as a fallback
-        social_links: footer.social_links.map((link) => ({
+        social_links: adminPanelFooter.social_links.map((link) => ({
           ...link,
           id: link.id || crypto.randomUUID(),
         })),
-        link_groups: footer.link_groups.map((group) => ({
+        link_groups: adminPanelFooter.link_groups.map((group) => ({
           ...group,
           id: group.id || crypto.randomUUID(),
           links: group.links.map((link) => ({
@@ -73,7 +76,7 @@ const UpdateFooter = ({ setModal }) => {
       };
       setData(processedFooter);
     }
-  }, [footer]);
+  }, [adminPanelFooter]);
 
   // ✅ FIX 2 (Rules of Hooks): Move useMemo hooks *before* the early return
   const socialLinkIds = useMemo(() => (data ? data.social_links.map((s) => s.id) : []), [data]);

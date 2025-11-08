@@ -2,27 +2,26 @@ import SwalUtils from '@/utils/sweetAlert';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import DataTables from '../../common/DataTables';
-import { fetchHeros, updateHero } from '@/redux/hero/heroAction';
+import { updateHero } from '@/redux/hero/heroAction';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import SecondaryButton from '@/components/common/SecondaryButton';
 import Modal from '@/components/common/Modal';
 import EditHeroForm from './EditHeroForm';
 import { clearError, clearMessage } from '@/redux/hero/heroSlice';
 import HeroDetailsView from './HeroDetailsView';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { fetchHerosAdmin } from '../../../../redux/hero/heroAction';
 
 export default function AllHeros() {
-  const { message, error, heros } = useSelector((state) => state.hero);
+  const { message, error, adminPanelHeros } = useSelector((state) => state.hero);
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
   const [modalType, setModalType] = useState('');
-  const [searchParams] = useSearchParams();
   const [hero, setHero] = useState({});
-  const order = searchParams.get('order') || '';
 
   // handle edit modal
   const handleEditModal = async (id) => {
-    setHero(heros.find((item) => item.id == id));
+    setHero(adminPanelHeros.find((item) => item.id == id));
     setModal(true);
     setModalType('edit');
   };
@@ -33,7 +32,7 @@ export default function AllHeros() {
   };
   // handle edit
   const handleView = async (id) => {
-    setHero(heros.find((item) => item.id == id));
+    setHero(adminPanelHeros.find((item) => item.id == id));
     setModal(true);
     setModalType('view');
   };
@@ -54,7 +53,7 @@ export default function AllHeros() {
   }, [error]);
 
   useEffect(() => {
-    dispatch(fetchHeros());
+    dispatch(fetchHerosAdmin());
   }, []);
 
   const columns = [
@@ -67,7 +66,7 @@ export default function AllHeros() {
     { key: 'button2_text', label: 'Button 2' },
   ];
 
-  if (!heros?.length) return null;
+  if (!adminPanelHeros?.length) return null;
 
   return (
     <>
@@ -87,7 +86,7 @@ export default function AllHeros() {
       )}
       <DataTables
         paginationShow={false}
-        data={enhancedHeros(heros)}
+        data={enhancedHeros(adminPanelHeros)}
         columns={columns}
         error={error || null}
         deleteButton={false}

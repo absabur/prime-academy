@@ -1,4 +1,5 @@
 import { FaAngleDown, FaChevronUp } from 'react-icons/fa';
+import DOMPurify from 'dompurify';
 
 const OutLineData = ({ course, handelOpen, index, length }) => {
   return (
@@ -19,17 +20,27 @@ const OutLineData = ({ course, handelOpen, index, length }) => {
       <div className="flex-5 bg-white mb-3 px-4 py-3 rounded-2xl space-y-2 containBox relative ">
         <h1
           onClick={() => handelOpen(course.id)}
-          className="font-bold text-lg select-none cursor-pointer"
+          className="font-bold text-lg select-none cursor-pointer flex gap-sm flex-wrap wrap"
         >
+          <span className="font-bold text-lg block md:hidden">{course.title}: </span>
           {course.heading}
         </h1>
-        <p
+        {/* <p
           className={`${
             course.active ? 'max-h-[500px]' : 'max-h-0 overflow-hidden '
           } text-[16px] transition-all duration-300 ease-in-out `}
         >
           {course.description}
-        </p>
+        </p> */}
+
+        <div
+          className={`prose prose-sm max-w-none text-black/80 text-justify ${
+            course.active ? 'max-h-fit' : 'max-h-0 overflow-hidden '
+          }`}
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(course?.description),
+          }}
+        />
 
         <button
           className="flex items-center gap-2 font-bold text-[16px]"
