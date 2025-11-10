@@ -21,8 +21,8 @@ const SingleCourseHero = () => {
   return (
     <HeroSection
       bannerImage={courseHero?.banner_image}
-      title={course?.detail?.hero_text}
-      description={course?.detail?.hero_description}
+      title={course?.detail?.hero_text || course?.title}
+      description={course?.detail?.hero_description || course?.short_description}
       className="relative"
       button1={{
         text: 'Enroll Now',

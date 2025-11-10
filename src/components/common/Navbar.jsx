@@ -4,8 +4,9 @@ import { Link, useLocation } from 'react-router-dom';
 import OuterSection from './OuterSection';
 import InnerSection from './InnerSection';
 import { FiMenu, FiX } from 'react-icons/fi';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { capitalizeFirst } from '@/utils/capitalizeFirst';
+import MegaMenu from './MegaMenu';
 import './css/navbar.css';
 
 import {
@@ -24,6 +25,7 @@ import {
   FaPhone,
   FaRegEnvelope,
 } from 'react-icons/fa6';
+import { RxDividerVertical } from 'react-icons/rx';
 
 const socialIcons = {
   x: <FaXTwitter />,
@@ -89,14 +91,12 @@ const Navbar = () => {
   const navLinks = [
     { text: 'About', url: '/about' },
     // { text: 'Blogs', url: '/blogs' },
-    { text: 'Courses', url: '/courses' },
+    // Courses link is now handled by MegaMenu
     { text: 'Faqs', url: '/faqs' },
     { text: 'Contact', url: '/contact' },
-    {
-      text: isAuthenticated ? 'Dashboard' : 'Login',
-      url: isAuthenticated ? `/${user?.role}-dashboard` : '/login',
-    },
   ];
+
+  const { DesktopMegaMenu, MobileMegaMenu } = MegaMenu({ isTransparent, textColor });
 
   return (
     <>
@@ -107,19 +107,16 @@ const Navbar = () => {
           <div className={`flex gap-lg text-sm items-center`}>
             <Link
               className="transition-colors duration-300 text-white/80 hover:text-white"
-              to={`tel:+8801300290492`}
+              to={`tel:${footer?.phone}`}
             >
-              +8801300290492
+              {footer?.phone}
             </Link>
             <Link
               className="transition-colors duration-300 text-white/80 hover:text-white"
-              to={`mailto:info@primeacademy.org`}
+              to={`mailto:${footer?.email}`}
             >
-              info@primeacademy.org
+              {footer?.email}
             </Link>
-            <p className="hidden sm:block transition-colors duration-300 text-white/70 hover:text-white">
-              +8801712191415 (Bkash)
-            </p>
           </div>
           <div className="items-center gap-md flex-wrap hidden md:flex">
             {socialLinks.map((item) => (
@@ -141,8 +138,8 @@ const Navbar = () => {
         className={`fixed top-tnavbar left-0 w-full z-[100] ${bgClass}`}
         style={{ overflow: 'visible' }}
       >
-        <InnerSection Tag="header" className="h-navbar py-sm">
-          <div className="flex justify-between items-center">
+        <InnerSection Tag="header" className="h-navbar py-sm" style={{ overflow: 'visible' }}>
+          <div className="flex justify-between items-center" style={{ overflow: 'visible' }}>
             {/* Logo */}
             <Link to="/" aria-label="Go to Home" onClick={() => setMenuOpen(false)}>
               <img src={logoSrc} className="w-[190px]" alt="Prime Logo" />
@@ -150,6 +147,7 @@ const Navbar = () => {
 
             {/* Desktop Nav */}
             <nav className="hidden md:flex items-center justify-center gap-xl">
+              <DesktopMegaMenu />
               {navLinks.map(({ text, url }) => {
                 const isActive = location.pathname === url;
                 return (
@@ -158,12 +156,45 @@ const Navbar = () => {
                     to={url}
                     className={`navbar-item font-semibold transition-colors duration-200 ${
                       isActive ? 'text-primary navbar-active' : textColor
-                    } ${isTransparent ? 'no-scroll' : ''}`} // ✅ Uses refactored variable
+                    } ${isTransparent ? 'no-scroll' : ''}`}
                   >
                     {capitalizeFirst(text)}
                   </Link>
                 );
               })}
+
+              {isAuthenticated && user?.role && (
+                <Link
+                  to={`/${user?.role}-dashboard`}
+                  className={`navbar-item font-semibold transition-colors duration-200 ${textColor} ${isTransparent ? 'no-scroll' : ''}`}
+                >
+                  Dashboard
+                </Link>
+              )}
+              {!isAuthenticated && (
+                <div className="flex items-center justify-center gap-0">
+                  <Link
+                    to={`/login`}
+                    className={`navbar-item font-semibold transition-colors duration-200 ${
+                      location.pathname == '/login' ? 'text-primary navbar-active' : textColor
+                    } ${isTransparent ? 'no-scroll' : ''}`}
+                  >
+                    Login
+                  </Link>
+                  <span className={textColor}>
+                    <RxDividerVertical size={30} />
+                  </span>
+                  <Link
+                    to={`/register`}
+                    className={`navbar-item font-semibold transition-colors duration-200 ${
+                      location.pathname == '/register' ? 'text-primary navbar-active' : textColor
+                    } ${isTransparent ? 'no-scroll' : ''}`}
+                  >
+                    Register
+                  </Link>
+                </div>
+              )}
+              {/* Mega Menu for Courses */}
             </nav>
 
             {/* Mobile Menu Button */}
@@ -182,11 +213,11 @@ const Navbar = () => {
         </InnerSection>
 
         {/* Mobile Nav Drawer */}
-        {/* Mobile Nav Drawer */}
         <div
-          className={`md:hidden bg-white/40 backdrop-blur shadow-lg absolute w-full top-navbar transition-all duration-300 ease-in-out transform ${menuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}`}
+          className={`md:hidden h-[calc(100dvh-130px)] bg-white shadow-lg absolute w-full top-navbar transition-all duration-300 ease-in-out transform ${menuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}`}
         >
           <nav className="flex flex-col items-center gap-lg p-lg">
+            <MobileMegaMenu setMenuOpen={setMenuOpen} />
             {navLinks.map(({ text, url }) => {
               const isActive = location.pathname === url;
               return (
@@ -202,6 +233,39 @@ const Navbar = () => {
                 </Link>
               );
             })}
+            {isAuthenticated && user?.role && (
+              <Link
+                to={`/${user?.role}-dashboard`}
+                className={`text-center navbar-item font-semibold text-lg text-black ${isTransparent ? 'no-scroll' : ''}`}
+              >
+                Dashboard
+              </Link>
+            )}
+            {!isAuthenticated && (
+              <div className="flex items-center justify-center gap-0">
+                <Link
+                  to={`/login`}
+                  onClick={() => setMenuOpen(false)}
+                  className={`text-center navbar-item font-semibold text-lg ${
+                    location.pathname == '/login' ? 'text-primary navbar-active' : 'text-black'
+                  } ${isTransparent ? 'no-scroll' : ''}`}
+                >
+                  Login
+                </Link>
+                <span className={`text-black`}>
+                  <RxDividerVertical size={30} />
+                </span>
+                <Link
+                  to={`/register`}
+                  onClick={() => setMenuOpen(false)}
+                  className={`text-center navbar-item font-semibold text-lg ${
+                    location.pathname == '/register' ? 'text-primary navbar-active' : 'text-black'
+                  } ${isTransparent ? 'no-scroll' : ''}`}
+                >
+                  Register
+                </Link>
+              </div>
+            )}
           </nav>
         </div>
       </OuterSection>

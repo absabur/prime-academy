@@ -40,7 +40,6 @@ const AdminPanelPolicies = () => {
 
   // handleView Function
   const handleView = async (id) => {
-    console.log(policies, id);
     setPolicy(policies.find((item) => item.id == id));
     setModal(true);
     setModalType('view');

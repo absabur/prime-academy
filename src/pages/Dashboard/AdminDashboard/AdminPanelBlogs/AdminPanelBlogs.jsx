@@ -160,6 +160,7 @@ const AdminPanelBlogs = () => {
                 onCancel={() => setModal(false)}
                 onSubmit={handelEditBlog}
                 defaultValues={blog}
+                title="Edit Blog"
               />
             )}
           </div>

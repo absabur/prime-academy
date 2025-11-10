@@ -1,5 +1,3 @@
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import SecondaryButton from '@/components/common/SecondaryButton';
 import { useEffect, useState, useMemo } from 'react';
@@ -7,12 +5,12 @@ import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { Trash2, Plus, X } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSkills } from '../../../redux/skill/skillAction'; // Assumed path
-import { CKEDITOR_CONFIG } from '../../../utils/ckeditor';
 import AddSkillDropdown from './AddSkillDropdown';
 
 import SwalUtils from '@/utils/sweetAlert';
 
 import { clearError, clearMessage } from '@/redux/skill/skillSlice';
+import CKEDITOR from './CKEDITOR';
 
 // -----------------
 
@@ -250,10 +248,8 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
             control={control}
             render={({ field }) => (
               <div className="border border-black/10 rounded-md">
-                <CKEditor
-                  editor={ClassicEditor}
-                  config={CKEDITOR_CONFIG}
-                  data={field.value || ''}
+                <CKEDITOR
+                  value={field.value || ''}
                   onChange={(event, editor) => {
                     const data = editor.getData();
                     field.onChange(data);

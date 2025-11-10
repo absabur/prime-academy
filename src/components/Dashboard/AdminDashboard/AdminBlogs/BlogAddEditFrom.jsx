@@ -2,13 +2,11 @@ import PrimaryButton from '@/components/common/PrimaryButton';
 import SecondaryButton from '@/components/common/SecondaryButton';
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { CKEDITOR_CONFIG } from '@/utils/ckeditor';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaPlus } from 'react-icons/fa';
 import { addBlogCategories, fetchBlogCategories } from '../../../../redux/blogs/blogAction';
 import SwalUtils from '../../../../utils/sweetAlert';
+import CKEDITOR from '../../common/CKEDITOR';
 
 export default function BlogAddEditFrom({
   title = 'Add New Blog',
@@ -232,10 +230,8 @@ export default function BlogAddEditFrom({
             control={control}
             rules={{ required: 'Content is required' }}
             render={({ field: { onChange, value } }) => (
-              <CKEditor
-                editor={ClassicEditor}
-                config={CKEDITOR_CONFIG}
-                data={value || ''}
+              <CKEDITOR
+                value={value || ''}
                 onChange={(event, editor) => {
                   const data = editor.getData();
                   onChange(data);

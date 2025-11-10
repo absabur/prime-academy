@@ -62,7 +62,6 @@ export const updateFaqCategoryOrder = createAsyncThunk(
       dispatch(fetchFaqs());
       return response.data;
     } catch (error) {
-      console.log(error);
       return rejectWithValue(error.response?.data || 'Something went wrong');
     }
   }

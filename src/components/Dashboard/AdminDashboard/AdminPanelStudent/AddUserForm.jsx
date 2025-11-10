@@ -2,6 +2,7 @@ import PrimaryButton from '@/components/common/PrimaryButton';
 import SecondaryButton from '@/components/common/SecondaryButton';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import PasswordInput from '../../common/PasswordInput';
 
 export default function AddUserForm({
   title = 'Add New Student',
@@ -93,45 +94,33 @@ export default function AddUserForm({
         </div>
 
         {/* Password */}
-        <div>
-          <label className="block mb-sm font-medium">Password</label>
-          <input
-            type="password"
-            {...register('password', {
-              required: 'Password is required',
-              minLength: {
-                value: 6,
-                message: 'Password must be at least 6 characters',
-              },
-            })}
-            className={`w-full border ${
-              errors.password ? 'border-red-500' : 'border-black/10'
-            } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
-            placeholder="Enter password"
-          />
-          {errors.password && (
-            <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-          )}
-        </div>
+        <PasswordInput
+          label={'Password'}
+          name={'password'}
+          register={register}
+          validation={{
+            required: 'Password is required',
+            minLength: {
+              value: 6,
+              message: 'Password must be at least 6 characters',
+            },
+          }}
+          error={errors.password}
+          placeholder={'Enter password'}
+        />
 
         {/* Confirm Password */}
-        <div>
-          <label className="block mb-sm font-medium">Confirm Password</label>
-          <input
-            type="password"
-            {...register('password2', {
-              required: 'Confirm password is required',
-              validate: (value) => value === password || 'Passwords do not match',
-            })}
-            className={`w-full border ${
-              errors.password2 ? 'border-red-500' : 'border-black/10'
-            } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
-            placeholder="Confirm password"
-          />
-          {errors.password2 && (
-            <p className="text-red-500 text-sm mt-1">{errors.password2.message}</p>
-          )}
-        </div>
+        <PasswordInput
+          label={'Confirm Password'}
+          name={'password2'}
+          register={register}
+          validation={{
+            required: 'Confirm password is required',
+            validate: (value) => value === password || 'Passwords do not match',
+          }}
+          error={errors.password2}
+          placeholder={'Confirm password'}
+        />
 
         {/* Buttons */}
         <div className="md:col-span-2 flex justify-end gap-sm mt-md">

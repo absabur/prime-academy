@@ -2,9 +2,7 @@ import PrimaryButton from '@/components/common/PrimaryButton';
 import SecondaryButton from '@/components/common/SecondaryButton';
 import { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { CKEDITOR_CONFIG } from '@/utils/ckeditor';
+import CKEDITOR from '../../common/CKEDITOR';
 
 export default function AddEditFaq({
   title = 'Add New FAQ',
@@ -65,10 +63,8 @@ export default function AddEditFaq({
             control={control}
             rules={{ required: 'Answer is required' }}
             render={({ field: { onChange, value } }) => (
-              <CKEditor
-                editor={ClassicEditor}
-                config={CKEDITOR_CONFIG}
-                data={value || ''}
+              <CKEDITOR
+                value={value || ''}
                 onChange={(event, editor) => {
                   const data = editor.getData();
                   onChange(data);
@@ -87,10 +83,7 @@ export default function AddEditFaq({
             text="Cancel"
             type="button"
           />
-          <PrimaryButton
-            type="submit"
-            text={title.includes('Edit') ? 'Update FAQ' : 'Add FAQ'}
-          />
+          <PrimaryButton type="submit" text={title.includes('Edit') ? 'Update FAQ' : 'Add FAQ'} />
         </div>
       </div>
     </form>

@@ -17,8 +17,6 @@ export const loginUser = createAsyncThunk(
       route = '/api/students/login/';
     }
 
-    console.log(`${import.meta.env.VITE_API_URL}${route}`);
-
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}${route}`, credentials);
       return res.data; // success

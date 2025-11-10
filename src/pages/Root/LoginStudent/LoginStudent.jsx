@@ -2,6 +2,7 @@ import { FaBook, FaUsers } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import ContentCard from '@/components/Root/login/ContentCard';
 import { loginUser } from '@/redux/auth/authAction';
 import PrimaryButton from '@/components/common/PrimaryButton';
@@ -12,22 +13,27 @@ import OuterSection from '@/components/common/OuterSection';
 import { useSEO } from '@/hooks/usePageSeo';
 import { fetchSeos } from '@/redux/seo/seoAction';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
+import PasswordInput from '../../../components/Dashboard/common/PasswordInput';
 
 export default function LoginStudent() {
   const { error, isAuthenticated, loading, user } = useSelector((state) => state.auth);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [pageSeo, setPageSeo] = useState(null);
   const { seos } = useSelector((state) => state.seo);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const handleLogin = (data) => {
+    const { email, password } = data;
+
     if (!email) return SwalUtils.warning('Enter Your Email!');
     if (!password) return SwalUtils.warning('Enter Your Password');
 
-    // Dispatch login async
     dispatch(loginUser({ email, password, role: 'student' }));
   };
 
@@ -38,7 +44,6 @@ export default function LoginStudent() {
     }
   }, [error]);
 
-  // Navigate when login is successful
   useEffect(() => {
     if (isAuthenticated) navigate(`/${user?.role}-dashboard`);
   }, [isAuthenticated]);
@@ -86,28 +91,32 @@ export default function LoginStudent() {
             Sign in to access your learning dashboard
           </p>
 
-          <form onSubmit={handleLogin} className="w-full flex flex-col gap-3 mt-3">
+          <form onSubmit={handleSubmit(handleLogin)} className="w-full flex flex-col gap-3 mt-3">
             <label htmlFor="email">Email</label>
             <input
               id="email"
               type="text"
-              placeholder="Enter you email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="Enter your email"
+              {...register('email', { required: true })}
+              className="w-full p-sm border border-gray-300 rounded"
             />
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
+            {errors.email && <span className="text-red-500 text-sm">Email is required</span>}
+
+            <PasswordInput
+              label={'Password'}
+              name={'password'}
+              register={register}
+              validation={{
+                required: 'Password is required',
+              }}
+              error={errors.password}
+              placeholder={'Enter password'}
             />
+
             <Link className="text-primary-light" to={`/forgot-password`}>
               Forgot Password?
             </Link>
+
             <PrimaryButton
               className="mt-xl"
               disabled={loading}

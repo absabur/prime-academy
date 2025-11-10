@@ -6,6 +6,7 @@
  * - Supports an additional ImageContent section within the blog
  */
 
+import DOMPurify from 'dompurify';
 import { useSelector } from 'react-redux';
 import ImageContent from '../../common/ImageContent';
 import ReactMarkdown from 'react-markdown';
@@ -35,9 +36,12 @@ const BlogBody = () => {
       <h2 className="text-3xl font-bold font-heading leading-xl">{blog?.title}</h2>
 
       {/* Blog content paragraphs */}
-      <article className="space-y-md text-heading text-base leading-lg mb-lg">
-        <ReactMarkdown>{blog?.content || ''}</ReactMarkdown>
-      </article>
+      <article
+        className="prose prose-sm max-w-none text-black/80 text-justify space-y-md text-heading text-base leading-lg mb-lg"
+        dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(blog?.content),
+        }}
+      />
 
       {/* Optional featured image/content section */}
       <ImageContent data={content} ip="left" />

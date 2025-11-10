@@ -14,7 +14,7 @@ export default function AuthLayout() {
       <Navbar />
 
       {/* Main content area; dynamic route content is injected via <Outlet /> */}
-      <main className="w-full flex-1 flex flex-col items-center overflow-x-hidden mt-[90px]">
+      <main className="w-full flex-1 flex flex-col items-center overflow-x-hidden mt-fnavbar">
         <Outlet />
       </main>
 

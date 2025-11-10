@@ -1,29 +1,37 @@
 /**
  * KnowUs Component
  * ----------------
- * - Displays key facts and figures about the academy
- * - Layout:
- *    1. Text content on the left (heading + description)
+ * - Highlights key statistics and achievements of Prime Academy
+ * - Split layout:
+ *    1. Text and CTA on the left
  *    2. Statistics grid on the right
- * - Includes a decorative RoundShape element for visual appeal
+ * - Uses OuterSection + InnerSection for consistent layout
+ * - Includes a PrimaryButton for user engagement
  */
 
 import OuterSection from '../../common/OuterSection';
 import InnerSection from '../../common/InnerSection';
-import RoundShape from '../../common/RoundShape';
 import KnowUsComponent from '../../common/KnowUs';
-import { aboutKnowUs } from '../../../data/aboutPageData';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchAcademyOverview } from '../../../redux/imgIconContent/imgIconContentAction';
 
 const KnowUs = () => {
-  return (
-    <OuterSection className="relative">
-      {/* Decorative element positioned to the right */}
+  const { academyOverview } = useSelector((state) => state.imgIconContent);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchAcademyOverview());
+  }, []);
 
-      <InnerSection className="flex flex-col md:flex-row gap-lg">
-        <KnowUsComponent statsData={aboutKnowUs?.stats} content={aboutKnowUs?.content} />
-      </InnerSection>
-    </OuterSection>
-  );
+  if (academyOverview?.length) {
+    return (
+      <OuterSection>
+        <InnerSection className="flex flex-col lg:flex-row gap-lg">
+          <KnowUsComponent data={academyOverview[0]} />
+        </InnerSection>
+      </OuterSection>
+    );
+  }
 };
 
 export default KnowUs;

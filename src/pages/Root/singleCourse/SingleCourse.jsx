@@ -15,6 +15,7 @@ import { fetchSingleCourse } from '../../../redux/courses/courseAction';
 const SingleCourse = () => {
   const params = useParams();
   const { course } = useSelector((state) => state.course);
+  console.log(course)
   // tab handel state
   const [openTab, setOpenTab] = useState('left');
 
@@ -25,7 +26,7 @@ const SingleCourse = () => {
   useEffect(() => {
     dispatch(fetchImgIconContents({ page: 'single-course' }));
     dispatch(fetchSeos());
-    dispatch(fetchSingleCourse(params.id));
+    dispatch(fetchSingleCourse(params.slug));
   }, []);
 
   useEffect(() => {

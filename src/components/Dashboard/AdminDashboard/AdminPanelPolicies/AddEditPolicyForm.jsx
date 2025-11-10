@@ -2,10 +2,7 @@ import PrimaryButton from '@/components/common/PrimaryButton';
 import SecondaryButton from '@/components/common/SecondaryButton';
 import { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { CKEDITOR_CONFIG } from '@/utils/ckeditor';
+import CKEDITOR from '../../common/CKEDITOR';
 
 export default function AddEditPolicyForm({
   title = 'Add New Policy',
@@ -96,10 +93,8 @@ export default function AddEditPolicyForm({
             control={control}
             rules={{ required: 'Policy Content is required' }}
             render={({ field: { onChange, value } }) => (
-              <CKEditor
-                editor={ClassicEditor}
-                config={CKEDITOR_CONFIG}
-                data={value || ''}
+              <CKEDITOR
+                value={value || ''}
                 onChange={(event, editor) => {
                   const data = editor.getData();
                   onChange(data);

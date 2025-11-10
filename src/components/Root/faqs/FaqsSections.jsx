@@ -54,12 +54,12 @@ const FaqsSections = () => {
                           return (
                             <div
                               key={qna?.id}
-                              className="flex w-full flex-col border-b border-black/50 py-md"
+                              className="flex w-full flex-col border-b border-black/50"
                             >
                               {/* Question Header */}
                               <button
                                 onClick={() => toggleFaq(qna?.id)}
-                                className="flex justify-between gap-lg items-center text-lg cursor-pointer font-bold font-heading text-left w-full"
+                                className={`flex justify-between gap-lg items-center text-lg cursor-pointer font-bold font-heading text-left w-full py-md px-md ${isOpen ? 'shadow-md bg-secondary-bg' : ''}`}
                                 aria-expanded={isOpen}
                                 aria-controls={`faq-${qna?.id}`}
                               >
@@ -76,9 +76,9 @@ const FaqsSections = () => {
                                     : 'grid-rows-[0fr] opacity-0'
                                 }`}
                               >
-                                <div className="overflow-hidden ml-sm">
+                                <div className={`overflow-hidden pl-md ${isOpen ? 'pb-lg' : ''}`}>
                                   <div
-                                    className="prose prose-sm text-gray-700 leading-relaxed max-w-none"
+                                    className="prose prose-sm leading-relaxed max-w-none"
                                     dangerouslySetInnerHTML={{
                                       __html: DOMPurify.sanitize(qna?.answer),
                                     }}

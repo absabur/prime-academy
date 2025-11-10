@@ -1,8 +1,9 @@
 import { FaBook, FaUsers } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useForm } from 'react-hook-form';
 import ContentCard from '@/components/Root/login/ContentCard';
-import { loginUser, registerStudent } from '@/redux/auth/authAction';
+import { registerStudent } from '@/redux/auth/authAction';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import { clearAuthError, clearAuthMessage } from '@/redux/auth/authSlice';
 import SwalUtils from '@/utils/sweetAlert';
@@ -12,6 +13,7 @@ import { useSEO } from '@/hooks/usePageSeo';
 import { fetchSeos } from '@/redux/seo/seoAction';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
 import { Link } from 'react-router-dom';
+import PasswordInput from '../../../components/Dashboard/common/PasswordInput';
 
 export default function RegisterStudent() {
   const { error, loading, message } = useSelector((state) => state.auth);
@@ -19,23 +21,16 @@ export default function RegisterStudent() {
   const [pageSeo, setPageSeo] = useState(null);
   const { seos } = useSelector((state) => state.seo);
 
-  const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone: '',
-    password: '',
-    password2: '',
-  });
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+    reset,
+  } = useForm();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleRegister = (e) => {
-    e.preventDefault();
-
-    const { first_name, last_name, email, phone, password, password2 } = formData;
+  const handleRegister = (data) => {
+    const { first_name, last_name, email, phone, password, password2 } = data;
 
     if (!first_name || !last_name || !email || !phone || !password || !password2) {
       return SwalUtils.warning('All fields are required!');
@@ -44,7 +39,7 @@ export default function RegisterStudent() {
     if (password !== password2) {
       return SwalUtils.warning('Passwords do not match!');
     }
-    // Submit data
+
     dispatch(registerStudent({ first_name, last_name, email, phone, password, password2 }));
   };
 
@@ -56,9 +51,9 @@ export default function RegisterStudent() {
     if (message) {
       SwalUtils.success(message);
       dispatch(clearAuthMessage());
+      reset();
     }
   }, [error, message]);
-
 
   useEffect(() => {
     dispatch(fetchSeos());
@@ -103,76 +98,77 @@ export default function RegisterStudent() {
             Register to get started with your learning journey
           </p>
 
-          <form onSubmit={handleRegister} className="w-full flex flex-col gap-3 mt-3">
+          <form onSubmit={handleSubmit(handleRegister)} className="w-full flex flex-col gap-3 mt-3">
             <div className="flex gap-3">
               <div className="w-full">
                 <label htmlFor="first_name">First Name</label>
                 <input
                   id="first_name"
-                  name="first_name"
                   type="text"
                   placeholder="First Name"
-                  value={formData.first_name}
-                  onChange={handleChange}
+                  {...register('first_name', { required: true })}
                   className="w-full p-2 border border-gray-300 rounded"
                 />
+                {errors.first_name && (
+                  <span className="text-red-500 text-sm">First name is required</span>
+                )}
               </div>
               <div className="w-full">
                 <label htmlFor="last_name">Last Name</label>
                 <input
                   id="last_name"
-                  name="last_name"
                   type="text"
                   placeholder="Last Name"
-                  value={formData.last_name}
-                  onChange={handleChange}
+                  {...register('last_name', { required: true })}
                   className="w-full p-2 border border-gray-300 rounded"
                 />
+                {errors.last_name && (
+                  <span className="text-red-500 text-sm">Last name is required</span>
+                )}
               </div>
             </div>
 
             <label htmlFor="email">Email</label>
             <input
               id="email"
-              name="email"
               type="email"
               placeholder="Enter your Email"
-              value={formData.email}
-              onChange={handleChange}
+              {...register('email', { required: true })}
               className="w-full p-2 border border-gray-300 rounded"
             />
+            {errors.email && <span className="text-red-500 text-sm">Email is required</span>}
 
             <label htmlFor="phone">Phone</label>
             <input
               id="phone"
-              name="phone"
               type="text"
               placeholder="01XXXXXXXXX"
-              value={formData.phone}
-              onChange={handleChange}
+              {...register('phone', { required: true })}
               className="w-full p-2 border border-gray-300 rounded"
             />
+            {errors.phone && <span className="text-red-500 text-sm">Phone is required</span>}
 
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="Enter Password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded"
+            <PasswordInput
+              label={'Password'}
+              name={'password'}
+              register={register}
+              validation={{
+                required: 'Password is required',
+              }}
+              error={errors.password}
+              placeholder={'Enter password'}
             />
 
-            <label htmlFor="password2">Confirm Password</label>
-            <input
-              id="password2"
-              name="password2"
-              type="password"
-              placeholder="Confirm Password"
-              value={formData.password2}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded"
+            <PasswordInput
+              label={'Confirm Password'}
+              name={'password2'}
+              register={register}
+              validation={{
+                required: 'Password is required',
+                validate: (val) => val === watch('password') || 'Passwords do not match',
+              }}
+              error={errors.password2}
+              placeholder={'Confirm password'}
             />
 
             <PrimaryButton

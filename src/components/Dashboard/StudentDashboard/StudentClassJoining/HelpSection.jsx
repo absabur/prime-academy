@@ -18,7 +18,7 @@ const HelpSection = () => {
       <div className="flex-grow text-center lg:text-left">
         <h2 className="text-3xl md:text-4xl font-bold mb-sm text-center">Need help?</h2>
         <p className="text-base md:text-lg text-white/70 text-center">
-          Call for any technical issues (12am to 12am)
+          Call for any technical issues (9 AM to 5 PM)
         </p>
       </div>
 

@@ -2,53 +2,36 @@ import OuterSection from './OuterSection';
 import InnerSection from './InnerSection';
 import PrimaryButton from './PrimaryButton';
 import CourseFeatureCard from './CourseFeatureCard';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import 'swiper/css';
 import TabButtons from './TabButtons';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCourses } from '../../redux/courses/courseAction';
+import { fetchOurCourses } from '../../redux/courses/courseAction';
 
-// ✅ New prop-based version — expects flat course array as `courses`
 const OurCourse = () => {
-  const { courses, pageSize } = useSelector((state) => state.course);
+  const { ourCourses } = useSelector((state) => state.course);
   const dispatch = useDispatch();
-  // --- Step 1: Group by category name ---
-  const groupedCourses = useMemo(() => {
-    const groups = {};
-    courses.forEach((course) => {
-      const catName = course.category?.name || 'Uncategorized';
-      if (!groups[catName]) groups[catName] = [];
-      groups[catName].push(course);
-    });
-    // convert to old compatible format
-    return Object.entries(groups).map(([category, courseList]) => ({
-      category,
-      courses: courseList,
-    }));
-  }, [courses]);
 
   useEffect(() => {
-    dispatch(
-      fetchCourses({
-        page: 1,
-        page_size: 100,
-      })
-    );
-  }, [pageSize]);
+    dispatch(fetchOurCourses());
+  }, [dispatch]);
 
-  // --- Step 2: Use first category as default ---
-  const [selectedCategory, setSelectedCategory] = useState(groupedCourses[0]?.category || '');
+  // --- Step 1: set default category from first group ---
+  const [selectedCategory, setSelectedCategory] = useState(ourCourses?.[0]?.category?.name || '');
 
   useEffect(() => {
-    setSelectedCategory(groupedCourses[0]?.category);
-  }, [groupedCourses]);
+    if (ourCourses?.length > 0) {
+      setSelectedCategory(ourCourses[0].category.name);
+    }
+  }, [ourCourses]);
 
-  // --- Step 3: Filter current courses ---
-  const selectedCourses =
-    groupedCourses.find((c) => c.category === selectedCategory)?.courses || [];
+  // --- Step 2: Find courses for selected category ---
+  const selectedGroup = ourCourses?.find((g) => g.category.name === selectedCategory);
+  const selectedCourses = selectedGroup?.courses || [];
 
+  // --- Step 3: Swiper setup ---
   const swiperRef = useRef(null);
   const [canSlidePrev, setCanSlidePrev] = useState(false);
   const [canSlideNext, setCanSlideNext] = useState(false);
@@ -75,9 +58,11 @@ const OurCourse = () => {
           career
         </p>
 
-        {/* ✅ Compatible with new grouped data */}
+        {/* ✅ Now directly use ourCourses */}
         <TabButtons
-          data={groupedCourses}
+          data={ourCourses.map((g) => ({
+            category: g.category.name,
+          }))}
           selected={selectedCategory}
           setSelected={setSelectedCategory}
         />
@@ -91,25 +76,25 @@ const OurCourse = () => {
             autoplay={false}
             allowTouchMove={false}
             spaceBetween={20}
-            breakpoints={{
-              0: { slidesPerView: 1 },
-              768: { slidesPerView: 2 },
-              1024: { slidesPerView: 4 },
-            }}
+            slidesPerView="auto" // fixed width slides allow করে
+            slidesPerGroup={1} // একবারে ১টা করে স্ক্রল হবে
             className="!items-stretch"
             style={{ padding: '10px' }}
           >
-            {selectedCourses.map((course) => {
-              if (course?.is_active) {
-                return (
-                  <SwiperSlide key={course.id} className="flex items-stretch !h-auto">
-                    <div className="flex-1 h-full">
+            {selectedCourses.map(
+              (course) =>
+                course.is_active && (
+                  <SwiperSlide
+                    key={course.id}
+                    className="flex items-stretch !h-auto"
+                    style={{ width: '320px' }} // fixed width
+                  >
+                    <div className="h-full">
                       <CourseFeatureCard course={course} />
                     </div>
                   </SwiperSlide>
-                );
-              }
-            })}
+                )
+            )}
           </Swiper>
 
           {canSlidePrev && (

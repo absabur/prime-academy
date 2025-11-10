@@ -9,7 +9,13 @@ const CourseFeatureCard = ({ course }) => {
     >
       <div className="space-y-4">
         {course?.header_image ? (
-          <img src={course?.header_image} alt={course?.title} width={50} />
+          <img
+            src={`${import.meta.env.VITE_API_URL}${course?.header_image}`}
+            alt={course?.title}
+            width={50}
+            height={50}
+            style={{ objectFit: 'cover' }}
+          />
         ) : (
           <div className="w-12 h-12 bg-gray-200 rounded" />
         )}

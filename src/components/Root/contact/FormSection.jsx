@@ -7,8 +7,10 @@ import { Link } from 'react-router-dom';
 import PrimaryButton from '../../common/PrimaryButton';
 import axios from 'axios';
 import SwalUtils from '@/utils/sweetAlert';
+import { useSelector } from 'react-redux';
 
 const FormSection = () => {
+  const { footer } = useSelector((state) => state.footer);
   const {
     register,
     handleSubmit,
@@ -46,15 +48,15 @@ const FormSection = () => {
 
           <div className="flex gap-md items-center">
             <BsTelephoneFill />
-            <Link to={`tel:+8801325731050`} className="hover:text-primary-light">
-              01325 731 050
+            <Link to={`tel:${footer?.phone}`} className="hover:text-primary-light">
+              {footer?.phone}
             </Link>
           </div>
 
           <div className="flex gap-md items-center">
             <MdEmail />
-            <Link to={`mailto:info@primeacademy.org`} className="hover:text-primary-light">
-              info@primeacademy.org
+            <Link to={`mailto:${footer?.email}`} className="hover:text-primary-light">
+              {footer?.email}
             </Link>
           </div>
         </div>

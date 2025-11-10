@@ -13,7 +13,7 @@ const ScrollIntoSectionButtons = ({ headings }) => {
   const handleScroll = (id) => {
     const element = document.getElementById(id);
     if (element) {
-      const yOffset = -70; // Keeps 70px space at the top for fixed headers
+      const yOffset = -130; // Keeps 70px space at the top for fixed headers
       const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }

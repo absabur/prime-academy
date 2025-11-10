@@ -1,11 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchCourseCategories, fetchCourses, fetchSingleCourse } from './courseAction';
+import {
+  fetchCourseCategories,
+  fetchCourses,
+  fetchMegaCourses,
+  fetchOurCourses,
+  fetchSingleCourse,
+} from './courseAction';
 
 const courseSlice = createSlice({
   name: 'course',
   initialState: {
     categories: [],
     courses: [],
+    ourCourses: [],
+    megaCourses: [],
     course: {},
     coursePagination: {},
     pageSize: 12,
@@ -51,6 +59,36 @@ const courseSlice = createSlice({
         };
       })
       .addCase(fetchCourses.rejected, (state, action) => {
+        state.loadingCourses = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // Our Courses
+    builder
+      .addCase(fetchOurCourses.pending, (state) => {
+        state.loadingCourses = true;
+        state.error = null;
+      })
+      .addCase(fetchOurCourses.fulfilled, (state, action) => {
+        state.loadingCourses = false;
+        state.ourCourses = action.payload.data;
+      })
+      .addCase(fetchOurCourses.rejected, (state, action) => {
+        state.loadingCourses = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // Mega Menu Courses
+    builder
+      .addCase(fetchMegaCourses.pending, (state) => {
+        state.loadingCourses = true;
+        state.error = null;
+      })
+      .addCase(fetchMegaCourses.fulfilled, (state, action) => {
+        state.loadingCourses = false;
+        state.megaCourses = action.payload.data;
+      })
+      .addCase(fetchMegaCourses.rejected, (state, action) => {
         state.loadingCourses = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });

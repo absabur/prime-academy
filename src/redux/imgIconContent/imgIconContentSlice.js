@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchImgIconContents, fetchOurValues } from './imgIconContentAction';
+import { fetchAcademyOverview, fetchImgIconContents, fetchOurValues } from './imgIconContentAction';
 
 const imgIconContentSlice = createSlice({
   name: 'imgIconContent',
@@ -7,6 +7,7 @@ const imgIconContentSlice = createSlice({
     imgIconContents: [],
     loadingImgIconContents: true,
     ourValues: null,
+    academyOverview: null,
     error: null,
   },
   reducers: {
@@ -41,6 +42,21 @@ const imgIconContentSlice = createSlice({
         state.ourValues = action.payload.data;
       })
       .addCase(fetchOurValues.rejected, (state, action) => {
+        state.loadingImgIconContents = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // our values
+    builder
+      .addCase(fetchAcademyOverview.pending, (state) => {
+        state.loadingImgIconContents = true;
+        state.error = null;
+      })
+      .addCase(fetchAcademyOverview.fulfilled, (state, action) => {
+        state.loadingImgIconContents = false;
+        state.academyOverview = action.payload.data;
+      })
+      .addCase(fetchAcademyOverview.rejected, (state, action) => {
         state.loadingImgIconContents = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });

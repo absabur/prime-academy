@@ -11,20 +11,22 @@ import ImgContentBottom from '../ImgContentBottom';
 import LetStartFrom from '../LetStartFrom';
 import SuccessStories from '../SuccessStories';
 import ImgContentTop from '../ImgContentTop';
+import { useSelector } from 'react-redux';
 
 const LeftSideContent = () => {
+  const { course } = useSelector((state) => state.course);
   return (
     <>
       <CourseValueHeading />
       <TabContainSection tabContain={singleCourseValues} />
-      <WhoCanEnroll />
-      <CourseOutLine />
+      {course?.detail?.why_enrol?.length && <WhoCanEnroll />}
+      {course?.detail?.modules?.length && <CourseOutLine />}
       <ImgContentTop />
-      <BenefitsThisCourse />
+      {course?.detail?.benefits?.length && <BenefitsThisCourse />}
       <LetStartFrom />
       <ImgContentBottom />
       <PartnerSlider />
-      <SuccessStories />
+      {course?.detail?.success_stories?.length && <SuccessStories />}
       <OurCourse />
     </>
   );

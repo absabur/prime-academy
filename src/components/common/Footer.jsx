@@ -58,14 +58,12 @@ const Footer = () => {
     telegram: <FaTelegram />,
   };
 
-  console.log(footer)
-
   return (
     <>
       <OuterSection className="mt-auto bg-primary">
         <InnerSection
           Tag="footer"
-          className="text-white" // Standardized vertical padding
+          className="text-white py-xl" // Standardized vertical padding
         >
           <div className="grid grid-cols-4 gap-xl">
             {/* Brand & Contact Info */}

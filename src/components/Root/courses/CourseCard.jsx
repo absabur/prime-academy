@@ -4,7 +4,6 @@ import { FaArrowRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const CourseCard = ({ item, index }) => {
-  console.log(item)
   return (
     <Card
       key={index}
@@ -28,7 +27,7 @@ const CourseCard = ({ item, index }) => {
 
         {/* Read More at bottom */}
         <Link
-          to={item.id}
+          to={item.slug}
           className="font-bold w-[fit-content] text-base text-black flex gap-sm items-center mt-auto"
         >
           Read More <FaArrowRight />

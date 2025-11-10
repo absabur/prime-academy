@@ -87,7 +87,7 @@ function RoutesComponent() {
         <Route path="about" element={<About />} />
         <Route path=":policy" element={<Policy />} />
         <Route path="courses" element={<CoursesPage />} />
-        <Route path="courses/:id" element={<SingleCourse />} />
+        <Route path="courses/:slug" element={<SingleCourse />} />
       </Route>
 
       {/* 🚀 LANDING PAGE */}

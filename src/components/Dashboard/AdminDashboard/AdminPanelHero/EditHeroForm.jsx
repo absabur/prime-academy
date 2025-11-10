@@ -123,7 +123,7 @@ export default function EditHeroForm({
     }
 
     // Note: You might not want to reset() here if the submit fails
-    // reset();
+    reset();
     // setPreview(null);
   };
 

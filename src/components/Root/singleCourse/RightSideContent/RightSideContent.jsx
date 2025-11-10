@@ -3,7 +3,6 @@ import CourseValueHeading from '../CourseValueHeading';
 import TabContainSection from '@/components/common/TabContentSection';
 import { singleCourseValues } from '@/data/singleCoursePageData';
 import CourseOutLine from '../CourseOutLine';
-import FactStat from '../FactStat';
 import PartnerSlider from '@/components/common/PartnerSlider';
 import SuccessStories from '../SuccessStories';
 import ImgContentMiddle from '../ImgContentMiddle';
@@ -13,9 +12,8 @@ const RightSideContent = () => {
     <>
       <CourseValueHeading />
       <TabContainSection tabContain={singleCourseValues} />
-      <CourseOutLine />
-      <FactStat />
-      <ImgContentMiddle />
+      {/* <CourseOutLine /> */}
+      {/* <ImgContentMiddle /> */}
       <PartnerSlider />
       <SuccessStories />
     </>

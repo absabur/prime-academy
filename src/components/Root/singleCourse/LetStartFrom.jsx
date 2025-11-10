@@ -5,8 +5,10 @@ import { BsTelephoneFill } from 'react-icons/bs';
 import { MdEmail } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import SecondaryButton from '@/components/common/SecondaryButton';
+import { useSelector } from 'react-redux';
 
 const LetStartFrom = () => {
+  const { footer } = useSelector((state) => state.footer);
   return (
     <OuterSection
       className="w-full min-h-[800px] bg-cover bg-center"
@@ -23,16 +25,16 @@ const LetStartFrom = () => {
           {/* Phone Contact */}
           <div className="flex gap-md items-center">
             <BsTelephoneFill />
-            <Link to={`tel:+8801325731050`} className="hover:text-white">
-              01325 731 050
+            <Link to={`tel:${footer?.phone}`} className="hover:text-white">
+              {footer?.phone}
             </Link>
           </div>
 
           {/* Email Contact */}
           <div className="flex gap-md items-center">
             <MdEmail />
-            <Link to={`mailto:info@primeacademy.org`} className="hover:text-white">
-              info@primeacademy.org
+            <Link to={`mailto:${footer?.email}`} className="hover:text-white">
+              {footer?.email}
             </Link>
           </div>
         </div>
@@ -146,7 +148,12 @@ const LetStartFrom = () => {
             </div>
 
             {/* Submit Button */}
-            <SecondaryButton from={'hero'} type="submit" text={`Let's go!`} className="rounded-lg mt-md" />
+            <SecondaryButton
+              from={'hero'}
+              type="submit"
+              text={`Let's go!`}
+              className="rounded-lg mt-md"
+            />
           </form>
         </div>
       </InnerSection>

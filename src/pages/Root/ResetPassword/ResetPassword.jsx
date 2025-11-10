@@ -2,8 +2,9 @@ import { FaBook, FaUsers } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import ContentCard from '@/components/Root/login/ContentCard';
-import { forgotPassword, resetPassword } from '@/redux/auth/authAction';
+import { resetPassword } from '@/redux/auth/authAction';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import { clearAuthError } from '@/redux/auth/authSlice';
 import SwalUtils from '@/utils/sweetAlert';
@@ -12,6 +13,7 @@ import OuterSection from '@/components/common/OuterSection';
 import { useSEO } from '@/hooks/usePageSeo';
 import { fetchSeos } from '@/redux/seo/seoAction';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
+import PasswordInput from '../../../components/Dashboard/common/PasswordInput';
 
 export default function ResetPassword() {
   const { error, message, isAuthenticated, loading, user } = useSelector((state) => state.auth);
@@ -21,17 +23,24 @@ export default function ResetPassword() {
   const [pageSeo, setPageSeo] = useState(null);
   const { seos } = useSelector((state) => state.seo);
 
-  // ✅ Form States
-  const [new_password, setNewPassword] = useState('');
-  const [new_password2, setConfirmPassword] = useState('');
-
   // ✅ Extract token from query params
   const queryParams = new URLSearchParams(location.search);
   const token = queryParams.get('token');
 
-  // ✅ Handle Reset Submission
-  const handleReset = (e) => {
-    e.preventDefault();
+  // ✅ React Hook Form setup
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+
+  const new_password = watch('new_password');
+  const new_password2 = watch('new_password2');
+
+  // ✅ Handle form submit
+  const onSubmit = (data) => {
+    const { new_password, new_password2 } = data;
 
     if (!new_password || !new_password2)
       return SwalUtils.warning('Enter and confirm your new password!');
@@ -106,27 +115,26 @@ export default function ResetPassword() {
             Enter your details to reset your password
           </p>
 
-          <form onSubmit={handleReset} className="w-full flex flex-col gap-3 mt-3">
-            {/* New Password */}
-            <label htmlFor="new_password">New Password*</label>
-            <input
-              id="new_password"
-              type="password"
-              placeholder="Enter new password"
-              value={new_password}
-              onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
+          <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col gap-3 mt-3">
+            <PasswordInput
+              label={'Password'}
+              name={'new_password'}
+              register={register}
+              validation={{ required: 'New password is required' }}
+              error={errors.new_password}
+              placeholder={'Enter new password'}
             />
 
-            {/* Confirm Password */}
-            <label htmlFor="new_password2">Confirm Password*</label>
-            <input
-              id="new_password2"
-              type="password"
-              placeholder="Confirm new password"
-              value={new_password2}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
+            <PasswordInput
+              label={'Confirm Password'}
+              name={'new_password2'}
+              register={register}
+              validation={{
+                required: 'Confirm Password is required',
+                validate: (val) => val === watch('new_password') || 'Passwords do not match',
+              }}
+              error={errors.new_password2}
+              placeholder={'Confirm password'}
             />
 
             <PrimaryButton

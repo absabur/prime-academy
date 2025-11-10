@@ -2,6 +2,7 @@ import { FaBook, FaGraduationCap, FaUsers } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import ContentCard from '@/components/Root/login/ContentCard';
 import { loginUser } from '@/redux/auth/authAction';
 import PrimaryButton from '@/components/common/PrimaryButton';
@@ -13,25 +14,29 @@ import { useSEO } from '@/hooks/usePageSeo';
 import { fetchSeos } from '@/redux/seo/seoAction';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
 import { RoleButton } from '../../../components/Root/login/RoleButton';
+import PasswordInput from '../../../components/Dashboard/common/PasswordInput';
 
 export default function LoginRole() {
   const { error, isAuthenticated, loading, user } = useSelector((state) => state.auth);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [pageSeo, setPageSeo] = useState(null);
   const { seos } = useSelector((state) => state.seo);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const handleLogin = (data) => {
+    const { email, password } = data;
     if (!email) return SwalUtils.warning('Please Enter Your Email!', 'Email Required');
     if (!password) return SwalUtils.warning('Please Enter Your Password', 'Password Required');
     if (!role)
       return SwalUtils.warning('Please choose your role before proceeding.', 'Select Role');
 
-    // Dispatch login async
     dispatch(loginUser({ email, password, role }));
   };
 
@@ -41,7 +46,7 @@ export default function LoginRole() {
       dispatch(clearAuthError());
     }
   }, [error]);
-  // Navigate when login is successful
+
   useEffect(() => {
     if (isAuthenticated) navigate(`/${user?.role}-dashboard`);
   }, [isAuthenticated]);
@@ -59,6 +64,7 @@ export default function LoginRole() {
   return (
     <OuterSection className="min-h-screen">
       <InnerSection className="flex flex-col md:flex-row gap-20 justify-center items-center">
+        {/* Left side content cards */}
         <div className="flex-1 w-full max-w-[500px] hidden lg:flex flex-col items-center justify-center gap-6">
           <div className="flex flex-col items-center justify-center gap-3">
             <img src="/assets/prime-academy-logo-full-dark.png" width={180} alt="Prime Academy" />
@@ -88,25 +94,28 @@ export default function LoginRole() {
             Sign in to access your learning dashboard
           </p>
 
-          <form onSubmit={handleLogin} className="w-full flex flex-col gap-3 mt-3">
+          <form onSubmit={handleSubmit(handleLogin)} className="w-full flex flex-col gap-3 mt-3">
             <label htmlFor="email">Email</label>
             <input
               id="email"
               type="text"
               placeholder="Username"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
+              {...register('email', { required: true })}
+              className="w-full p-sm border border-gray-300 rounded"
             />
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
+            {errors.email && <span className="text-red-500 text-sm">Email is required</span>}
+
+            <PasswordInput
+              label={'Password'}
+              name={'password'}
+              register={register}
+              validation={{
+                required: 'Password is required',
+              }}
+              error={errors.password}
+              placeholder={'Enter password'}
             />
+
             <PrimaryButton
               className="mt-xl"
               disabled={loading}
@@ -115,7 +124,7 @@ export default function LoginRole() {
             />
           </form>
 
-          <div className=" w-full flex justify-center items-center gap-3 mt-4 ">
+          <div className="w-full flex justify-center items-center gap-3 mt-4">
             <hr className="flex-1 text-black/50" />
             <p className="text-black/50">Select Role</p>
             <hr className="flex-1 text-black/50" />
@@ -140,7 +149,7 @@ export default function LoginRole() {
           </div>
 
           <p className="text-black/50 text-base w-full text-center mt-2">
-            You can't login without selecting you own role
+            You can't login without selecting your own role
           </p>
         </div>
       </InnerSection>

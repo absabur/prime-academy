@@ -1,11 +1,13 @@
-import axios from "axios";
+import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchCourseCategories = createAsyncThunk(
   'course/fetchCategories',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/course-categories/?is_active=true`);
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/course-categories/?is_active=true`
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -21,6 +23,34 @@ export const fetchCourses = createAsyncThunk(
       const searchParam = search ? `&search=${search}` : '';
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/courses/?status=published&page=${page}&page_size=${page_size}${categoryParam}${searchParam}&is_active=true`
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
+  }
+);
+
+export const fetchOurCourses = createAsyncThunk(
+  'course/fetchOurCourses',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/courses/home-categories/`
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
+  }
+);
+
+export const fetchMegaCourses = createAsyncThunk(
+  'course/fetchMegaCourses',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/courses/megamenu-nav/`
       );
       return response.data;
     } catch (error) {
