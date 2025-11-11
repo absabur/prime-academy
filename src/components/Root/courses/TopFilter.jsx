@@ -53,7 +53,7 @@ const TopFilter = () => {
         <div className="w-full lg:w-auto">
           <PrimaryButton
             text="Reset Filter"
-            to="/courses"
+            href="/courses"
             className="w-full lg:w-auto hover:bg-red-500 text-white border-none transition"
           />
         </div>

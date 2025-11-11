@@ -28,7 +28,9 @@ const OurValues = () => {
           <h2 className="text-3xl font-bold text-left self-start">Our Values</h2>
         </InnerSection>
       </OuterSection>
-      {ourValues?.length && <TabContainSection tabContain={convertToAboutOurValues(ourValues)} />}
+      {ourValues?.length ? (
+        <TabContainSection tabContain={convertToAboutOurValues(ourValues)} />
+      ) : null}
     </>
   );
 };

@@ -1,6 +1,3 @@
-import TabContainSection from '@/components/common/TabContentSection';
-import { singleCourseValues } from '@/data/singleCoursePageData';
-import React from 'react';
 import CourseValueHeading from '../CourseValueHeading';
 import WhoCanEnroll from '../WhoCanEnroll';
 import CourseOutLine from '../CourseOutLine';
@@ -12,21 +9,22 @@ import LetStartFrom from '../LetStartFrom';
 import SuccessStories from '../SuccessStories';
 import ImgContentTop from '../ImgContentTop';
 import { useSelector } from 'react-redux';
+import TabSectionCourse from '../TabSectionCourse';
 
 const LeftSideContent = () => {
   const { course } = useSelector((state) => state.course);
   return (
     <>
       <CourseValueHeading />
-      <TabContainSection tabContain={singleCourseValues} />
-      {course?.detail?.why_enrol?.length && <WhoCanEnroll />}
-      {course?.detail?.modules?.length && <CourseOutLine />}
-      <ImgContentTop />
-      {course?.detail?.benefits?.length && <BenefitsThisCourse />}
+      {course?.detail?.content_sections[0]?.tabs?.length ? <TabSectionCourse /> : null}
+      {course?.detail?.why_enrol?.length ? <WhoCanEnroll /> : null}
+      {course?.detail?.modules?.length ? <CourseOutLine /> : null}
+      {course?.detail?.side_image_sections?.length ? <ImgContentTop /> : null}
+      {course?.detail?.benefits?.length ? <BenefitsThisCourse /> : null}
       <LetStartFrom />
-      <ImgContentBottom />
+      {course?.detail?.side_image_sections?.length == 2 ? <ImgContentBottom /> : null}
       <PartnerSlider />
-      {course?.detail?.success_stories?.length && <SuccessStories />}
+      {course?.detail?.success_stories?.length ? <SuccessStories /> : null}
       <OurCourse />
     </>
   );

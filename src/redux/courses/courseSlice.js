@@ -18,6 +18,8 @@ const courseSlice = createSlice({
     coursePagination: {},
     pageSize: 12,
     loadingCourses: true,
+    loadingOurCourses: true,
+    loadingMegaCourses: true,
     loadingCourse: true,
     loadingCourseCategory: false,
     error: null,
@@ -46,7 +48,6 @@ const courseSlice = createSlice({
     // Courses
     builder
       .addCase(fetchCourses.pending, (state) => {
-        state.loadingCourses = true;
         state.error = null;
       })
       .addCase(fetchCourses.fulfilled, (state, action) => {
@@ -66,30 +67,28 @@ const courseSlice = createSlice({
     // Our Courses
     builder
       .addCase(fetchOurCourses.pending, (state) => {
-        state.loadingCourses = true;
         state.error = null;
       })
       .addCase(fetchOurCourses.fulfilled, (state, action) => {
-        state.loadingCourses = false;
+        state.loadingOurCourses = false;
         state.ourCourses = action.payload.data;
       })
       .addCase(fetchOurCourses.rejected, (state, action) => {
-        state.loadingCourses = false;
+        state.loadingOurCourses = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 
     // Mega Menu Courses
     builder
       .addCase(fetchMegaCourses.pending, (state) => {
-        state.loadingCourses = true;
         state.error = null;
       })
       .addCase(fetchMegaCourses.fulfilled, (state, action) => {
-        state.loadingCourses = false;
+        state.loadingMegaCourses = false;
         state.megaCourses = action.payload.data;
       })
       .addCase(fetchMegaCourses.rejected, (state, action) => {
-        state.loadingCourses = false;
+        state.loadingMegaCourses = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 

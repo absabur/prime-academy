@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchMegaCourses } from '../../redux/courses/courseAction';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { IoIosArrowRoundBack } from 'react-icons/io';
+import InnerSection from './InnerSection';
+import OuterSection from './OuterSection';
 
 const MegaMenu = ({ isTransparent, textColor }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +15,7 @@ const MegaMenu = ({ isTransparent, textColor }) => {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const { megaCourses, loadingCourses } = useSelector((state) => state.course);
+  const { megaCourses, loadingMegaCourses } = useSelector((state) => state.course);
 
   useEffect(() => {
     if (megaCourses?.length === 0) {
@@ -81,73 +83,75 @@ const MegaMenu = ({ isTransparent, textColor }) => {
         } ${textColor} ${isTransparent ? 'no-scroll' : ''}`}
       >
         Courses
-        <FiChevronDown
+        {/* <FiChevronDown
           className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-        />
+        /> */}
       </Link>
 
       {/* Mega Menu Dropdown */}
       {isOpen && (
-        <div
-          className="fixed left-0 right-0 top-navbar overflow-y-auto max-h-screen z-[200] shadow-md"
+        <OuterSection
+          className="fixed left-0 right-0 top-navbar w-full overflow-y-auto max-h-screen z-[200] flex-col"
           // --- UPDATED: Use new handlers ---
           onMouseOver={handleOpenMenu}
           onMouseLeave={handleCloseMenu}
           // ---------------------------------
         >
-          <div className="h-10 w-full bg-transparent"></div> {/* Made bg visible */}
-          <div className="max-w-max-w mx-auto px-[20px] md:px-[30px] lg:px-[60px] py-8 bg-white border-t border-primary/10">
-            {loadingCourses ? (
-              <div className="text-center py-8">
-                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
-                <p className="mt-2 text-gray-600">Loading courses...</p>
-              </div>
-            ) : !megaCourses?.length ? (
-              <div className="text-center py-8 text-gray-500">No courses available</div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {megaCourses.map((category) => (
-                  <div key={category?.category?.id} className="space-y-3">
-                    <h3 className="font-bold text-lg text-primary border-b-2 border-primary pb-2">
-                      {category?.category?.name}
-                    </h3>
-                    <ul className="space-y-2">
-                      {!category.courses?.length ? (
-                        <li className="text-sm text-gray-400 italic">No courses yet</li>
-                      ) : (
-                        category.courses.map((course) => (
-                          <li key={course.slug}>
-                            <Link
-                              to={`/courses/${course.slug}`}
-                              className="text-sm text-gray-700 hover:text-primary hover:translate-x-1 transition-all duration-200 flex items-start gap-sm group"
-                              onClick={() => setIsOpen(false)}
-                            >
-                              <span className="text-secondary group-hover:scale-125 transition-transform">
-                                •
-                              </span>
-                              <span className="line-clamp-2">{course.title}</span>
-                            </Link>
-                          </li>
-                        ))
-                      )}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            )}
+          <div className="h-10 w-full bg-transparent"></div>
+          <OuterSection className='bg-white border-t border-primary/10 shadow-md'>
+            <InnerSection className="w-full">
+              {loadingMegaCourses ? (
+                <div className="text-center py-8">
+                  <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
+                  <p className="mt-2 text-gray-600">Loading courses...</p>
+                </div>
+              ) : !megaCourses?.length ? (
+                <div className="text-center py-8 text-gray-500">No courses available</div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {megaCourses.map((category) => (
+                    <div key={category?.category?.id} className="space-y-3">
+                      <h3 className="font-bold text-lg text-primary border-b-2 border-primary pb-2">
+                        {category?.category?.name}
+                      </h3>
+                      <ul className="space-y-2">
+                        {!category.courses?.length ? (
+                          <li className="text-sm text-gray-400 italic">No courses yet</li>
+                        ) : (
+                          category.courses.map((course) => (
+                            <li key={course.slug}>
+                              <Link
+                                to={`/courses/${course.slug}`}
+                                className="text-sm text-gray-700 hover:text-primary hover:translate-x-1 transition-all duration-200 flex items-start gap-sm group"
+                                onClick={() => setIsOpen(false)}
+                              >
+                                <span className="text-secondary group-hover:scale-125 transition-transform">
+                                  •
+                                </span>
+                                <span className="line-clamp-2">{course.title}</span>
+                              </Link>
+                            </li>
+                          ))
+                        )}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              )}
 
-            {/* View All Courses Link */}
-            <div className="mt-6 pt-6 border-t border-gray-200 text-center">
-              <Link
-                to="/courses"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-secondary transition-colors font-semibold"
-                onClick={() => setIsOpen(false)}
-              >
-                View All Courses
-              </Link>
-            </div>
-          </div>
-        </div>
+              {/* View All Courses Link */}
+              <div className="mt-6 pt-6 border-t border-gray-200 text-center">
+                <Link
+                  to="/courses"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-secondary transition-colors font-semibold"
+                  onClick={() => setIsOpen(false)}
+                >
+                  View All Courses
+                </Link>
+              </div>
+            </InnerSection>
+          </OuterSection>
+        </OuterSection>
       )}
     </div>
   );
@@ -163,7 +167,7 @@ const MegaMenu = ({ isTransparent, textColor }) => {
         }`}
       >
         Courses
-        {isMobileOpen ? <FiChevronUp /> : <FiChevronDown />}
+        {/* {isMobileOpen ? <FiChevronUp /> : <FiChevronDown />} */}
       </Link>
 
       {/* Mobile Dropdown */}
@@ -179,7 +183,7 @@ const MegaMenu = ({ isTransparent, textColor }) => {
           <IoIosArrowRoundBack /> Back
         </button>
         <div className="p-md pt-3 space-y-4">
-          {loadingCourses ? (
+          {loadingMegaCourses ? (
             <div className="text-center py-4">
               <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
             </div>

@@ -60,7 +60,7 @@ const BlogCards = () => {
           ))}
 
       {/* Show "No Blogs Found" only if NOT loading AND no blogs AND we have fetched at least once */}
-      {!loadingBlogs && !blogs.length && <NotFoundBlogs />}
+      {!loadingBlogs && !blogs.length ? <NotFoundBlogs /> : null}
     </section>
   );
 };

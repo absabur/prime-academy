@@ -16,18 +16,19 @@ import { useEffect, useState } from 'react';
 
 const ImgContentBottom = () => {
   const [content, setContent] = useState({});
-  const { imgIconContents } = useSelector((state) => state.imgIconContent);
-
+  const { course } = useSelector((state) => state.course);
+  
   useEffect(() => {
-    setContent(
-      imgIconContents.find(
-        (item) =>
-          item.page == 'single-course' &&
-          item.section_type == 'info' &&
-          item.position_display == 'Bottom'
-      )
-    );
-  }, [imgIconContents]);
+    if (!course?.detail?.side_image_sections) return;
+
+    // make a shallow copy before sorting
+    const sortedData = [...course.detail.side_image_sections].sort((a, b) => a.order - b.order);
+
+    setContent({
+      ...sortedData[1],
+      content: sortedData[1]?.text,
+    });
+  }, [course?.detail?.side_image_sections]);
 
   return (
     <OuterSection className="relative">

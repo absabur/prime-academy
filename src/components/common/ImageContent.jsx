@@ -24,7 +24,7 @@ const ImageContent = ({ data, ip }) => {
   let previewSrc = null;
   if (data?.media_type === 'video') {
     // It's a video. Prioritize the video thumbnail.
-    previewSrc = data.video_thumbnail;
+    previewSrc = data?.video_thumbnail;
 
     // If no video thumb, use the main 'image' field as a fallback.
     if (!previewSrc) {
@@ -32,24 +32,28 @@ const ImageContent = ({ data, ip }) => {
     }
 
     // If still no image, fallback to YouTube default (if applicable).
-    if (!previewSrc && data.video_provider === 'youtube' && data.video_id) {
-      previewSrc = `https://i.ytimg.com/vi/${data.video_id}/hq720.jpg`;
+    if (!previewSrc && data?.video_provider === 'youtube' && data?.video_id) {
+      previewSrc = `https://i.ytimg.com/vi/${data?.video_id}/hq720.jpg`;
     }
   } else {
     // It's an image. Just use the 'image' field.
     previewSrc = data?.image;
   }
 
+  if (previewSrc?.startsWith('/')) {
+    previewSrc = `${import.meta.env.VITE_API_URL}${previewSrc}`;
+  }
+
   // 2. Determine the video embed URL for the modal
   let videoEmbedUrl = '';
-  if (data?.has_video && data.video_id) {
-    const videoId = data.video_id;
+  if (data?.video_id) {
+    const videoId = data?.video_id;
     // When modal opens, mute is set to false.
     const isMuted = mute ? 1 : 0;
 
-    if (data.video_provider === 'youtube') {
+    if (data?.video_provider === 'youtube') {
       videoEmbedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${isMuted}&playsinline=1`;
-    } else if (data.video_provider === 'vimeo') {
+    } else if (data?.video_provider === 'vimeo') {
       videoEmbedUrl = `https://player.vimeo.com/video/${videoId}?autoplay=1&muted=${isMuted}&autopause=0`;
     }
   }
@@ -103,7 +107,7 @@ const ImageContent = ({ data, ip }) => {
           )}
 
           {/* 🔹 Updated: Play button logic */}
-          {data?.media_type === 'video' && data?.has_video && (
+          {(data?.media_type === 'video' || data?.video_url) && (
             <div
               onClick={openModal}
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-white play cursor-pointer hover:bg-secondary z-30"

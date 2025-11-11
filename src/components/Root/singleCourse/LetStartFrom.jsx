@@ -11,7 +11,7 @@ const LetStartFrom = () => {
   const { footer } = useSelector((state) => state.footer);
   return (
     <OuterSection
-      className="w-full min-h-[800px] bg-cover bg-center"
+      className="w-full min-h-[800px] bg-cover bg-center mt-md"
       style={{ backgroundImage: `url(/assets/course-page-form-bg.jpg)` }}
     >
       <InnerSection className="flex gap-xl lg:gap-lg flex-col lg:flex-row text-white">

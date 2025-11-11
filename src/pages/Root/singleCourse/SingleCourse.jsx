@@ -14,8 +14,7 @@ import { fetchSingleCourse } from '../../../redux/courses/courseAction';
 // SingleCourse page component
 const SingleCourse = () => {
   const params = useParams();
-  const { course } = useSelector((state) => state.course);
-  console.log(course)
+
   // tab handel state
   const [openTab, setOpenTab] = useState('left');
 

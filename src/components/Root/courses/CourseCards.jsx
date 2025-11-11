@@ -1,12 +1,3 @@
-/**
- * CourseCards Component
- * -------------------
- * - Displays a responsive grid of course cards
- * - Uses CourseCard component for individual card rendering
- * - Fully responsive: 1 column on mobile, 2 on medium screens, 3 on large
- * - Card data is currently static but can be replaced with API data
- */
-
 import { useDispatch, useSelector } from 'react-redux';
 import CourseCard from './CourseCard';
 import { fetchCourses } from '@/redux/courses/courseAction';
@@ -22,41 +13,44 @@ const CourseCards = () => {
   const currentPage = Number(searchParams.get('page')) || 1;
   const category = searchParams.get('category') || null;
   const search = searchParams.get('search') || '';
+  const order = searchParams.get('order') || '';
   const previousCourses = useRef([]);
 
+  // ✅ Store last fetched courses
   useEffect(() => {
-    if (courses.length > 0) previousCourses.current = courses; // ✅ Store last course
+    if (courses.length > 0) previousCourses.current = courses;
   }, [courses]);
 
+  // ✅ Proper debounce and fetch logic
   useEffect(() => {
     const handler = setTimeout(() => {
       dispatch(
         fetchCourses({
-          category: category,
+          category,
           page: currentPage,
           page_size: pageSize,
           search,
+          order: !!order ? 'published_at' : order, // keep same pattern as blogs
         })
       );
-    }, 600); // debounce delay 600ms
+    }, 600);
 
-    return () => {
-      clearTimeout(handler); // cleanup old timer before new one
-    };
-  }, [dispatch, currentPage, category, search]);
+    return () => clearTimeout(handler);
+  }, [dispatch, currentPage, category, search, order, pageSize]);
 
   return (
     <section className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-lg">
-      {loadingCourses && previousCourses.current.length === 0
+      {/* ✅ Show skeletons if loading and no previous data */}
+      {loadingCourses && previousCourses.current.length == 0
         ? Array.from({ length: 3 }).map((_, index) => (
             <CourseCardSkeleton key={index} index={index} />
           ))
         : (loadingCourses ? previousCourses.current : courses).map((item, index) => (
-            <CourseCard key={item.id || index} index={index} item={item} />
+            <CourseCard key={item.id || index} item={item} index={index} />
           ))}
 
-      {/* Show "No Course Found" only if NOT loading AND no courses AND we have fetched at least once */}
-      {!loadingCourses && !courses.length && <NotFoundCourses />}
+      {/* ✅ Show NotFound only if NOT loading AND empty courses */}
+      {!loadingCourses && !courses.length ? <NotFoundCourses /> : null}
     </section>
   );
 };
