@@ -24,26 +24,45 @@ const BlogCardsSection = () => {
         <TopFilter />
 
         <div className="hidden lg:flex w-full flex-col">
-          <div className="self-end">
-            <label htmlFor="order" className="text-sm mr-xs">
-              Sort By:{' '}
-            </label>
-            <select
-              onChange={(e) => {
-                const selectedOrder = e.target.value;
-                const params = Object.fromEntries(searchParams.entries());
-                setSearchParams({ ...params, order: selectedOrder });
-              }}
-              value={order || ''}
-              className="px-md py-xs shadow-xl text-sm border border-primary/20 rounded-xl outline-none"
-              name="order"
-              id="order"
-            >
-              <option value="">Newest Arrivals</option>
-              <option value="-published_at">Oldest Listings</option>
-              <option value="title">Name: A → Z</option>
-              <option value="-title">Name: Z → A</option>
-            </select>
+          <div className="flex gap-lg items-center justify-end">
+            {/* Search Input */}
+            <input
+              type="text"
+              className="border border-black/10 shadow bg-white px-md py-sm rounded-md focus:outline-none focus:shadow-xl"
+              placeholder="Search Blogs"
+              value={searchParams.get('search') || ''}
+              onChange={(e) =>
+                setSearchParams({
+                  ...Object.fromEntries(searchParams.entries()),
+                  search: e.target.value,
+                  page: 1, // optional: reset page when searching
+                })
+              }
+            />
+
+            <div className="relative">
+              <label
+                htmlFor="order"
+                className="absolute left-4 -top-2 px-1 bg-white text-black text-sm"
+              >
+                Sort Blogs
+              </label>
+              <select
+                id="order"
+                onChange={(e) => {
+                  const selectedOrder = e.target.value;
+                  const params = Object.fromEntries(searchParams.entries());
+                  setSearchParams({ ...params, order: selectedOrder });
+                }}
+                value={order || ''}
+                className="w-fit px-lg py-sm shadow-sm border border-primary/20 rounded-lg outline-none"
+              >
+                <option value="">Newest Arrivals</option>
+                <option value="-published_at">Oldest Listings</option>
+                <option value="title">Name: A → Z</option>
+                <option value="-title">Name: Z → A</option>
+              </select>
+            </div>
           </div>
         </div>
 

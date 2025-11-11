@@ -37,7 +37,7 @@ export const fetchBlogs = createAsyncThunk(
       const categoryParam = category ? `&category=${category}` : '';
       const searchParam = search ? `&search=${search}` : '';
       const orderParams = order ? `&ordering=${order}` : '';
-
+      
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/blogs/?page=${page}&page_size=${page_size}&status=published${categoryParam}${searchParam}${orderParams}`
       );
@@ -87,7 +87,9 @@ export const fetchSingleBlog = createAsyncThunk(
   'blog/fetchSingleBlog',
   async (blogIdOrSlug, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/blogs/${blogIdOrSlug}/`);
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/blogs/${blogIdOrSlug}/`
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);

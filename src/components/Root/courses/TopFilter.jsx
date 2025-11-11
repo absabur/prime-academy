@@ -8,7 +8,7 @@ const TopFilter = () => {
   const category = searchParams.get('category') || '';
 
   return (
-    <div className="p-lg rounded-md shadow-lg flex flex-col gap-md mb-xl bg-white">
+    <div className="p-lg rounded-md shadow-lg border border-black/10 flex flex-col gap-md mb-xl bg-white">
       <p className="text-base font-semibold">Courses Filter</p>
 
       {/* Responsive Layout */}
@@ -40,7 +40,7 @@ const TopFilter = () => {
             }}
             className="w-full px-md py-sm rounded-md border border-black/10 bg-white text-black focus:outline-none focus:ring-2 focus:ring-primary shadow-sm transition"
           >
-            <option value="">All Categories</option>
+            <option value="">All Courses</option>
             {categories.map((item) => (
               <option key={item.id} value={item.slug}>
                 {item.name}

@@ -49,9 +49,7 @@ export const fetchMegaCourses = createAsyncThunk(
   'course/fetchMegaCourses',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/courses/megamenu-nav/`
-      );
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/courses/megamenu-nav/`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Something went wrong');

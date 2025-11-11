@@ -38,7 +38,7 @@ const BlogCards = () => {
           page: currentPage,
           page_size: pageSize,
           search,
-          order: !!order ? 'published_at' : order,
+          order: !order ? 'published_at' : order,
         })
       );
     }, 600); // debounce delay 600ms

@@ -28,6 +28,9 @@ const courseSlice = createSlice({
     setActiveCategory: (state, action) => {
       state.activeCategory = action.payload;
     },
+    clearCourse: (state) => {
+      state.course = {};
+    },
   },
   extraReducers: (builder) => {
     // Course categories
@@ -109,5 +112,5 @@ const courseSlice = createSlice({
   },
 });
 
-export const { setActiveCategory } = courseSlice.actions;
+export const { setActiveCategory, clearCourse } = courseSlice.actions;
 export default courseSlice.reducer;

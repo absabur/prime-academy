@@ -38,6 +38,9 @@ const blogSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    clearBlog: (state) => {
+      state.blog = {};
+    },
   },
   extraReducers: (builder) => {
     // Blog categories
@@ -172,5 +175,5 @@ const blogSlice = createSlice({
   },
 });
 
-export const { setActiveCategory, clearMessage, clearError } = blogSlice.actions;
+export const { setActiveCategory, clearMessage, clearError, clearBlog } = blogSlice.actions;
 export default blogSlice.reducer;

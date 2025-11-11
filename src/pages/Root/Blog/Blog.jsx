@@ -17,6 +17,7 @@ import { fetchSeos } from '@/redux/seo/seoAction';
 import { useDispatch, useSelector } from 'react-redux';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
 import { fetchImgIconContents } from '@/redux/imgIconContent/imgIconContentAction';
+import { clearBlog } from '../../../redux/blogs/blogSlice';
 
 const Blog = () => {
   const { blog } = useSelector((state) => state.blog);
@@ -30,8 +31,9 @@ const Blog = () => {
   }, []);
 
   useEffect(() => {
+    // dispatch(clearBlog());
     dispatch(fetchSingleBlog(id));
-  }, [dispatch, id]);
+  }, [id]);
 
   useEffect(() => {
     dispatch(fetchSeos());

@@ -8,12 +8,12 @@ import { useSEO } from '@/hooks/usePageSeo';
 import { fetchSeos } from '@/redux/seo/seoAction';
 import { useDispatch, useSelector } from 'react-redux';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
-import { fetchImgIconContents } from '@/redux/imgIconContent/imgIconContentAction';
 import { useParams } from 'react-router-dom';
 import { fetchSingleCourse } from '../../../redux/courses/courseAction';
+import { clearCourse } from '../../../redux/courses/courseSlice';
 // SingleCourse page component
 const SingleCourse = () => {
-  const params = useParams();
+  const { slug } = useParams();
 
   // tab handel state
   const [openTab, setOpenTab] = useState('left');
@@ -23,10 +23,10 @@ const SingleCourse = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchImgIconContents({ page: 'single-course' }));
+    // dispatch(clearCourse());
     dispatch(fetchSeos());
-    dispatch(fetchSingleCourse(params.slug));
-  }, []);
+    dispatch(fetchSingleCourse(slug));
+  }, [slug]);
 
   useEffect(() => {
     setPageSeo(seos.find((item) => item.page_name == 'single-course'));

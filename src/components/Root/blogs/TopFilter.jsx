@@ -81,7 +81,7 @@ const TopFilter = () => {
             }}
             className="w-full px-lg py-sm rounded-md border border-black/10 bg-white text-black hover:border-primary focus:outline-none focus:shadow-xl transition-colors shadow"
           >
-            <option value="">All Categories</option>
+            <option value="">All Blogs</option>
             {categories.map((item) => {
               if (item?.is_active) {
                 return (

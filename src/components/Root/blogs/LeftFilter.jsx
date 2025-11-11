@@ -13,21 +13,6 @@ const LeftFilter = () => {
       {/* Title */}
       <p className="text-base font-semibold mb-sm">Filter Blogs</p>
 
-      {/* Search Input */}
-      <input
-        type="text"
-        className="border border-black/10 shadow bg-white w-full px-md py-sm rounded-md focus:outline-none focus:shadow-xl"
-        placeholder="Search Blogs"
-        value={searchParams.get('search') || ''}
-        onChange={(e) =>
-          setSearchParams({
-            ...Object.fromEntries(searchParams.entries()),
-            search: e.target.value,
-            page: 1, // optional: reset page when searching
-          })
-        }
-      />
-
       {loadingBlogCategory && <CategoryListSkeleton count={5} />}
 
       {/* Filter List */}
@@ -46,7 +31,7 @@ const LeftFilter = () => {
                 : 'bg-black/5 hover:bg-black/15'
             }`}
           >
-            All
+            All Blogs
           </button>
         </li>
         {categories.map((item, index) => {
