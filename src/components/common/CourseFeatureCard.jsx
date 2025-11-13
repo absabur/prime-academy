@@ -7,14 +7,12 @@ const CourseFeatureCard = ({ course }) => {
     <BaseCard
       className={`gap-xl hover:bg-gradient-to-br hover:from-primary hover:to-primary-light transition-colors duration-300 hover:text-white`}
     >
-      <div className="space-y-4">
+      <div className="space-y-4 h-65">
         {course?.header_image ? (
           <img
             src={`${import.meta.env.VITE_API_URL}${course?.header_image}`}
             alt={course?.title}
-            width={50}
-            height={50}
-            style={{ objectFit: 'cover' }}
+            className='object-cover w-15 h-10'
           />
         ) : (
           <div className="w-12 h-12 bg-gray-200 rounded" />

@@ -84,6 +84,14 @@ const HeroSection = ({ title, description, bannerImage, slides, button1, button2
                     className="rounded-lg"
                   />
                 )}
+                {button1?.onClick && (
+                  <PrimaryButton
+                    from="hero"
+                    onClick={button1?.onClick}
+                    text={button1.text}
+                    className="rounded-lg"
+                  />
+                )}
                 {button2?.url && (
                   <SecondaryButton
                     href={button2.url}

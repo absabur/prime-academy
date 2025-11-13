@@ -66,6 +66,8 @@ import StudentRecording from '../pages/Dashboard/StudentDashboard/StudentRecordi
 import StudentResources from '../pages/Dashboard/StudentDashboard/StudentResources/StudentResources';
 import RoleLoginLayout from '../layouts/RoleLoginLayout';
 import SingleCourseStudent from '../pages/Dashboard/StudentDashboard/StudentSingleCourse/SingleCourseStudent';
+import Cart from '../pages/Root/Cart/Cart';
+import CheckoutPage from '../pages/Root/Checkout/Checkout';
 
 function RoutesComponent() {
   const { pathname } = useLocation();
@@ -88,6 +90,8 @@ function RoutesComponent() {
         <Route path=":policy" element={<Policy />} />
         <Route path="courses" element={<CoursesPage />} />
         <Route path="courses/:slug" element={<SingleCourse />} />
+        <Route path="cart" element={<Cart />} />
+        <Route path="checkout" element={<CheckoutPage />} />
       </Route>
 
       {/* 🚀 LANDING PAGE */}

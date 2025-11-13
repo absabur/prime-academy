@@ -1,10 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
+  fetchAdminCourses,
   fetchCourseCategories,
   fetchCourses,
   fetchMegaCourses,
   fetchOurCourses,
   fetchSingleCourse,
+  updateCourse,
 } from './courseAction';
 
 const courseSlice = createSlice({
@@ -12,11 +14,13 @@ const courseSlice = createSlice({
   initialState: {
     categories: [],
     courses: [],
+    adminCourses: [],
     ourCourses: [],
     megaCourses: [],
     course: {},
     coursePagination: {},
     pageSize: 12,
+    loadingAdminCourse: false,
     loadingCourses: true,
     loadingOurCourses: true,
     loadingMegaCourses: true,
@@ -30,6 +34,12 @@ const courseSlice = createSlice({
     },
     clearCourse: (state) => {
       state.course = {};
+    },
+    clearMessage: (state) => {
+      state.message = null;
+    },
+    clearError: (state) => {
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -64,6 +74,26 @@ const courseSlice = createSlice({
       })
       .addCase(fetchCourses.rejected, (state, action) => {
         state.loadingCourses = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // admin course
+    builder
+      .addCase(fetchAdminCourses.pending, (state) => {
+        state.loadingAdminCourse = true;
+        state.error = null;
+      })
+      .addCase(fetchAdminCourses.fulfilled, (state, action) => {
+        state.loadingAdminCourse = false;
+        state.adminCourses = action.payload.data.results;
+        state.coursePagination = {
+          count: action.payload?.data?.count,
+          next: action.payload?.data?.next,
+          previous: action.payload?.data?.previous,
+        };
+      })
+      .addCase(fetchAdminCourses.rejected, (state, action) => {
+        state.loadingAdminCourse = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 
@@ -109,8 +139,23 @@ const courseSlice = createSlice({
         state.loadingCourse = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
+
+    // update course
+    builder
+      .addCase(updateCourse.pending, (state) => {
+        state.loadingAdminCourse = true;
+        state.error = null;
+      })
+      .addCase(updateCourse.fulfilled, (state, action) => {
+        state.loadingAdminCourse = false;
+        state.message = 'Courses updated successfully';
+      })
+      .addCase(updateCourse.rejected, (state, action) => {
+        state.loadingAdminCourse = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
   },
 });
 
-export const { setActiveCategory, clearCourse } = courseSlice.actions;
+export const { setActiveCategory, clearCourse, clearMessage, clearError } = courseSlice.actions;
 export default courseSlice.reducer;

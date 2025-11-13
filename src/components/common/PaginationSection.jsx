@@ -20,7 +20,7 @@ const PaginationSection = ({ pagination, pageSize, error, styte = {} }) => {
 
   // 🧠 Get current page from query (default = 1)
   useEffect(() => {
-    const pageFromQuery = Number(searchParams.get('page')) || 1;
+    const pageFromQuery = Number(searchParams.get('page')) || 1; 
     setCurrentPage(pageFromQuery);
   }, [searchParams]);
 

@@ -12,7 +12,6 @@ export const fetchStudents = createAsyncThunk(
       date_joined_before = null,
       date_joined_after = null,
       is_enabled = null,
-      
     },
     { rejectWithValue }
   ) => {

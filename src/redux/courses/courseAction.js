@@ -1,4 +1,5 @@
 import axios from 'axios';
+import api from '@/api/axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchCourseCategories = createAsyncThunk(
@@ -6,7 +7,7 @@ export const fetchCourseCategories = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/course-categories/?is_active=true`
+        `${import.meta.env.VITE_API_URL}/api/courses/categories/?is_active=true`
       );
       return response.data;
     } catch (error) {
@@ -23,6 +24,36 @@ export const fetchCourses = createAsyncThunk(
       const searchParam = search ? `&search=${search}` : '';
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/courses/?status=published&page=${page}&page_size=${page_size}${categoryParam}${searchParam}&is_active=true`
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
+  }
+);
+
+export const fetchAdminCourses = createAsyncThunk(
+  'course/fetchAdminCourses',
+  async (
+    {
+      category = null,
+      page = 1,
+      page_size = 10,
+      search = null,
+      order = null,
+      is_enabled = null,
+      status = null,
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const categoryParam = category ? `&category=${category}` : '';
+      const searchParam = search ? `&search=${search}` : '';
+      const orderParams = order ? `&ordering=${order}` : '';
+      const isEnabled = is_enabled ? `&is_active=${is_enabled}` : '';
+      const isPublished = status ? `&status=${status}` : '';
+      const response = await api.get(
+        `${import.meta.env.VITE_API_URL}/api/courses/?page=${page}&page_size=${page_size}${categoryParam}${searchParam}${orderParams}${isEnabled}${isPublished}`
       );
       return response.data;
     } catch (error) {
@@ -68,6 +99,21 @@ export const fetchSingleCourse = createAsyncThunk(
     } catch (error) {
       // handle network or API errors
       return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const updateCourse = createAsyncThunk(
+  'student/updateCourse',
+  async ({ id, courseData }, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(
+        `${import.meta.env.VITE_API_URL}/api/courses/${id}/`,
+        courseData
+      );
+      return response.data; // return the updated student data
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to update student');
     }
   }
 );

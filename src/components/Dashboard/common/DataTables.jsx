@@ -45,7 +45,7 @@ export default function DataTables({
           {data && data.length > 0 ? (
             data.map((row, index) => (
               <tr
-                key={index}
+                key={row.id || index}
                 className="hover:bg-gray-50 border-b border-black/10 last:border-none transition"
               >
                 {columns?.map((col) => (

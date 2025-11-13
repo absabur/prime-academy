@@ -25,6 +25,7 @@ const AdminPanelStudents = () => {
     message,
   } = useSelector((state) => state.student);
 
+
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
   const [modalType, setModalType] = useState(''); // 'add' or 'edit'
@@ -112,7 +113,6 @@ const AdminPanelStudents = () => {
   ];
 
   // student filter field
-
   const studentFilterFields = [
     {
       name: 'search',

@@ -91,6 +91,7 @@ const studentSlice = createSlice({
         state.loadingActionStudents = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
+    // update student
     builder
       .addCase(updateStudent.pending, (state) => {
         state.loadingActionStudents = true;
