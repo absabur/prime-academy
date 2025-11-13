@@ -126,8 +126,6 @@ export default function CheckoutPage() {
 
       const orderData = orderResponse?.data; // API Response: OrderDetail
 
-      console.log(orderData);
-
       // Assuming a successful response has an 'id' or 'order_number'
       if (!orderData.success) {
         // Handle validation errors, e.g., "phone: This field is required"

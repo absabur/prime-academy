@@ -12,7 +12,6 @@ const OverViewCard = ({ overview }) => {
   };
   const Icon = icons[overview.icon];
 
-  console.log(overview);
   return (
     <Link
       to={overview.to}

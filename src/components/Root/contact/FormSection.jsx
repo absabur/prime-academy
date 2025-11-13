@@ -21,7 +21,7 @@ const FormSection = () => {
   //form submit handeler
   const onSubmit = async (data) => {
     try {
-      let response = await axios.post('/api/contact/', data);
+      let response = await axios.post(`${import.meta.env.VITE_API_URL}/api/contact/`, data);
       if (response.data.success) {
         SwalUtils.success(
           response.data.message || 'Thank you for reaching out! We’ll get back to you soon',
