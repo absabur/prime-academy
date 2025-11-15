@@ -24,6 +24,8 @@ import {
   FaLinkedin,
   FaPhone,
   FaRegEnvelope,
+  FaCartArrowDown,
+  FaRegHeart,
 } from 'react-icons/fa6';
 import { RxDividerVertical } from 'react-icons/rx';
 
@@ -119,6 +121,20 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="items-center gap-md flex-wrap hidden md:flex">
+            <Link
+              to={'/cart'}
+              rel="noopener noreferrer"
+              className="text-white text-xl rounded-full transition hover:text-secondary-light"
+            >
+              <FaCartArrowDown />
+            </Link>
+            <Link
+              to={'/wish-list'}
+              rel="noopener noreferrer"
+              className="text-white text-xl rounded-full transition hover:text-secondary-light mr-xl"
+            >
+              <FaRegHeart />
+            </Link>
             {socialLinks.map((item) => (
               <Link
                 key={item.platform}
@@ -138,11 +154,15 @@ const Navbar = () => {
         className={`fixed top-tnavbar left-0 w-full z-[100] ${bgClass}`}
         style={{ overflow: 'visible' }}
       >
-        <InnerSection Tag="header" className="h-navbar py-sm" style={{ overflow: 'visible' }}>
-          <div className="flex justify-between items-center" style={{ overflow: 'visible' }}>
+        <InnerSection
+          Tag="header"
+          className="h-navbar py-sm flex items-center"
+          style={{ overflow: 'visible' }}
+        >
+          <div className="flex justify-between items-center w-full" style={{ overflow: 'visible' }}>
             {/* Logo */}
             <Link to="/" aria-label="Go to Home" onClick={() => setMenuOpen(false)}>
-              <img src={logoSrc} className="w-[190px]" alt="Prime Logo" />
+              <img src={logoSrc} className="w-[170px] sm:w-[190px]" alt="Prime Logo" />
             </Link>
 
             {/* Desktop Nav */}
@@ -196,6 +216,26 @@ const Navbar = () => {
               )}
               {/* Mega Menu for Courses */}
             </nav>
+            <div className="ml-auto mr-md flex items-center gap-md md:hidden">
+              <Link
+                to={'/cart'}
+                rel="noopener noreferrer"
+                className={`navbar-item font-semibold transition-colors duration-200 text-3xl ${
+                  location.pathname == '/cart' ? 'text-primary navbar-active' : textColor
+                } ${isTransparent ? 'no-scroll' : ''}`}
+              >
+                <FaCartArrowDown />
+              </Link>
+              <Link
+                to={'/wish-list'}
+                rel="noopener noreferrer"
+                className={`navbar-item font-semibold transition-colors duration-200 text-3xl ${
+                  location.pathname == '/wish-list' ? 'text-primary navbar-active' : textColor
+                } ${isTransparent ? 'no-scroll' : ''}`}
+              >
+                <FaRegHeart />
+              </Link>
+            </div>
 
             {/* Mobile Menu Button */}
             <button

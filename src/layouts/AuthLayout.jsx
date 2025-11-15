@@ -1,24 +1,32 @@
 import Footer from '@/components/common/Footer';
 import Navbar from '@/components/common/Navbar';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function AuthLayout() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
-  return isAuthenticated ? (
-    <Navigate to={`/${user?.role}-dashboard`} replace />
-  ) : (
-    <div className="w-full flex flex-col min-h-screen">
-      {/* Persistent navigation bar at the top */}
-      <Navbar />
+  const [searchParams] = useSearchParams();  // ✅ FIXED
+  const navigate = useNavigate();
 
-      {/* Main content area; dynamic route content is injected via <Outlet /> */}
+  useEffect(() => {
+    if (isAuthenticated) {
+      const next = searchParams.get('next');
+      if (next) {
+        navigate(next);
+      } else {
+        navigate(`/${user?.role}-dashboard`);
+      }
+    }
+  }, [isAuthenticated]);
+
+  return (
+    <div className="w-full flex flex-col min-h-screen">
+      <Navbar />
       <main className="w-full flex-1 flex flex-col items-center overflow-x-hidden mt-fnavbar">
         <Outlet />
       </main>
-
-      {/* Persistent footer at the bottom */}
       <Footer />
     </div>
   );

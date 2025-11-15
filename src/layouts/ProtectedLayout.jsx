@@ -1,50 +1,74 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import DashBroadNavbar from '@/components/Dashboard/common/DashBroadNavbar';
-import SideBar from '@/components/Dashboard/common/SideBar';
-import NotFound from '../components/common/NotFound';
+import { useDispatch, useSelector } from 'react-redux';
 import LoadingDashboard from '../components/Dashboard/common/LoadingDashboard';
+import OuterSection from '../components/common/OuterSection';
+import InnerSection from '../components/common/InnerSection';
+import Navbar from '../components/common/Navbar';
+import Footer from '../components/common/Footer';
+import NotFound from '../components/common/NotFound';
+import { clearAuthMessage, clearAuthError } from '@/redux/auth/authSlice';
+import SwalUtils from '@/utils/sweetAlert';
+import { useEffect } from 'react';
 
 export default function ProtectedLayout() {
-  const { isAuthenticated, authLoaded } = useSelector((state) => state.auth);
-  const { pathname } = useLocation();
+  const { isAuthenticated, authLoaded, user } = useSelector((state) => state.auth);
+  const { pathname, search, state } = useLocation();
+  const { message, error } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
-  // 🔹 Wait for Redux auth state
+  // 🔹 Current full path with query (e.g. "/checkout?course=5")
+  const next = pathname + search;
+
+  useEffect(() => {
+    if (message) {
+      SwalUtils.success(message);
+      dispatch(clearAuthMessage());
+    }
+  }, [message]);
+
+  useEffect(() => {
+    if (error) {
+      SwalUtils.error(error);
+      dispatch(clearAuthError());
+    }
+  }, [error]);
+
   if (!authLoaded) {
     return <LoadingDashboard loading={true} />;
   }
 
   // 🔹 Redirect if unauthenticated
-  // if (!isAuthenticated) return <Navigate to="/" replace />;
   if (!isAuthenticated) {
-    if (
-      pathname == '/admin-dashboard' ||
-      pathname == '/teacher-dashboard' ||
-      pathname == '/stuff-dashboard'
-    ) {
-      return <Navigate to="/auth/login/verify-role" replace />;
+    if (pathname.startsWith('/checkout')) {
+      return (
+        <Navigate
+          to={`/login?next=${encodeURIComponent(next)}`}
+          replace
+          state={{ fromState: state }} // 🔥 preserve checkout state
+        />
+      );
     }
 
-    if (pathname == '/student-dashboard') {
-      return <Navigate to="/login" replace />;
-    }
     return <NotFound />;
   }
 
-  // 🔹 Main Dashboard Layout
+  if (isAuthenticated && user?.role !== 'student') {
+    return <NotFound />;
+  }
+  
+  // 🔹 Authenticated → Page content
   return (
-    <div className="flex min-h-screen bg-gray-50 text-gray-900 w-full">
-      {/* Sidebar (Responsive) */}
-      <SideBar />
+    <div className="w-full flex flex-col min-h-screen">
+      <Navbar />
+      <main className="w-full flex-1 flex flex-col items-center overflow-x-hidden">
+        <OuterSection>
+          <InnerSection>
+            <Outlet />
+          </InnerSection>
+        </OuterSection>
+      </main>
 
-      {/* Main Content */}
-      <div className="bg-secondary-bg flex flex-col w-full max-w-[100vw] md:max-w-[calc(100vw_-_300px)] transition-all duration-300">
-        <DashBroadNavbar />
-
-        <main className="flex-1 p-lg md:p-6 overflow-x-hidden bg-gray-50">
-          <Outlet />
-        </main>
-      </div>
+      <Footer />
     </div>
   );
 }

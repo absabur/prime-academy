@@ -4,6 +4,7 @@ const commonSlice = createSlice({
   name: 'common',
   initialState: {
     sidebarIsOpen: false,
+    couponState: {},
   },
   reducers: {
     onSidebarToggle: (state) => {
@@ -12,8 +13,11 @@ const commonSlice = createSlice({
     SidebarClose: (state) => {
       state.sidebarIsOpen = false;
     },
+    setCouponState: (state, action) => {
+      state.couponState = action.payload;
+    },
   },
 });
 
-export const { onSidebarToggle, SidebarClose } = commonSlice.actions;
+export const { onSidebarToggle, SidebarClose, setCouponState } = commonSlice.actions;
 export default commonSlice.reducer;

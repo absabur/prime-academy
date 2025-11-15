@@ -1,7 +1,7 @@
 import { FaBook, FaGraduationCap, FaUsers } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import ContentCard from '@/components/Root/login/ContentCard';
 import { loginUser } from '@/redux/auth/authAction';
@@ -23,6 +23,7 @@ export default function LoginRole() {
   const navigate = useNavigate();
   const [pageSeo, setPageSeo] = useState(null);
   const { seos } = useSelector((state) => state.seo);
+  const [searchParams] = useSearchParams();
 
   const {
     register,
@@ -48,7 +49,14 @@ export default function LoginRole() {
   }, [error]);
 
   useEffect(() => {
-    if (isAuthenticated) navigate(`/${user?.role}-dashboard`);
+    if (isAuthenticated) {
+      const next = searchParams.get('next');
+      if (next) {
+        navigate(next);
+      } else {
+        navigate(`/${user?.role}-dashboard`);
+      }
+    }
   }, [isAuthenticated]);
 
   useEffect(() => {

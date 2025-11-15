@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useState, useRef, useEffect } from 'react';
 import { IoNotifications } from 'react-icons/io5';
 import { FaChevronDown, FaSearch } from 'react-icons/fa';
-import { clearAuthMessage, logout } from '@/redux/auth/authSlice';
+import { clearAuthMessage, clearAuthError, logout } from '@/redux/auth/authSlice';
 import SwalUtils from '@/utils/sweetAlert';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { changePassword, updateProfile, userProfile } from '../../../redux/auth/authAction';
@@ -12,7 +12,6 @@ import Modal from '../../common/Modal';
 import { UserProfileView } from './UserProfileView';
 import { getInitials } from '../../../utils/getInitials';
 import ChangePassword from './ChangePassword';
-import { clearAuthError } from '../../../redux/auth/authSlice';
 import LoadingDashboard from './LoadingDashboard';
 import UpdateProfile from './UpdateProfile';
 

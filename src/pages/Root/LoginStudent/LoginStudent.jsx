@@ -1,7 +1,7 @@
 import { FaBook, FaUsers } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import ContentCard from '@/components/Root/login/ContentCard';
 import { loginUser } from '@/redux/auth/authAction';
@@ -14,6 +14,7 @@ import { useSEO } from '@/hooks/usePageSeo';
 import { fetchSeos } from '@/redux/seo/seoAction';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
 import PasswordInput from '../../../components/Dashboard/common/PasswordInput';
+import { setCouponState } from '../../../redux/common/commonSlice';
 
 export default function LoginStudent() {
   const { error, isAuthenticated, loading, user } = useSelector((state) => state.auth);
@@ -21,6 +22,8 @@ export default function LoginStudent() {
   const navigate = useNavigate();
   const [pageSeo, setPageSeo] = useState(null);
   const { seos } = useSelector((state) => state.seo);
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
 
   const {
     register,
@@ -45,7 +48,16 @@ export default function LoginStudent() {
   }, [error]);
 
   useEffect(() => {
-    if (isAuthenticated) navigate(`/${user?.role}-dashboard`);
+    if (isAuthenticated) {
+      const next = searchParams.get('next');
+      const redirectState = location.state?.fromState || null;
+      dispatch(setCouponState(redirectState));
+      if (next) {
+        navigate(next);
+      } else {
+        navigate(`/${user?.role}-dashboard`);
+      }
+    }
   }, [isAuthenticated]);
 
   useEffect(() => {

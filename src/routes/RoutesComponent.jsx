@@ -13,6 +13,7 @@ import { useEffect } from 'react';
 // Layouts
 import PublicLayout from '../layouts/PublicLayout';
 import AuthLayout from '../layouts/AuthLayout';
+import ProtectedLayoutDashboard from '../layouts/ProtectedLayoutDashboard';
 import ProtectedLayout from '../layouts/ProtectedLayout';
 import LandingLayout from '../layouts/LandingLayout';
 
@@ -68,6 +69,7 @@ import RoleLoginLayout from '../layouts/RoleLoginLayout';
 import SingleCourseStudent from '../pages/Dashboard/StudentDashboard/StudentSingleCourse/SingleCourseStudent';
 import Cart from '../pages/Root/Cart/Cart';
 import CheckoutPage from '../pages/Root/Checkout/Checkout';
+import PaymentSuccess from '../pages/Root/PaymentSuccess/PaymentSuccess';
 
 function RoutesComponent() {
   const { pathname } = useLocation();
@@ -91,7 +93,6 @@ function RoutesComponent() {
         <Route path="courses" element={<CoursesPage />} />
         <Route path="courses/:slug" element={<SingleCourse />} />
         <Route path="cart" element={<Cart />} />
-        <Route path="checkout" element={<CheckoutPage />} />
       </Route>
 
       {/* 🚀 LANDING PAGE */}
@@ -113,8 +114,14 @@ function RoutesComponent() {
         <Route path="/auth/login/verify-role" element={<LoginRole />} />
       </Route>
 
-      {/* 🔐 PROTECTED ROUTES (DASHBOARD) */}
+      {/* 🔐 PROTECTED ROUTES */}
       <Route element={<ProtectedLayout />}>
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/payment/success" element={<PaymentSuccess />} />
+      </Route>
+
+      {/* 🔐 PROTECTED ROUTES (DASHBOARD) */}
+      <Route element={<ProtectedLayoutDashboard />}>
         {/* Admin Routes */}
         <Route element={<RoleBasedLayout roles={['admin']} />}>
           {/* main menues  */}

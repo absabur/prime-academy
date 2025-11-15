@@ -98,7 +98,7 @@ const MegaMenu = ({ isTransparent, textColor }) => {
           // ---------------------------------
         >
           <div className="h-10 w-full bg-transparent"></div>
-          <OuterSection className='bg-white border-t border-primary/10 shadow-md'>
+          <OuterSection className="bg-white border-b-2 border-primary/10">
             <InnerSection className="w-full">
               {loadingMegaCourses ? (
                 <div className="text-center py-8">
@@ -108,7 +108,7 @@ const MegaMenu = ({ isTransparent, textColor }) => {
               ) : !megaCourses?.length ? (
                 <div className="text-center py-8 text-gray-500">No courses available</div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                   {megaCourses.map((category) => (
                     <div key={category?.category?.id} className="space-y-3">
                       <h3 className="font-bold text-lg text-primary border-b-2 border-primary pb-2">
@@ -140,7 +140,7 @@ const MegaMenu = ({ isTransparent, textColor }) => {
               )}
 
               {/* View All Courses Link */}
-              <div className="mt-6 pt-6 border-t border-gray-200 text-center">
+              <div className="mt-6 pt-6 text-center">
                 <Link
                   to="/courses"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-secondary transition-colors font-semibold"
