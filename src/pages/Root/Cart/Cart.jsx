@@ -5,7 +5,7 @@ import { fetchCarts } from '../../../redux/cart/cartAction';
 import OuterSection from '../../../components/common/OuterSection';
 import InnerSection from '../../../components/common/InnerSection';
 import PrimaryButton from '../../../components/common/PrimaryButton';
-import { clearError, clearMessage } from '../../../redux/cart/cartSlice';
+import { clearError } from '../../../redux/cart/cartSlice';
 import SwalUtils from '../../../utils/sweetAlert';
 import CartItemCard from '../../../components/Root/cart/CartItemCard';
 import OrderSummaryCard from '../../../components/Root/cart/OrderSummeryCard';
@@ -16,22 +16,12 @@ const saveForLater = (data) => ({ type: 'cart/saveForLater/pending', payload: da
 
 export default function ShoppingCartPage() {
   // Assuming 'status' and 'error' are also in your cart slice
-  const { carts, error, message } = useSelector((state) => state.cart);
+  const { carts, error } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (message) {
-      SwalUtils.success(
-        message == 'Added to cart' ? 'The course is now in your shopping cart' : message,
-        message == 'Added to cart' ? 'Added to Cart!' : 'Success'
-      );
-      dispatch(clearMessage());
-    }
-  }, [message]);
-
-  useEffect(() => {
     if (error) {
-      SwalUtils.success(message, 'Somthing went Wrong!');
+      SwalUtils.error(error, 'Somthing went Wrong!');
       dispatch(clearError());
     }
   }, [error]);
