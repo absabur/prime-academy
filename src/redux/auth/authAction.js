@@ -18,7 +18,9 @@ export const loginUser = createAsyncThunk(
     }
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}${route}`, credentials);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}${route}`, credentials, {
+        withCredentials: true,
+      });
       return res.data; // success
     } catch (err) {
       console.log(err);
@@ -39,7 +41,10 @@ export const registerStudent = createAsyncThunk(
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/students/register/`,
-        credentials
+        credentials,
+        {
+          withCredentials: true,
+        }
       );
       return res.data; // success
     } catch (err) {
@@ -59,7 +64,10 @@ export const verifyEmail = createAsyncThunk(
   async ({ token }, { rejectWithValue }) => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/verify-student/?token=${token}`
+        `${import.meta.env.VITE_API_URL}/api/verify-student/?token=${token}`,
+        {
+          withCredentials: true,
+        }
       );
       return res.data; // success
     } catch (err) {
