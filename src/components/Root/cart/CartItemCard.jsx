@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Trash2, Heart, Loader2 } from 'lucide-react';
 import { formatCurrency } from '../../../utils/formatCurrency';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { deleteCart } from '../../../redux/cart/cartAction';
 
-export default function CartItemCard({ item, onSaveForLater }) {
+export default function CartItemCard({ item }) {
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { course } = item;
   const [isRemoving, setIsRemoving] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -17,7 +18,6 @@ export default function CartItemCard({ item, onSaveForLater }) {
 
   const handleSave = () => {
     setIsSaving(true);
-    onSaveForLater(item.id, course.id);
   };
 
   return (
@@ -25,7 +25,7 @@ export default function CartItemCard({ item, onSaveForLater }) {
       <img
         src={course.header_image}
         alt={course.title}
-        className="w-full md:w-48 h-32 md:h-auto object-cover rounded-md"
+        className="w-full md:w-48 h-32 object-cover rounded-md"
       />
 
       <div className="flex-1 flex flex-col">
@@ -47,14 +47,6 @@ export default function CartItemCard({ item, onSaveForLater }) {
           >
             {isRemoving ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
             Remove
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={isRemoving || isSaving}
-            className="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-primary transition-colors disabled:opacity-50"
-          >
-            {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Heart size={16} />}
-            Save for Later
           </button>
         </div>
       </div>

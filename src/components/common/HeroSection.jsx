@@ -79,8 +79,8 @@ const HeroSection = ({ title, description, bannerImage, slides, button1, button2
                 {button1?.url && (
                   <PrimaryButton
                     from="hero"
-                    href={button1.url}
-                    text={button1.text}
+                    href={button1?.url}
+                    text={button1?.text}
                     className="rounded-lg"
                   />
                 )}
@@ -88,16 +88,24 @@ const HeroSection = ({ title, description, bannerImage, slides, button1, button2
                   <PrimaryButton
                     from="hero"
                     onClick={button1?.onClick}
-                    text={button1.text}
+                    text={button1?.text}
                     className="rounded-lg"
                   />
                 )}
                 {button2?.url && (
                   <SecondaryButton
-                    href={button2.url}
-                    text={button2.text}
+                    href={button2?.url}
+                    text={button2?.text}
                     className="rounded-lg"
                     from="hero"
+                  />
+                )}
+                {button2?.onClick && (
+                  <SecondaryButton
+                    from="hero"
+                    onClick={button2?.onClick}
+                    text={button2?.text}
+                    className="rounded-lg"
                   />
                 )}
               </div>

@@ -17,7 +17,7 @@ import PasswordInput from '../../../components/Dashboard/common/PasswordInput';
 import { setCouponState } from '../../../redux/common/commonSlice';
 
 export default function LoginStudent() {
-  const { error, isAuthenticated, loading, user } = useSelector((state) => state.auth);
+  const { error, isAuthenticated, loading, user, cart_merged } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [pageSeo, setPageSeo] = useState(null);
@@ -54,6 +54,8 @@ export default function LoginStudent() {
       dispatch(setCouponState(redirectState));
       if (next) {
         navigate(next);
+      } else if (cart_merged) {
+        navigate('/cart');
       } else {
         navigate(`/${user?.role}-dashboard`);
       }

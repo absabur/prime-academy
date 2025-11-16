@@ -1,13 +1,11 @@
-import Footer from '@/components/common/Footer';
-import Navbar from '@/components/common/Navbar';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
+import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function RoleLoginLayout() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuthenticated) {

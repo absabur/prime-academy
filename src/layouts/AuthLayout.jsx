@@ -5,9 +5,9 @@ import { useSelector } from 'react-redux';
 import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function AuthLayout() {
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { isAuthenticated, user, cart_merged } = useSelector((state) => state.auth);
 
-  const [searchParams] = useSearchParams();  // ✅ FIXED
+  const [searchParams] = useSearchParams(); // ✅ FIXED
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,6 +15,8 @@ export default function AuthLayout() {
       const next = searchParams.get('next');
       if (next) {
         navigate(next);
+      } else if (cart_merged) {
+        navigate('/cart');
       } else {
         navigate(`/${user?.role}-dashboard`);
       }

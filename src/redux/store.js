@@ -17,6 +17,7 @@ import departmentReducer from './department/departmentSlice';
 import skillReducer from './skill/skillSlice';
 import messageReducer from './messages/messagesSlice';
 import cartReducer from './cart/cartSlice';
+import wishlistReducer from './wishlist/wishlistSlice';
 import overviewReducer from './adminDashbroadOverView/overviewSlice';
 
 import { setupAxiosInterceptors } from '@/api/setupAxiosInterceptors';
@@ -41,6 +42,7 @@ const store = configureStore({
     skill: skillReducer,
     message: messageReducer,
     cart: cartReducer,
+    wishlist: wishlistReducer,
     overview: overviewReducer,
   },
 });

@@ -27,7 +27,7 @@ export default function OrderSummaryCard({ preCouponTotal, originalPrice, cartIt
 
   // --- API Functionality ---
   const handleApplyCoupon = async () => {
-    if (!couponCode) return;
+    if (!couponCode) return setCouponResult(null);
 
     if (!cartItems || cartItems.length === 0) {
       setError('Your cart is empty.');

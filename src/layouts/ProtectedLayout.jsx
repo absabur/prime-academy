@@ -47,6 +47,8 @@ export default function ProtectedLayout() {
           state={{ fromState: state }} // 🔥 preserve checkout state
         />
       );
+    } else {
+      return <Navigate to={`/login?next=${encodeURIComponent(next)}`} replace />;
     }
 
     return <NotFound />;
@@ -55,7 +57,7 @@ export default function ProtectedLayout() {
   if (isAuthenticated && user?.role !== 'student') {
     return <NotFound />;
   }
-  
+
   // 🔹 Authenticated → Page content
   return (
     <div className="w-full flex flex-col min-h-screen">

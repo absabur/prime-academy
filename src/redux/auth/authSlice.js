@@ -15,6 +15,7 @@ const initialState = {
   accessToken: null,
   refreshToken: null,
   isAuthenticated: false,
+  cart_merged: false,
   authLoaded: false,
   loading: false,
   error: null,
@@ -92,6 +93,7 @@ const authSlice = createSlice({
         state.user = payload.data.user;
         state.accessToken = payload.data.tokens.access;
         state.refreshToken = payload.data.tokens.refresh;
+        if (payload.data.cart_merged !== undefined) state.cart_merged = payload.data.cart_merged;
         state.message = 'Logged In SuccessFull!';
         localStorage.setItem(
           'auth',
@@ -154,6 +156,22 @@ const authSlice = createSlice({
       .addCase(verifyEmail.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.message = payload.message;
+        if (payload.data.cart_merged !== undefined) {
+          state.isAuthenticated = true;
+          state.cart_merged = payload.data.cart_merged;
+          state.user = payload.data.user;
+          state.accessToken = payload.data.tokens.access;
+          state.refreshToken = payload.data.tokens.refresh;
+          state.message = 'Account Created andLogged In SuccessFull!';
+          localStorage.setItem(
+            'auth',
+            JSON.stringify({
+              user: payload.data.user,
+              accessToken: payload.data.tokens.access,
+              refreshToken: payload.data.tokens.refresh,
+            })
+          );
+        }
       })
       .addCase(verifyEmail.rejected, (state, { payload }) => {
         state.loading = false;
@@ -179,7 +197,7 @@ const authSlice = createSlice({
       })
       .addCase(changePassword.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.message = payload.message || "Password has been changed";
+        state.message = payload.message || 'Password has been changed';
       })
       .addCase(changePassword.rejected, (state, { payload }) => {
         state.loading = false;
@@ -192,7 +210,7 @@ const authSlice = createSlice({
       })
       .addCase(updateProfile.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.message = payload.message || "Profile Updated Successfully";
+        state.message = payload.message || 'Profile Updated Successfully';
       })
       .addCase(updateProfile.rejected, (state, { payload }) => {
         state.loading = false;

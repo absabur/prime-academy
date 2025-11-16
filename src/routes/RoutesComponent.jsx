@@ -70,6 +70,7 @@ import SingleCourseStudent from '../pages/Dashboard/StudentDashboard/StudentSing
 import Cart from '../pages/Root/Cart/Cart';
 import CheckoutPage from '../pages/Root/Checkout/Checkout';
 import PaymentSuccess from '../pages/Root/PaymentSuccess/PaymentSuccess';
+import WishlistPage from '../pages/Root/WishList/WishList';
 
 function RoutesComponent() {
   const { pathname } = useLocation();
@@ -117,6 +118,7 @@ function RoutesComponent() {
       {/* 🔐 PROTECTED ROUTES */}
       <Route element={<ProtectedLayout />}>
         <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/wish-list" element={<WishlistPage />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
       </Route>
 

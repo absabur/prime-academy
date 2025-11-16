@@ -121,20 +121,24 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="items-center gap-md flex-wrap hidden md:flex">
-            <Link
-              to={'/cart'}
-              rel="noopener noreferrer"
-              className="text-white text-xl rounded-full transition hover:text-secondary-light"
-            >
-              <FaCartArrowDown />
-            </Link>
-            <Link
-              to={'/wish-list'}
-              rel="noopener noreferrer"
-              className="text-white text-xl rounded-full transition hover:text-secondary-light mr-xl"
-            >
-              <FaRegHeart />
-            </Link>
+            <div className="mr-xl flex items-center gap-md">
+              <Link
+                to={'/cart'}
+                rel="noopener noreferrer"
+                className="text-white text-xl rounded-full transition hover:text-secondary-light"
+              >
+                <FaCartArrowDown />
+              </Link>
+              {isAuthenticated && user?.role == 'student' && (
+                <Link
+                  to={'/wish-list'}
+                  rel="noopener noreferrer"
+                  className="text-white text-xl rounded-full transition hover:text-secondary-light"
+                >
+                  <FaRegHeart />
+                </Link>
+              )}
+            </div>
             {socialLinks.map((item) => (
               <Link
                 key={item.platform}
@@ -226,15 +230,18 @@ const Navbar = () => {
               >
                 <FaCartArrowDown />
               </Link>
-              <Link
-                to={'/wish-list'}
-                rel="noopener noreferrer"
-                className={`navbar-item font-semibold transition-colors duration-200 text-3xl ${
-                  location.pathname == '/wish-list' ? 'text-primary navbar-active' : textColor
-                } ${isTransparent ? 'no-scroll' : ''}`}
-              >
-                <FaRegHeart />
-              </Link>
+
+              {isAuthenticated && user?.role == 'student' && (
+                <Link
+                  to={'/wish-list'}
+                  rel="noopener noreferrer"
+                  className={`navbar-item font-semibold transition-colors duration-200 text-3xl ${
+                    location.pathname == '/wish-list' ? 'text-primary navbar-active' : textColor
+                  } ${isTransparent ? 'no-scroll' : ''}`}
+                >
+                  <FaRegHeart />
+                </Link>
+              )}
             </div>
 
             {/* Mobile Menu Button */}

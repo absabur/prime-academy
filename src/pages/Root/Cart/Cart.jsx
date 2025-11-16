@@ -5,19 +5,23 @@ import { fetchCarts } from '../../../redux/cart/cartAction';
 import OuterSection from '../../../components/common/OuterSection';
 import InnerSection from '../../../components/common/InnerSection';
 import PrimaryButton from '../../../components/common/PrimaryButton';
-import { clearError } from '../../../redux/cart/cartSlice';
+import { clearError, clearMessage } from '../../../redux/cart/cartSlice';
 import SwalUtils from '../../../utils/sweetAlert';
 import CartItemCard from '../../../components/Root/cart/CartItemCard';
 import OrderSummaryCard from '../../../components/Root/cart/OrderSummeryCard';
-
-const removeCartItem = (itemId) => ({ type: 'cart/removeCartItem/pending', payload: itemId });
-const saveForLater = (data) => ({ type: 'cart/saveForLater/pending', payload: data });
 // --- End Mock Thunks ---
 
 export default function ShoppingCartPage() {
   // Assuming 'status' and 'error' are also in your cart slice
-  const { carts, error } = useSelector((state) => state.cart);
+  const { carts, error, message } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (message) {
+      SwalUtils.info(message, 'Success');
+      dispatch(clearMessage());
+    }
+  }, [message]);
 
   useEffect(() => {
     if (error) {
@@ -38,16 +42,7 @@ export default function ShoppingCartPage() {
   // This is the total *after* item discounts but *before* coupons
   const preCouponTotal = parseFloat(carts?.total) || 0;
 
-  // --- Corrected API Functionality ---
-
-  const handleSaveForLater = (itemId, courseId) => {
-    console.log(`Dispatching save for later: ${itemId} (Course: ${courseId})`);
-    // Dispatch the Redux thunk for saving for later
-    dispatch(saveForLater({ itemId, courseId }));
-  };
-
   // --- Render Logic ---
-
   if (!carts || carts?.items?.length === 0) {
     return (
       <OuterSection className="pt-fnavbar">
@@ -88,7 +83,7 @@ export default function ShoppingCartPage() {
           {/* Cart Items List */}
           <div className="lg:col-span-2 space-y-6">
             {carts?.items?.map((item) => (
-              <CartItemCard key={item.id} item={item} onSaveForLater={handleSaveForLater} />
+              <CartItemCard key={item.id} item={item} />
             ))}
           </div>
 
