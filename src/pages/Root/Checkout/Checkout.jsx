@@ -95,20 +95,6 @@ export default function CheckoutPage() {
 
       localStorage.setItem('latest_order_id', orderData.data.id);
 
-      // Clear cart
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/cart/clear/`,
-        {
-          order_id: orderData.data.id,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      await api.post(`${import.meta.env.VITE_API_URL}/api/cart/clear/`, {
-        order_id: orderData.data.id,
-      });
-
       dispatch(fetchCarts());
 
       // Initiate payment

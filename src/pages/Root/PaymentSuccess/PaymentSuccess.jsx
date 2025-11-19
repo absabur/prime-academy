@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import api from '../../../api/axios';
-import { CircleCheck, Loader2 } from 'lucide-react';
+import { CircleCheck, HelpCircle, Loader2, ShoppingBag } from 'lucide-react';
 import SwalUtils from '../../../utils/sweetAlert';
+import PrimaryButton from '../../../components/common/PrimaryButton';
+import SecondaryButton from '../../../components/common/SecondaryButton';
 
 const Spinner = () => (
   <div className="flex justify-center items-center p-8">
-    <Loader2 className="w-12 h-12 animate-spin text-blue-500" />
+    <Loader2 className="w-12 h-12 animate-spin text-primary" />
   </div>
 );
 
@@ -23,7 +25,7 @@ const PaymentSuccess = () => {
     const verifyPayment = async () => {
       // Get transaction ID from URL - check multiple parameter names
       const urlParams = new URLSearchParams(window.location.search);
-      let order_number = urlParams.get('order_number');
+      let order_number = urlParams.get('tran_id');
       let val_id = urlParams.get('val_id');
       let latest_order_id = localStorage.getItem('latest_order_id');
 
@@ -72,6 +74,11 @@ const PaymentSuccess = () => {
         if (response.data.success) {
           setPaymentData(response.data.data);
 
+          // Clear cart
+          await api.post(`${import.meta.env.VITE_API_URL}/api/cart/clear/`, {
+            order_id: latest_order_id,
+          });
+
           // Clean up localStorage
           localStorage.removeItem('latest_order_id');
           localStorage.removeItem('payment_redirect');
@@ -81,6 +88,9 @@ const PaymentSuccess = () => {
             `You have been enrolled in ${response.data.data.enrollment_count} course(s).`,
             'Payment Successful! 🎉'
           );
+          setTimeout(() => {
+            navigate('/student-dashboard/my-courses');
+          }, 3000);
         } else {
           setError(response.data.message);
           SwalUtils.error('Verification Failed', response.data.message);
@@ -120,19 +130,14 @@ const PaymentSuccess = () => {
           <h1 className="text-2xl font-bold text-gray-900 mt-4">Verification Failed</h1>
           <p className="text-gray-600 mt-2">{error}</p>
 
-          <div className="mt-8 space-y-3">
-            <button
-              onClick={() => navigate('/courses')}
-              className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300"
-            >
-              Browse Courses
-            </button>
-            <button
-              onClick={() => navigate('/contact')}
-              className="w-full text-blue-600 font-medium hover:underline"
-            >
-              Contact Support
-            </button>
+          <div className="mt-8 flex flex-col md:flex-row gap-4 justify-center">
+            <PrimaryButton href={`/cart`} text={`Try Again`} prefixIcon={<ShoppingBag />} />
+            <SecondaryButton
+              href={`/courses`}
+              text={`Browse Courses`}
+              className="text-primary border-primary hover:text-white"
+            />
+            <PrimaryButton href={`/contact`} text={`Contact Support`} prefixIcon={<HelpCircle />} />
           </div>
         </div>
       </div>
@@ -145,7 +150,7 @@ const PaymentSuccess = () => {
         <CircleCheck className="w-24 h-24 text-green-500 mx-auto" />
         <h1 className="text-4xl font-bold text-gray-900 mt-6">Payment Successful! 🎉</h1>
 
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 my-6">
+        <div className="bg-primary/5 border border-primary/20 rounded-lg p-6 my-6">
           <div className="grid grid-cols-2 gap-4 text-left">
             <div>
               <p className="text-sm text-gray-600">Order Number</p>
@@ -184,12 +189,11 @@ const PaymentSuccess = () => {
         </div>
 
         <div className="mt-8">
-          <button
-            onClick={() => navigate('/student-dashboard/my-courses')}
-            className="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-lg hover:bg-blue-700 transition duration-300 text-lg"
-          >
-            Go to My Courses
-          </button>
+          <PrimaryButton
+            text={`See Your Courses`}
+            href={`/student-dashboard/my-courses`}
+            className="w-full py-lg"
+          />
         </div>
       </div>
     </div>
