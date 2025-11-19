@@ -70,6 +70,8 @@ import SingleCourseStudent from '../pages/Dashboard/StudentDashboard/StudentSing
 import Cart from '../pages/Root/Cart/Cart';
 import CheckoutPage from '../pages/Root/Checkout/Checkout';
 import PaymentSuccess from '../pages/Root/PaymentSuccess/PaymentSuccess';
+import PaymentFail from '../pages/Root/PaymentFail/PaymentFail';
+import PaymentCancel from '../pages/Root/PaymentCancel/PaymentCancel';
 import WishlistPage from '../pages/Root/WishList/WishList';
 
 function RoutesComponent() {
@@ -120,6 +122,8 @@ function RoutesComponent() {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/wish-list" element={<WishlistPage />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
+        <Route path="/payment/fail" element={<PaymentFail />} />
+        <Route path="/payment/cancel" element={<PaymentCancel />} />
       </Route>
 
       {/* 🔐 PROTECTED ROUTES (DASHBOARD) */}

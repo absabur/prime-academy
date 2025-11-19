@@ -50,8 +50,25 @@ export default function LoginStudent() {
   useEffect(() => {
     if (isAuthenticated) {
       const next = searchParams.get('next');
+      const redirect = searchParams.get('redirect');
       const redirectState = location.state?.fromState || null;
       dispatch(setCouponState(redirectState));
+      
+      // Check for payment redirect
+      const savedTranId = localStorage.getItem('payment_redirect');
+      if (savedTranId) {
+        localStorage.removeItem('payment_redirect');
+        navigate(`/payment/success?tran_id=${savedTranId}`);
+        return;
+      }
+      
+      // Check for redirect parameter (e.g., from payment-success)
+      if (redirect === 'payment-success' && savedTranId) {
+        localStorage.removeItem('payment_redirect');
+        navigate(`/payment/success?tran_id=${savedTranId}`);
+        return;
+      }
+      
       if (next) {
         navigate(next);
       } else if (cart_merged) {
