@@ -33,16 +33,21 @@ const HeroSection = ({ title, description, bannerImage, slides, button1, button2
       )}
 
       <InnerSection Tag="header" className="items-start z-5 py-md md:py-xl">
-        <PathUrl />
+        <div className="md:block hidden">
+          <PathUrl />
+        </div>
         <div className="flex flex-col lg:flex-row w-full gap-sm">
           {/* Left Content */}
           <div className={`pb-20 ${from == 'home' ? 'home-hero-left' : 'w-full md:w-[40%]'}`}>
             {/* The title is required, so no conditional check needed here */}
 
+            <div className="md:hidden block mt-50 md:mt-0" ref={h1Ref} style={h1Style}>
+              <PathUrl />
+            </div>
             {from == 'home' ? (
               <h1
                 ref={h1Ref}
-                className="mt-50 heading-home-hero mb-md text-white whitespace-pre-wrap uppercase"
+                className="heading-home-hero mb-md text-white whitespace-pre-wrap uppercase"
                 style={h1Style}
               >
                 {/* Use ReactMarkdown to render the title which may contain line breaks */}
@@ -50,9 +55,7 @@ const HeroSection = ({ title, description, bannerImage, slides, button1, button2
               </h1>
             ) : (
               <h1
-                style={h1Style}
-                ref={h1Ref}
-                className="mt-50 heading-5xl pb-md text-white uppercase"
+                className="mt-10 heading-5xl pb-md text-white uppercase"
               >
                 {/* Use ReactMarkdown to render the title which may contain line breaks */}
                 <span>{title}</span>

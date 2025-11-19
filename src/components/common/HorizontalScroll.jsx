@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -8,12 +8,41 @@ const HorizontalScrollSection = ({ items }) => {
     return;
   }
 
-  const slides = [...items, ...items, ...items];
-
+  const [fadeState, setFadeState] = useState('text-white/0');
   const [activeIndex, setActiveIndex] = useState(0); // currently visible slide
 
-  const getSlideColor = (slideIndex) =>
-    slideIndex === activeIndex ? 'text-white' : 'text-white/30';
+  useEffect(() => {
+    const newState = {};
+
+    // ধরো তোমার slides = [0,1,2,3]
+    slides.forEach((_, index) => {
+      if (index === activeIndex) {
+        newState[index] = 'text-white';
+      } else {
+        newState[index] = 'text-white/0';
+
+        setTimeout(() => {
+          setFadeState((prev) => ({
+            ...prev,
+            [index]: 'text-white/20',
+          }));
+        }, 0);
+
+        setTimeout(() => {
+          setFadeState((prev) => ({
+            ...prev,
+            [index]: 'text-white/0',
+          }));
+        }, 400);
+      }
+    });
+
+    setFadeState(newState);
+  }, [activeIndex]);
+
+  const slides = [...items, ...items, ...items];
+
+  const getSlideColor = (slideIndex) => fadeState[slideIndex] || 'text-white/0';
 
   return (
     <Swiper

@@ -84,7 +84,7 @@ const ImageContent = ({ data, ip }) => {
         </Modal>
       )}
       {/* {loadingImgIconContents && <ImageContentSkeleton ip={ip} />} */}
-      <div className={`flex-1 relative flex items-center ${ip === 'right' ? 'order-2' : ''}`}>
+      <div className={`flex-1 relative flex items-start ${ip === 'right' ? 'order-2' : ''}`}>
         <motion.div
           initial={{ opacity: 0, x: ip === 'right' ? 30 : -30, y: 0 }}
           whileInView={{ opacity: 1, x: 0 }}

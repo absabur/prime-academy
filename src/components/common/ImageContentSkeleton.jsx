@@ -3,7 +3,7 @@ import React from 'react';
 const ImageContentSkeleton = ({ ip }) => {
   return (
     <div className="flex gap-15 w-full flex-col md:flex-row">
-      <div className={`flex-1 relative flex items-center ${ip === 'right' ? 'order-2' : ''}`}>
+      <div className={`flex-1 relative flex items-start ${ip === 'right' ? 'order-2' : ''}`}>
         {/* Image/Video Skeleton */}
         <div className="w-full relative animate-pulse">
           <div className="relative z-20 w-full h-80 bg-gray-300 rounded-lg"></div>

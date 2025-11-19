@@ -18,7 +18,7 @@ const HeroBgLayouts = ({ image }) => {
       {/* bg shape image of left side */}
       <div
         className="
-          absolute right-0 top-0 w-full h-[800px] bg-cover bg-center z-4
+          absolute right-0 top-0 w-full min-h-[800px] h-full bg-cover bg-center z-4
           bg-[url('/assets/hero-mobile-left.png')]    // mobile image
           md:bg-[url('/assets/banner-left.png')]  // tablet & desktop image
         "
