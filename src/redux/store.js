@@ -20,7 +20,7 @@ import cartReducer from './cart/cartSlice';
 import wishlistReducer from './wishlist/wishlistSlice';
 import overviewReducer from './adminDashbroadOverView/overviewSlice';
 
-import { setupAxiosInterceptors } from '@/api/setupAxiosInterceptors';
+import { setupAxiosInterceptors } from '../api/setupAxiosInterceptors';
 
 const store = configureStore({
   reducer: {
