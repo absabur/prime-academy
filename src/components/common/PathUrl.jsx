@@ -13,7 +13,7 @@ const PathUrl = () => {
   }));
 
   return (
-    <div className="flex gap-2 text-white/70 text-sm overflow-x-hidden whitespace-nowrap scrollbar-hide">
+    <div className="flex gap-2 text-white/70 text-sm overflow-x-hidden whitespace-nowrap scrollbar-hide relative top-3">
       {/* Home always first */}
       {paths.length >= 1 && (
         <Link to="/" className="hover:text-white">

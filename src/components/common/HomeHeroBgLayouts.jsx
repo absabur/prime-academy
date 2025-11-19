@@ -17,16 +17,19 @@ const HomeHeroBgLayouts = ({ image }) => {
     <>
       {/* Hero Pattern Background */}
       <div
-        className="absolute right-0 top-0 w-full h-[800px] bg-cover bg-center z-4"
+        className="
+          absolute right-0 top-0 w-full h-[800px] bg-cover bg-center z-4
+          bg-[url('/assets/hero-mobile.png')]    // mobile image
+          md:bg-[url('/assets/banner-right.png')]  // tablet & desktop image
+        "
         style={{
-          backgroundImage: `url(/assets/banner-right.png)`,
           backgroundPosition: 'center -15px center',
         }}
       ></div>
 
       {/* Main Image */}
       <img
-        className={`absolute left-0 top-0 w-full md:w-[70%] h-[100%] object-cover object-[center_top] z-2 transition-opacity duration-700 ${
+        className={`absolute left-0 top-0 w-full h-[60%] md:w-[70%] md:h-[100%] object-cover object-[center_top] z-2 transition-opacity duration-700 ${
           loaded ? 'opacity-100' : 'opacity-0'
         }`}
         src={imageSrc}

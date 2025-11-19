@@ -81,7 +81,7 @@ const HeroSection = ({ title, description, bannerImage, slides, button1, button2
                     from="hero"
                     href={button1?.url}
                     text={button1?.text}
-                    className="rounded-lg"
+                    className="rounded-lg shadow-lg md:shadow-none"
                   />
                 )}
                 {button1?.onClick && (
@@ -89,7 +89,7 @@ const HeroSection = ({ title, description, bannerImage, slides, button1, button2
                     from="hero"
                     onClick={button1?.onClick}
                     text={button1?.text}
-                    className="rounded-lg"
+                    className="rounded-lg shadow-lg md:shadow-none"
                   />
                 )}
                 {button2?.url && (
