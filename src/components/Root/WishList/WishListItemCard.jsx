@@ -68,7 +68,7 @@ export default function WishlistItemCard({ item }) {
           text="Add to Cart"
           onClick={handleAddToCart}
           suffixIcon={<ShoppingCart size={18} />}
-          className="w-full md:w-auto"
+          className="w-auto"
         />
         <button
           onClick={handleRemoveFromWishlist}

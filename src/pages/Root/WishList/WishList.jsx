@@ -9,10 +9,11 @@ import PrimaryButton from '../../../components/common/PrimaryButton';
 import SwalUtils from '../../../utils/sweetAlert';
 import WishlistItemCard from '../../../components/Root/WishList/WishListItemCard';
 import SecondaryButton from '../../../components/common/SecondaryButton';
+import LoadingDashboard from '../../../components/Dashboard/common/LoadingDashboard';
 
 export default function WishlistPage() {
   // Note: Assuming a 'wishlist' slice instead of 'cart'
-  const { wishlist, error, message } = useSelector((state) => state.wishlist);
+  const { wishlist, error, message, loadingWishlists } = useSelector((state) => state.wishlist);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -64,6 +65,10 @@ export default function WishlistPage() {
         </InnerSection>
       </OuterSection>
     );
+  }
+
+  if (loadingWishlists) {
+    return <LoadingDashboard loading={loadingWishlists} />;
   }
 
   const itemCount = wishlist?.courses?.length || 0;

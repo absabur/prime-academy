@@ -9,11 +9,12 @@ import { clearError, clearMessage } from '../../../redux/cart/cartSlice';
 import SwalUtils from '../../../utils/sweetAlert';
 import CartItemCard from '../../../components/Root/cart/CartItemCard';
 import OrderSummaryCard from '../../../components/Root/cart/OrderSummeryCard';
+import LoadingDashboard from '../../../components/Dashboard/common/LoadingDashboard';
 // --- End Mock Thunks ---
 
 export default function ShoppingCartPage() {
   // Assuming 'status' and 'error' are also in your cart slice
-  const { carts, error, message } = useSelector((state) => state.cart);
+  const { carts, error, message, loadingCarts } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -66,6 +67,10 @@ export default function ShoppingCartPage() {
     );
   }
 
+  if (loadingCarts) {
+    return <LoadingDashboard loading={loadingCarts} />;
+  }
+  
   return (
     <OuterSection className="pt-fnavbar">
       <InnerSection>

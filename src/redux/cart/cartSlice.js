@@ -5,7 +5,6 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState: {
     carts: [],
-    cart: {},
     loadingCarts: true,
     loadingActionCarts: false,
     error: null,

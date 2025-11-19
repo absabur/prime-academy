@@ -5,7 +5,6 @@ const wishlistSlice = createSlice({
   name: 'wishlist',
   initialState: {
     wishlist: [],
-    wishlist: {},
     loadingWishlists: true,
     loadingActionWishlists: false,
     error: null,
