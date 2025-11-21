@@ -1,23 +1,15 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Trash2, Heart, Loader2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { formatCurrency } from '../../../utils/formatCurrency';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { deleteCart } from '../../../redux/cart/cartAction';
 
 export default function CartItemCard({ item }) {
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { course } = item;
-  const [isRemoving, setIsRemoving] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const dispatch = useDispatch();
 
   const handleRemove = () => {
     dispatch(deleteCart(item?.id));
-  };
-
-  const handleSave = () => {
-    setIsSaving(true);
   };
 
   return (
@@ -42,10 +34,9 @@ export default function CartItemCard({ item }) {
         <div className="flex items-center gap-4 mt-3 pt-3 border-t md:border-t-0 md:pt-0">
           <button
             onClick={handleRemove}
-            disabled={isRemoving || isSaving}
             className="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-red-600 transition-colors disabled:opacity-50"
           >
-            {isRemoving ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
+            <Trash2 size={16} />
             Remove
           </button>
         </div>

@@ -59,9 +59,9 @@ export default function AddEmployeeForm({
   // 🧾 Handle submit with FormData (for file upload)
   const handleFormSubmit = (data) => {
     const id = data.id || null;
-
     // 🔹 check if user selected a new file
-    const isFileSelected = data.employee_image && data.employee_image[0] instanceof File;
+    const file = data.employee_image && data.employee_image[0];
+    const isFileSelected = !!(file && (file instanceof File || file.name));
 
     if (isFileSelected) {
       // FormData for new file
@@ -70,8 +70,7 @@ export default function AddEmployeeForm({
       for (const [key, value] of Object.entries(data)) {
         if (key !== 'employee_image') formData.append(key, value);
       }
-
-      formData.append('employee_image', data.employee_image[0]);
+      formData.append('employee_image', file, file.name || 'employee.jpg');
       onSubmit(formData, id);
     } else {
       // JSON data for no new image

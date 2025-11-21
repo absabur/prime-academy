@@ -16,7 +16,16 @@ import HeroBgLayouts from './HeroBgLayouts';
 import PathUrl from './PathUrl';
 
 // Reusable Hero Section component
-const HeroSection = ({ title, description, bannerImage, slides, button1, button2, from }) => {
+const HeroSection = ({
+  title,
+  description,
+  bannerImage,
+  slides,
+  button1,
+  button2,
+  from,
+  pricing = null,
+}) => {
   // The responsive margin logic is now self-contained within this component.
   const { ref: h1Ref, style: h1Style } = useResponsiveMargin(180);
 
@@ -55,7 +64,8 @@ const HeroSection = ({ title, description, bannerImage, slides, button1, button2
               </h1>
             ) : (
               <h1
-                className="mt-10 heading-5xl pb-md text-white uppercase"
+                className={`${from == 'course' ? 'heading-3xl' : 'heading-5xl'} mt-10 pb-md text-white uppercase`}
+                style={{ color: 'var(--color-white)' }}
               >
                 {/* Use ReactMarkdown to render the title which may contain line breaks */}
                 <span>{title}</span>
@@ -71,8 +81,42 @@ const HeroSection = ({ title, description, bannerImage, slides, button1, button2
 
             {/* Conditionally render the description */}
             {description && (
-              <div className="font-heading text-base text-white leading-lg lg:max-w-[80%] space-y-md">
+              <div
+                className={`font-heading text-sm text-white leading-lg lg:max-w-[80%] space-y-md ${from == 'course' ? 'line-clamp-3' : 'mt-lg'}`}
+              >
                 <p>{description}</p>
+              </div>
+            )}
+
+            {pricing && from === 'course' && (
+              <div className="mt-xl">
+                {pricing.effective_price == 0 || pricing.is_free ? (
+                  <span className="text-2xl font-bold bg-secondary-light text-primary px-3 py-1 shadow-md rounded-md">
+                    FREE
+                  </span>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    {pricing?.installment_available ? (
+                      <div className="text-white flex items-center gap-sm">
+                        <span className="text-lg">Price:</span>
+                        <span className="font-bold text-2xl md:text-secondary">
+                          {pricing?.installment_amount}
+                        </span>
+                        /<span className="">{pricing?.installment_count} Installment</span>
+                      </div>
+                    ) : (
+                      <>
+                        <span className="text-lg text-white">Price:</span>
+                        <span className="font-bold text-2xl md:text-secondary text-white">
+                          {pricing.effective_price}
+                        </span>
+                        {pricing.base_price && pricing.base_price !== pricing.effective_price && (
+                          <del className="text-gray-300 text-sm">{pricing.base_price}</del>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 

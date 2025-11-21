@@ -32,6 +32,20 @@ export const fetchCourses = createAsyncThunk(
   }
 );
 
+export const fetchMyCourses = createAsyncThunk(
+  'course/fetchMyCourses',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get(
+        `${import.meta.env.VITE_API_URL}/api/enrollments/my_enrollments/`
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
+  }
+);
+
 export const fetchAdminCourses = createAsyncThunk(
   'course/fetchAdminCourses',
   async (

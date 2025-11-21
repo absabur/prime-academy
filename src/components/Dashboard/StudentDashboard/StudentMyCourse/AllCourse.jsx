@@ -1,61 +1,38 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LoaderCircle, CheckCircle2 } from 'lucide-react';
 import PrimaryButton from '../../../common/PrimaryButton';
 import SecondaryButton from '../../../common/SecondaryButton';
-import course1 from '/assets/course1.jpg';
-import course2 from '/assets/course2.jpg';
 import { Link } from 'react-router-dom';
-
-// --- Course Data ---
-const coursesData = [
-  {
-    id: 1,
-    title: 'AI Agent Development Bootcamp for Programmers',
-    status: 'Ongoing',
-    batch: 4,
-    imageUrl: course1,
-  },
-  {
-    id: 2,
-    title: 'AllCourse Development',
-    status: 'Finished',
-    batch: 3,
-    imageUrl: course2,
-  },
-  {
-    id: 3,
-    title: 'Digital Marketting',
-    status: 'Finished',
-    batch: 3,
-    imageUrl: course1,
-  },
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchMyCourses } from '../../../../redux/courses/courseAction';
+import './css/mycourses.css';
 
 // --- Reusable CourseCard Component (Updated) ---
 const CourseCard = ({ course }) => {
-  const { title, status, batch, imageUrl } = course;
-  const isOngoing = status === 'Ongoing';
+  const { course_title, is_completed_status, imageUrl, course_slug } = course;
+  const isOngoing = !is_completed_status;
 
   return (
     // ✅ CHANGED: Removed h-50, added sm:h-52. Card is auto-height on mobile.
-    <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col sm:flex-row w-full sm:h-52">
+    <Link
+      to={`/student-dashboard/my-course/${course_slug}`}
+      className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col sm:flex-row w-full sm:h-52"
+    >
       {/* Image Section */}
       {/* ✅ CHANGED: Adjusted width from sm:w-3/6 to sm:w-5/12 */}
       <div className="sm:w-5/12 flex-shrink-0">
-        <img className="h-48 w-full object-cover sm:h-full" src={imageUrl} alt={title} />
+        <img className="h-48 w-full object-cover sm:h-full" src={imageUrl} alt={course_title} />
       </div>
 
       {/* Content Section */}
       {/* ✅ CHANGED: Adjusted width from sm:w-3/6 to sm:w-7/12 */}
       <div className="p-md md:p-sm flex flex-col justify-between sm:w-7/12">
         <div>
-          <Link to={`/student-dashboard/my-course/${title}`}>
-            <h3
-              className={`hover:text-primary text-xl font-bold line-clamp-3 ${isOngoing ? 'text-black' : 'text-black/50'}`}
-            >
-              {title}
-            </h3>
-          </Link>
+          <h3
+            className={`hover:text-primary text-xl font-bold line-clamp-3 ${isOngoing ? 'text-black' : 'text-black/50'}`}
+          >
+            {course_title}
+          </h3>
         </div>
 
         {/* Tags Section */}
@@ -68,46 +45,43 @@ const CourseCard = ({ course }) => {
             }`}
           >
             {isOngoing ? (
-              <LoaderCircle className="w-4 h-4 mr-1.5 animate-spin-slow" />
+              <>
+                <LoaderCircle className="w-4 h-4 mr-1.5 animate-spin-slow" /> <span>Ongoing</span>
+              </>
             ) : (
-              <CheckCircle2 className="w-4 h-4 mr-1.5" />
+              <>
+                <CheckCircle2 className="w-4 h-4 mr-1.5" /> <span>Completed</span>
+              </>
             )}
-            {status}
           </span>
-          <span className="inline-flex whitespace-nowrap items-center px-3 py-1 rounded-full text-sm font-medium bg-black/10 text-black/70">
+          {/* <span className="inline-flex whitespace-nowrap items-center px-3 py-1 rounded-full text-sm font-medium bg-black/10 text-black/70">
             Batch {batch}
-          </span>
+          </span> */}
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
 // --- Main AllCourse Component ---
 export default function AllCourse() {
   const [activeFilter, setActiveFilter] = useState('All'); // 'All' or 'Ongoing'
+  const dispatch = useDispatch();
+  const { myCourses } = useSelector((state) => state.course);
 
-  const filteredCourses = coursesData.filter((course) => {
+  const filteredCourses = myCourses.filter((course) => {
     if (activeFilter === 'Ongoing') {
-      return course.status === 'Ongoing';
+      return !course.is_completed_status;
     }
-    return true; // 'All'
+    return true;
   });
 
-  // Custom style for slower spin
-  const customStyles = `
-    @keyframes spin-slow {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    .animate-spin-slow {
-      animation: spin-slow 2s linear infinite;
-    }
-  `;
+  useEffect(() => {
+    dispatch(fetchMyCourses());
+  }, []);
 
   return (
     <>
-      <style>{customStyles}</style>
       {/* ✅ CHANGED: Added max-w-7xl and horizontal padding (px) */}
       <div className="shadow-md rounded-lg border border-black/10 bg-secondary-bg p-lg">
         {/* Header Section */}

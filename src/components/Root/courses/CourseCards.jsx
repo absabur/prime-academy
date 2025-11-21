@@ -39,7 +39,7 @@ const CourseCards = () => {
   }, [dispatch, currentPage, category, search, order, pageSize]);
 
   return (
-    <section className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-lg">
+    <section className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-lg">
       {/* ✅ Show skeletons if loading and no previous data */}
       {loadingCourses && previousCourses.current.length == 0
         ? Array.from({ length: 3 }).map((_, index) => (

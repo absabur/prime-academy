@@ -36,6 +36,11 @@ export default function WishlistPage() {
   }, [dispatch]);
 
   // --- Render Logic ---
+
+  if (loadingWishlists) {
+    return <LoadingDashboard loading={loadingWishlists} />;
+  }
+
   if (!wishlist || wishlist?.courses?.length === 0) {
     return (
       <OuterSection className="pt-fnavbar">
@@ -65,10 +70,6 @@ export default function WishlistPage() {
         </InnerSection>
       </OuterSection>
     );
-  }
-
-  if (loadingWishlists) {
-    return <LoadingDashboard loading={loadingWishlists} />;
   }
 
   const itemCount = wishlist?.courses?.length || 0;

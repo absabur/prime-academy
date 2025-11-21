@@ -7,6 +7,7 @@ const DashBoardHeader = ({
   prefixIcon = null,
   suffixIcon = null,
   handeleAdd,
+  href = null,
   searchBar = true,
 }) => {
   // const [searchParams, setSearchParams] = useSearchParams();
@@ -36,6 +37,7 @@ const DashBoardHeader = ({
             prefixIcon={prefixIcon}
             suffixIcon={suffixIcon}
             onClick={handeleAdd}
+            href={href}
           />
         )}
       </div>

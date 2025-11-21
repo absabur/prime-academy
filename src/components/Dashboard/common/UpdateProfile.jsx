@@ -144,7 +144,8 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
 
   // --- Form Submit Handler (Unchanged) ---
   const handleFormSubmit = (data) => {
-    const isFileSelected = data.profile?.image && data.profile.image[0] instanceof File;
+    const file = data.profile?.image && data.profile.image[0];
+    const isFileSelected = !!(file && (file instanceof File || file.name));
 
     if (isFileSelected) {
       const formData = new FormData();
@@ -157,7 +158,7 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
       data.profile.skills.forEach((skill, index) => {
         formData.append(`profile.skills[${index}]`, skill);
       });
-      formData.append('profile.image', data.profile.image[0]);
+      formData.append('profile.image', file, file.name || 'profile.jpg');
       onSubmit(formData);
     } else {
       const jsonData = { ...data };

@@ -59,7 +59,7 @@ const SwalUtils = {
     }).then((result) => {
       if (result.isConfirmed) {
         onConfirm();
-      }
+      } 
     });
   },
 };

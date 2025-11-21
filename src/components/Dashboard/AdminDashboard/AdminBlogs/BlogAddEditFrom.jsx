@@ -62,7 +62,8 @@ export default function BlogAddEditFrom({
   const handleFormSubmit = (data) => {
     const id = data.id || null;
     // 🔹 check if user selected a new file
-    const isFileSelected = data.featured_image && data.featured_image[0] instanceof File;
+    const file = data.featured_image && data.featured_image[0];
+    const isFileSelected = !!(file && (file instanceof File || file.name));
 
     if (isFileSelected) {
       // FormData for new file
@@ -71,8 +72,7 @@ export default function BlogAddEditFrom({
       for (const [key, value] of Object.entries(data)) {
         if (key !== 'featured_image') formData.append(key, value);
       }
-
-      formData.append('featured_image', data.featured_image[0]);
+      formData.append('featured_image', file, file.name || 'featured.jpg');
       onSubmit(formData, id);
     } else {
       // JSON data for no new image

@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { mapApiSeoToUseSEO } from '@/utils/mapApiSeoToUseSEO';
 import { useParams } from 'react-router-dom';
 import { fetchSingleCourse } from '../../../redux/courses/courseAction';
-import { clearCourse } from '../../../redux/courses/courseSlice';
 // SingleCourse page component
 const SingleCourse = () => {
   const { slug } = useParams();
@@ -23,7 +22,6 @@ const SingleCourse = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // dispatch(clearCourse());
     dispatch(fetchSeos());
     dispatch(fetchSingleCourse(slug));
   }, [slug]);

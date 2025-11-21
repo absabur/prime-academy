@@ -4,6 +4,7 @@ import {
   fetchCourseCategories,
   fetchCourses,
   fetchMegaCourses,
+  fetchMyCourses,
   fetchOurCourses,
   fetchSingleCourse,
   updateCourse,
@@ -17,6 +18,8 @@ const courseSlice = createSlice({
     adminCourses: [],
     ourCourses: [],
     megaCourses: [],
+    loadingmyCourses: true,
+    myCourses: [],
     course: {},
     coursePagination: {},
     pageSize: 12,
@@ -122,6 +125,20 @@ const courseSlice = createSlice({
       })
       .addCase(fetchMegaCourses.rejected, (state, action) => {
         state.loadingMegaCourses = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // My Courses
+    builder
+      .addCase(fetchMyCourses.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(fetchMyCourses.fulfilled, (state, action) => {
+        state.loadingmyCourses = false;
+        state.myCourses = action.payload.data.results;
+      })
+      .addCase(fetchMyCourses.rejected, (state, action) => {
+        state.loadingmyCourses = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
 

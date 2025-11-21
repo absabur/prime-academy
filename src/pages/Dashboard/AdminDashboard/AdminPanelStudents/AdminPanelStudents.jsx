@@ -72,8 +72,8 @@ const AdminPanelStudents = () => {
 
     // 🔹 ফাইল থাকলে যুক্ত করা
     const file = data.profile?.image?.[0];
-    if (file instanceof File) {
-      formData.append('profile.image', file);
+    if (file && (file instanceof File || file.name)) {
+      formData.append('profile.image', file, file.name || 'profile.jpg');
     }
 
     // 🔹 Redux dispatch

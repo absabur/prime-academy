@@ -69,6 +69,7 @@ import RoleLoginLayout from '../layouts/RoleLoginLayout';
 import SingleCourseStudent from '../pages/Dashboard/StudentDashboard/StudentSingleCourse/SingleCourseStudent';
 import Cart from '../pages/Root/Cart/Cart';
 import CheckoutPage from '../pages/Root/Checkout/Checkout';
+import AdminPanelCreateCourse from '../pages/Dashboard/AdminDashboard/AdminCreateCourse/AdminPanelCreateCourse';
 import PaymentSuccess from '../pages/Root/PaymentSuccess/PaymentSuccess';
 import PaymentFail from '../pages/Root/PaymentFail/PaymentFail';
 import PaymentCancel from '../pages/Root/PaymentCancel/PaymentCancel';
@@ -133,6 +134,7 @@ function RoutesComponent() {
           {/* main menues  */}
           <Route path="/admin-dashboard" element={<AdminPanelDashboard />} />
           <Route path="/admin-dashboard/courses" element={<AdminPanelCourses />} />
+          <Route path="/admin-dashboard/courses/create" element={<AdminPanelCreateCourse />} />
           <Route path="/admin-dashboard/students" element={<AdminPanelStudents />} />
           <Route path="/admin-dashboard/teachers" element={<AdminPanelTeachers />} />
           <Route path="/admin-dashboard/employees" element={<AdminPanelEmployees />} />

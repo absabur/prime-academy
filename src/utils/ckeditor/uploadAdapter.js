@@ -87,7 +87,8 @@ class UploadAdapter {
   // Prepares the data and sends the request
   _sendRequest(file) {
     const data = new FormData();
-    data.append('image', file); // Backend should expect 'image' field
+    // Include filename for better compatibility with some browsers (Safari)
+    data.append('image', file, file.name || 'upload.jpg'); // Backend should expect 'image' field
     // Alternative field names your backend might use:
     // data.append('file', file);
     // data.append('upload', file);

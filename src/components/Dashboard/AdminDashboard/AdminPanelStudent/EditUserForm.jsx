@@ -34,8 +34,9 @@ export default function EditUserForm({
   // Watch file input change
   const fileValue = watch('profile.image');
   useEffect(() => {
-    if (fileValue && fileValue[0] instanceof File) {
-      const url = URL.createObjectURL(fileValue[0]);
+    const file = fileValue && fileValue[0];
+    if (file && (file instanceof File || file.name)) {
+      const url = URL.createObjectURL(file);
       setPreview(url);
       return () => URL.revokeObjectURL(url);
     } else if (typeof fileValue === 'string') {

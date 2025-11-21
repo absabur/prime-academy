@@ -166,6 +166,7 @@ const AdminPanelCourses = () => {
         buttonText={'Add Course'}
         title={'AdminPanelCourses'}
         prefixIcon={<FaPlus />}
+        href={'/admin-dashboard/courses/create'}
       />
       <DataTables
         columns={columns}

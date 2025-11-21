@@ -19,8 +19,8 @@ import messageReducer from './messages/messagesSlice';
 import cartReducer from './cart/cartSlice';
 import wishlistReducer from './wishlist/wishlistSlice';
 import overviewReducer from './adminDashbroadOverView/overviewSlice';
-
-import { setupAxiosInterceptors } from '../api/setupAxiosInterceptors';
+import courseWizardReducer from './courseWizard/courseWizardSlice';
+import { setupAxiosInterceptors } from '@/api/setupAxiosInterceptors';
 
 const store = configureStore({
   reducer: {
@@ -44,7 +44,12 @@ const store = configureStore({
     cart: cartReducer,
     wishlist: wishlistReducer,
     overview: overviewReducer,
+    courseWizard: courseWizardReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false, // ❗ Warning বন্ধ করবে
+    }),
 });
 
 setupAxiosInterceptors(store);

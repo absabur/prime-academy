@@ -81,7 +81,12 @@ export default function CheckoutPage() {
     setIsPlacingOrder(true);
     setError(null);
 
-    const orderPayload = buildOrderPayload(billingDetails, carts, totals, couponCode);
+    const orderPayload = buildOrderPayload(
+      billingDetails,
+      carts,
+      totals,
+      couponCode,
+    );
 
     try {
       // Create order

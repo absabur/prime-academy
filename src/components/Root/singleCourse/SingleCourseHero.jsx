@@ -5,14 +5,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createCart } from '../../../redux/cart/cartAction';
 import { createWishlist } from '../../../redux/wishlist/wishlistAction';
 import { useNavigate } from 'react-router-dom';
-import { clearMessage } from '../../../redux/cart/cartSlice';
+import { clearError, clearMessage } from '../../../redux/cart/cartSlice';
 import { clearMessage as clearMessageWishlist } from '../../../redux/wishlist/wishlistSlice';
+import { clearError as clearErrorWishlist } from '../../../redux/wishlist/wishlistSlice';
+import SwalUtils from '../../../utils/sweetAlert';
 
 const SingleCourseHero = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { course } = useSelector((state) => state.course);
-  const { message } = useSelector((state) => state.cart);
-  const { message: wishlistMessage } = useSelector((state) => state.wishlist);
+  const { message, error } = useSelector((state) => state.cart);
+  const { message: wishlistMessage, error: wishlistError } = useSelector((state) => state.wishlist);
   const [courseHero, setCourseHero] = useState();
   const { heros } = useSelector((state) => state.hero);
   const dispatch = useDispatch();
@@ -30,11 +32,25 @@ const SingleCourseHero = () => {
   }, [message]);
 
   useEffect(() => {
+    if (error) {
+      SwalUtils.error(error, 'Failed to Add to Cart');
+      dispatch(clearError());
+    }
+  }, [error]);
+
+  useEffect(() => {
     if (wishlistMessage) {
       navigate('/wish-list');
       dispatch(clearMessageWishlist());
     }
   }, [wishlistMessage]);
+
+  useEffect(() => {
+    if (wishlistError) {
+      SwalUtils.error(wishlistError, 'Failed to Add to Wishlist');
+      dispatch(clearErrorWishlist());
+    }
+  }, [wishlistError]);
 
   useEffect(() => {
     let current = heros.filter((item) => item.page_name == 'single-course');
@@ -59,6 +75,8 @@ const SingleCourseHero = () => {
             }
           : null
       }
+      pricing={course?.pricing}
+      from="course"
     />
   );
 };

@@ -20,7 +20,12 @@ export const calculateOrderTotals = (carts, passedState) => {
   };
 };
 
-export const buildOrderPayload = (billingDetails, carts, totals, couponCode) => {
+export const buildOrderPayload = (
+  billingDetails,
+  carts,
+  totals,
+  couponCode,
+) => {
   return {
     billing_name: billingDetails.name,
     billing_email: billingDetails.email,

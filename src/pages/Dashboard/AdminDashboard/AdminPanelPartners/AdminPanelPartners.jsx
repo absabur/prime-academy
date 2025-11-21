@@ -26,8 +26,8 @@ const AdminPanelPartner = () => {
 
     // 🔹 ফাইল থাকলে যুক্ত করা
     const file = data?.image?.[0];
-    if (file instanceof File) {
-      formData.append('logo', file);
+    if (file && (file instanceof File || file.name)) {
+      formData.append('logo', file, file.name || 'logo.jpg');
     }
     dispatch(createBrand(formData));
   };
@@ -38,8 +38,8 @@ const AdminPanelPartner = () => {
 
     // 🔹 ফাইল থাকলে যুক্ত করা
     const file = data?.image?.[0];
-    if (file instanceof File) {
-      formData.append('logo', file);
+    if (file && (file instanceof File || file.name)) {
+      formData.append('logo', file, file.name || 'logo.jpg');
     }
     dispatch(updateBrand({ id: data.id, data: formData }));
   };

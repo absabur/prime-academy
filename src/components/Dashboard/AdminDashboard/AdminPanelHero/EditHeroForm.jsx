@@ -84,7 +84,8 @@ export default function EditHeroForm({
   // --- UPDATED Form Submit Handler ---
   const handleFormSubmit = (data) => {
     const id = data.id || null;
-    const isFileSelected = data.banner_image && data.banner_image[0] instanceof File;
+    const bannerFile = data.banner_image && data.banner_image[0];
+    const isFileSelected = !!(bannerFile && (bannerFile instanceof File || bannerFile.name));
 
     // --- Process slides: update 'order' based on final array index ---
     const processedSlides = data.slides.map((slide, index) => ({
@@ -102,8 +103,11 @@ export default function EditHeroForm({
         }
       }
 
-      // Append the new image file
-      formData.append('banner_image', data.banner_image[0]);
+      // Append the new image file (include filename for Safari compatibility)
+      const file = data.banner_image[0];
+      if (file && (file instanceof File || file.name)) {
+        formData.append('banner_image', file, file.name || 'banner.jpg');
+      }
 
       // Append slides as a JSON string
       // The backend will need to JSON.parse(req.body.slides)

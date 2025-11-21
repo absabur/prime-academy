@@ -1,6 +1,6 @@
 import { Loader2, Lock, ShieldCheck } from 'lucide-react';
 import { formatCurrency } from '../../../utils/formatCurrency';
-import { PriceLine } from './CheckoutComponents';
+import { ErrorAlert, PriceLine } from './CheckoutComponents';
 
 export const OrderSummary = ({
   cartItems,

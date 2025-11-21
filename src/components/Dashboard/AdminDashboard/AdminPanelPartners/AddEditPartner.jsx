@@ -23,11 +23,25 @@ export default function AddEditPartner({
   const imageFile = watch('image');
 
   useEffect(() => {
-    if (imageFile && imageFile.length > 0) {
-      const file = imageFile[0];
-      const url = URL.createObjectURL(file);
-      setPreview(url);
-      return () => URL.revokeObjectURL(url);
+    // imageFile may be: FileList, Array<File>, or a string (existing URL)
+    if (!imageFile) return;
+
+    // If it's a string URL (from defaultValues), show it
+    if (typeof imageFile === 'string') {
+      setPreview(imageFile);
+      return;
+    }
+
+    const file = imageFile[0];
+    if (file && (file instanceof File || file.name)) {
+      try {
+        const url = URL.createObjectURL(file);
+        setPreview(url);
+        return () => URL.revokeObjectURL(url);
+      } catch (err) {
+        // some non-blob objects may throw; ignore and don't set preview
+        console.warn('Could not create object URL for preview', err);
+      }
     }
   }, [imageFile]);
 
@@ -55,7 +69,7 @@ export default function AddEditPartner({
       {preview && (
         <div>
           <p className="mb-1 font-medium text-gray-600">Preview</p>
-          <img src={preview} className="h-32 w-32 object-contain rounded-md border" />
+          <img src={preview} alt="Preview" className="h-32 w-32 object-contain rounded-md border" />
         </div>
       )}
 
