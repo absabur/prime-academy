@@ -70,7 +70,7 @@ export default function ShoppingCartPage() {
   if (loadingCarts) {
     return <LoadingDashboard loading={loadingCarts} />;
   }
-  
+
   return (
     <OuterSection className="pt-fnavbar">
       <InnerSection>

@@ -137,7 +137,7 @@ export default function WhyEnrollAddEditForm({
                     <span className="font-semibold">Click to upload</span>
                   </p>
                 </div>
-                <input type="file" accept="image/*" {...register('icon')} className="hidden" />
+                <input type="file" accept="image/*,image/heic,image/heif" {...register('icon')} className="hidden" />
               </label>
             </div>
           </div>

@@ -213,7 +213,7 @@ export default function AddEmployeeForm({
           <label className="block mb-sm font-medium">Employee Image</label>
           <input
             type="file"
-            accept="image/*"
+            accept="image/*,image/heic,image/heif"
             {...register('employee_image')}
             onChange={handleImageChange}
             className="w-full border border-black/10 px-md py-sm rounded-md focus:outline-none focus:shadow-lg"

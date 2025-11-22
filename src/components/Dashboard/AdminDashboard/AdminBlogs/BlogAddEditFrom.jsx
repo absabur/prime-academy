@@ -208,7 +208,7 @@ export default function BlogAddEditFrom({
           <label className="block mb-sm font-medium">Feature Image</label>
           <input
             type="file"
-            accept="image/*"
+            accept="image/*,image/heic,image/heif"
             {...register('featured_image')}
             onChange={handleImageChange}
             className="w-full border border-black/10 px-md py-sm rounded-md focus:outline-none focus:shadow-lg"

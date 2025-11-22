@@ -25,6 +25,9 @@ export const buildOrderPayload = (
   carts,
   totals,
   couponCode,
+  is_installment,
+  installment_plan,
+  installment_price
 ) => {
   return {
     billing_name: billingDetails.name,
@@ -34,11 +37,15 @@ export const buildOrderPayload = (
     billing_city: billingDetails.city,
     billing_country: billingDetails.country,
     billing_postcode: billingDetails.postcode,
+    is_installment: is_installment,
+    installment_plan: installment_plan,
     currency: 'BDT',
     subtotal: totals.preCouponTotal.toFixed(2),
+    total_amount: totals.totalToPay.toFixed(2),
+    // subtotal: is_installment ? installment_price : totals.preCouponTotal.toFixed(2),
+    // total_amount: is_installment ? installment_price : totals.totalToPay.toFixed(2),
     discount_amount: totals.couponDiscountAmount.toFixed(2),
     tax_amount: '0.00',
-    total_amount: totals.totalToPay.toFixed(2),
     items: carts?.items?.map((item) => ({
       course: item.course.id,
       price: parseFloat(item.course.discounted_price).toFixed(2),

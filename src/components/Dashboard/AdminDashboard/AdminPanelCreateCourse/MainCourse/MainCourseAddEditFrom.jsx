@@ -77,15 +77,17 @@ export default function MainCourseAddEditFrom({
 
     console.log(submitData);
 
-    // 🔹 check if user selected a new file
-    const isFileSelected = submitData.header_image && submitData.header_image[0] instanceof File;
+    // 🔹 check if user selected a new file (Safari-compatible check)
+    const file = submitData.header_image && submitData.header_image[0];
+    const isFileSelected = !!(file && (file instanceof File || file.name));
 
     // Determine the data type for submission (FormData for new file, JSON for text/existing image)
     if (isFileSelected) {
       const formData = new FormData();
       for (const [key, value] of Object.entries(submitData)) {
-        if (key === 'header_image' && value[0] instanceof File) {
-          formData.append(key, value[0]);
+        if (key === 'header_image' && value[0] && (value[0] instanceof File || value[0].name)) {
+          // Include filename for Safari compatibility
+          formData.append(key, value[0], value[0].name || 'header.jpg');
         } else if (key !== 'header_image') {
           formData.append(key, value);
         }
@@ -205,7 +207,7 @@ export default function MainCourseAddEditFrom({
                 </div>
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/*,image/heic,image/heif"
                   {...register('header_image')}
                   className="hidden"
                 />

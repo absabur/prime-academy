@@ -3,11 +3,8 @@ import api from '@/api/axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import OuterSection from '../../../components/common/OuterSection';
-import InnerSection from '../../../components/common/InnerSection';
 import { userProfile } from '../../../redux/auth/authAction';
 import { fetchCarts } from '../../../redux/cart/cartAction';
-import axios from 'axios';
 import { buildOrderPayload, calculateOrderTotals } from '../../../utils/checkout';
 import { BillingForm } from '../../../components/Root/checkout/BillingForm';
 import { OrderSummary } from '../../../components/Root/checkout/OrderSummary';
@@ -81,11 +78,34 @@ export default function CheckoutPage() {
     setIsPlacingOrder(true);
     setError(null);
 
+    let firstCourse = carts.items[0]?.course?.slug;
+
+    let is_installment = false;
+    let installment_plan = 0;
+    let installment_price = 0;
+
+    try {
+      const courseResponse = await api.get(`/api/courses/${firstCourse}/`);
+      const pricing = courseResponse?.data?.data?.pricing;
+
+      is_installment = pricing?.installment_available;
+      installment_plan = pricing?.installment_count;
+      installment_price = pricing?.installment_amount;
+    } catch (error) {
+      console.error('Error fetching course details:', error);
+      setError('Failed to fetch course details. Please try again.');
+      setIsPlacingOrder(false);
+      return;
+    }
+
     const orderPayload = buildOrderPayload(
       billingDetails,
       carts,
       totals,
       couponCode,
+      is_installment,
+      installment_plan,
+      installment_price
     );
 
     try {
@@ -141,31 +161,29 @@ export default function CheckoutPage() {
 
   // Main checkout page
   return (
-    <OuterSection className="pt-fnavbar">
-      <InnerSection style={{ paddingTop: 0 }}>
-        <div className="mb-8">
-          <Link to="/cart" className="flex items-center gap-2 text-primary hover:underline mb-4">
-            <ArrowLeft size={18} /> Back to Cart
-          </Link>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800">Checkout</h1>
-        </div>
+    <div>
+      <div className="mb-8">
+        <Link to="/cart" className="flex items-center gap-2 text-primary hover:underline mb-4">
+          <ArrowLeft size={18} /> Back to Cart
+        </Link>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">Checkout</h1>
+      </div>
 
-        <form
-          onSubmit={handlePlaceOrder}
-          className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start"
-        >
-          <BillingForm billingDetails={billingDetails} handleChange={handleChange} />
-          <OrderSummary
-            cartItems={carts?.items}
-            originalSubtotal={totals.originalSubtotal}
-            totalDiscount={totals.totalDiscount}
-            couponCode={couponCode}
-            totalToPay={totals.totalToPay}
-            error={error}
-            isPlacingOrder={isPlacingOrder}
-          />
-        </form>
-      </InnerSection>
-    </OuterSection>
+      <form
+        onSubmit={handlePlaceOrder}
+        className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start"
+      >
+        <BillingForm billingDetails={billingDetails} handleChange={handleChange} />
+        <OrderSummary
+          cartItems={carts?.items}
+          originalSubtotal={totals.originalSubtotal}
+          totalDiscount={totals.totalDiscount}
+          couponCode={couponCode}
+          totalToPay={totals.totalToPay}
+          error={error}
+          isPlacingOrder={isPlacingOrder}
+        />
+      </form>
+    </div>
   );
 }

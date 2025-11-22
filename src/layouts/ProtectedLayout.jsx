@@ -63,7 +63,7 @@ export default function ProtectedLayout() {
     <div className="w-full flex flex-col min-h-screen">
       <Navbar />
       <main className="w-full flex-1 flex flex-col items-center overflow-x-hidden">
-        <OuterSection>
+        <OuterSection className="pt-fnavbar">
           <InnerSection>
             <Outlet />
           </InnerSection>

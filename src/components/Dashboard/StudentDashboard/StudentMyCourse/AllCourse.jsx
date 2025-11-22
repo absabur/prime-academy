@@ -9,8 +9,13 @@ import './css/mycourses.css';
 
 // --- Reusable CourseCard Component (Updated) ---
 const CourseCard = ({ course }) => {
-  const { course_title, is_completed_status, imageUrl, course_slug } = course;
+  const { course_title, is_completed_status, course_slug } = course;
   const isOngoing = !is_completed_status;
+
+  let previewSrc = course?.course_info?.header_image;
+  if (previewSrc?.startsWith('/')) {
+    previewSrc = `${import.meta.env.VITE_API_URL}${previewSrc}`;
+  }
 
   return (
     // ✅ CHANGED: Removed h-50, added sm:h-52. Card is auto-height on mobile.
@@ -21,7 +26,7 @@ const CourseCard = ({ course }) => {
       {/* Image Section */}
       {/* ✅ CHANGED: Adjusted width from sm:w-3/6 to sm:w-5/12 */}
       <div className="sm:w-5/12 flex-shrink-0">
-        <img className="h-48 w-full object-cover sm:h-full" src={imageUrl} alt={course_title} />
+        <img className="h-48 w-full object-cover sm:h-full" src={previewSrc} alt={course_title} />
       </div>
 
       {/* Content Section */}

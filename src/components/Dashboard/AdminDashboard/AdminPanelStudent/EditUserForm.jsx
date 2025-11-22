@@ -106,11 +106,10 @@ export default function EditUserForm({
           <div className="md:col-span-2">
             {title.toLocaleLowerCase().includes('student') && (
               <>
-                {' '}
                 <label className="block mb-sm font-medium">Profile Image</label>
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/*,image/heic,image/heif"
                   {...register('profile.image')}
                   className="w-full border border-black/10 px-md py-sm rounded-md focus:outline-none focus:shadow-lg"
                 />
@@ -140,8 +139,8 @@ export default function EditUserForm({
               type="submit"
               disabled={loading}
               text={`
-              ${title.toLocaleLowerCase().includes('teacher') ? 'Update Teacher' : ""}
-              ${title.toLocaleLowerCase().includes('student') ? 'Update Student' : ""}`}
+              ${title.toLocaleLowerCase().includes('teacher') ? 'Update Teacher' : ''}
+              ${title.toLocaleLowerCase().includes('student') ? 'Update Student' : ''}`}
             ></PrimaryButton>
           </div>
         </div>

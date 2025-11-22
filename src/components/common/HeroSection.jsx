@@ -102,7 +102,7 @@ const HeroSection = ({
                         <span className="font-bold text-2xl md:text-secondary">
                           {pricing?.installment_amount}
                         </span>
-                        /<span className="">{pricing?.installment_count} Installment</span>
+                        x<span className="">{pricing?.installment_count} Installment</span>
                       </div>
                     ) : (
                       <>

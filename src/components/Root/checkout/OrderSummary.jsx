@@ -63,10 +63,16 @@ export const OrderSummary = ({
         <button
           type="submit"
           disabled={isPlacingOrder}
-          className="w-full flex items-center justify-center gap-2 bg-primary text-white text-center py-3 rounded-lg font-semibold text-lg hover:bg-secondary transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+          className="w-full flex flex-wrap px-2 items-center justify-center gap-2 bg-primary text-white text-center py-3 rounded-lg font-semibold text-lg hover:bg-secondary transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {isPlacingOrder ? <Loader2 size={24} className="animate-spin" /> : <Lock size={18} />}
-          {isPlacingOrder ? 'Processing...' : `Place Order (${formatCurrency(totalToPay)})`}
+          {isPlacingOrder ? (
+            'Processing...'
+          ) : (
+            <>
+              Place Order <span>({formatCurrency(totalToPay)})</span>
+            </>
+          )}
         </button>
       </div>
 

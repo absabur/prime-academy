@@ -15,7 +15,12 @@
   height: 3px;
   width: 0;
   background: var(--color-primary);
+  -webkit-transition: width 0.3s ease-in-out;
+  -o-transition: width 0.3s ease-in-out;
+  -moz-transition: width 0.3s ease-in-out;
   transition: width 0.3s ease-in-out;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
   border-radius: 10px;
 }
 

@@ -52,7 +52,7 @@ export default function AddEditPartner({
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: { 'image/*': [] },
+    accept: { 'image/*,image/heic,image/heif': [] },
     multiple: false,
     onDrop,
   });

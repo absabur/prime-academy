@@ -2,7 +2,7 @@ import PrimaryButton from '@/components/common/PrimaryButton';
 import SecondaryButton from '@/components/common/SecondaryButton';
 import { useEffect, useState, useMemo } from 'react';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
-import { Trash2, Plus, X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSkills } from '../../../redux/skill/skillAction'; // Assumed path
 import AddSkillDropdown from './AddSkillDropdown';
@@ -99,6 +99,19 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
     }
   }, [defaultValues, reset, formattedDefaultValues, dbSkills, initialSkillObjects]);
 
+  // --- Watch file input change (Safari-compatible) ---
+  const fileValue = watch('profile.image');
+  useEffect(() => {
+    const file = fileValue && fileValue[0];
+    if (file && (file instanceof File || file.name)) {
+      const url = URL.createObjectURL(file);
+      setPreview(url);
+      return () => URL.revokeObjectURL(url);
+    } else if (typeof fileValue === 'string') {
+      setPreview(fileValue);
+    }
+  }, [fileValue]);
+
   // --- 4. RE-IMPLEMENT BACKEND SEARCH ---
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
@@ -131,8 +144,7 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
     }
   }, [message, dispatch]);
 
-  // ... (handleImageChange and handleFormSubmit are unchanged) ...
-  // Handle image preview
+  // Handle image preview (kept for backwards compatibility)
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -337,31 +349,19 @@ export default function UpdateProfile({ onSubmit, onCancel, defaultValues = {} }
           <label className="block mb-sm font-medium">Profile Image</label>
           <input
             type="file"
-            accept="image/*"
+            accept="image/*,image/heic,image/heif"
             {...register('profile.image')}
             onChange={handleImageChange}
             className="w-full border border-black/10 px-md py-sm rounded-md focus:outline-none focus:shadow-lg"
           />
           {preview && (
-            <div className="relative w-32 h-32 mt-2">
+            <div className="mt-sm">
+              <p className="text-sm text-gray-600 mb-1">Preview:</p>
               <img
                 src={preview}
-                alt="Preview"
-                className="w-full h-full object-cover rounded-md border border-black/Hence"
+                alt="Profile Preview"
+                className="w-24 h-24 object-cover rounded-full border border-gray-300"
               />
-              <button
-                type="button"
-                onClick={() => {
-                  reset({
-                    ...watch(),
-                    profile: { ...watch('profile'), image: null },
-                  });
-                  setPreview(null);
-                }}
-                className="absolute top-0 right-0 -mt-2 -mr-2 bg-red-600 text-white rounded-full p-1 shadow-md hover:bg-red-700"
-              >
-                <Trash2 size={14} />
-              </button>
             </div>
           )}
         </div>

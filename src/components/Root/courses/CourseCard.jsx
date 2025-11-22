@@ -8,8 +8,6 @@ const CourseCard = ({ item, index }) => {
   const effectivePrice = item?.pricing?.effective_price;
   const isFree = effectivePrice == 0 || effectivePrice == '0' || item?.pricing?.is_free;
 
-  console.log(item?.pricing);
-
   return (
     <Card
       key={index}
@@ -57,7 +55,7 @@ const CourseCard = ({ item, index }) => {
                     <span className="font-bold text-2xl text-primary">
                       {item?.pricing?.installment_amount}
                     </span>
-                    /<span>{item?.pricing?.installment_count} Installment</span>
+                    x<span>{item?.pricing?.installment_count} Installment</span>
                   </p>
                 ) : (
                   <>
