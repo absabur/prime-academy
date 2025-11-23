@@ -129,15 +129,13 @@ const Navbar = () => {
               >
                 <FaCartArrowDown />
               </Link>
-              {isAuthenticated && user?.role == 'student' && (
-                <Link
-                  to={'/wish-list'}
-                  rel="noopener noreferrer"
-                  className="text-white text-xl rounded-full transition hover:text-secondary-light"
-                >
-                  <FaRegHeart />
-                </Link>
-              )}
+              <Link
+                to={'/wish-list'}
+                rel="noopener noreferrer"
+                className="text-white text-xl rounded-full transition hover:text-secondary-light"
+              >
+                <FaRegHeart />
+              </Link>
             </div>
             {socialLinks.map((item) => (
               <Link
@@ -231,17 +229,15 @@ const Navbar = () => {
                 <FaCartArrowDown />
               </Link>
 
-              {isAuthenticated && user?.role == 'student' && (
-                <Link
-                  to={'/wish-list'}
-                  rel="noopener noreferrer"
-                  className={`navbar-item font-semibold transition-colors duration-200 text-3xl ${
-                    location.pathname == '/wish-list' ? 'text-primary navbar-active' : textColor
-                  } ${isTransparent ? 'no-scroll' : ''}`}
-                >
-                  <FaRegHeart />
-                </Link>
-              )}
+              <Link
+                to={'/wish-list'}
+                rel="noopener noreferrer"
+                className={`navbar-item font-semibold transition-colors duration-200 text-3xl ${
+                  location.pathname == '/wish-list' ? 'text-primary navbar-active' : textColor
+                } ${isTransparent ? 'no-scroll' : ''}`}
+              >
+                <FaRegHeart />
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}

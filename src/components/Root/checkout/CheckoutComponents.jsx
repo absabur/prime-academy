@@ -17,16 +17,11 @@ export const LoadingSpinner = () => (
 );
 
 export const EmptyCart = () => (
-  <OuterSection className="pt-fnavbar">
-    <InnerSection
-      className="flex flex-col justify-center items-center min-h-[50vh] text-center"
-      style={{ paddingTop: 0 }}
-    >
-      <ShoppingCart className="w-16 h-16 text-gray-300" />
-      <h1 className="text-2xl font-semibold mt-4">Your cart is empty.</h1>
-      <p className="text-gray-600 mt-2">Redirecting ...</p>
-    </InnerSection>
-  </OuterSection>
+  <div className="flex flex-col justify-center items-center min-h-[50vh] text-center">
+    <ShoppingCart className="w-16 h-16 text-gray-300" />
+    <h1 className="text-2xl font-semibold mt-4">Your cart is empty.</h1>
+    <p className="text-gray-600 mt-2">Redirecting ...</p>
+  </div>
 );
 
 export const ErrorAlert = ({ message }) => (

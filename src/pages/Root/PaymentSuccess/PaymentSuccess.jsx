@@ -109,7 +109,7 @@ const PaymentSuccess = () => {
 
   if (loading) {
     return (
-      <div className="pt-fnavbar flex items-center justify-center p-4 min-h-screen">
+      <div className="flex items-center justify-center p-4">
         <div className="w-full bg-white rounded-lg shadow-xl p-8 text-center">
           <Spinner />
           <h1 className="text-2xl font-semibold text-gray-800 mt-4">Verifying Payment</h1>
@@ -124,7 +124,7 @@ const PaymentSuccess = () => {
 
   if (error) {
     return (
-      <div className="pt-fnavbar flex items-center justify-center p-4 min-h-screen">
+      <div className="flex items-center justify-center p-4">
         <div className="w-full bg-white rounded-lg shadow-xl p-8 text-center">
           <div className="text-red-500 text-6xl mb-4">⚠️</div>
           <h1 className="text-2xl font-bold text-gray-900 mt-4">Verification Failed</h1>
@@ -145,7 +145,7 @@ const PaymentSuccess = () => {
   }
 
   return (
-    <div className="pt-fnavbar flex items-center justify-center p-4 min-h-screen">
+    <div className="flex items-center justify-center p-4">
       <div className="w-full bg-white rounded-lg shadow-xl p-8 text-center">
         <CircleCheck className="w-24 h-24 text-green-500 mx-auto" />
         <h1 className="text-4xl font-bold text-gray-900 mt-6">Payment Successful! 🎉</h1>

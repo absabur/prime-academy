@@ -24,7 +24,7 @@ const PaymentCancel = () => {
   }, []);
 
   return (
-    <div className="pt-fnavbar flex items-center justify-center p-4 min-h-screen">
+    <div className="flex items-center justify-center p-4">
       <div className="w-full bg-white rounded-lg shadow-xl p-8 text-center">
         <AlertCircle className="w-20 h-20 text-secondary mx-auto" />
         <h1 className="text-3xl font-bold text-gray-900 mt-4">Payment Cancelled</h1>
