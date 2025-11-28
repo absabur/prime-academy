@@ -7,69 +7,73 @@ import { updateFormData } from '../../../../../redux/courseWizard/courseWizardSl
 import WhyEnrollAddEditForm from './WhyEnrollAddEditForm';
 import WhyEnrollCard from './WhyEnrollsCard';
 import PreNextButtonSection from '../PreNextButtonSection';
+import {
+  createWhyEnrollItem,
+  deleteWhyEnrollItem,
+  updateWhyEnrollItem,
+} from '../../../../../redux/courseWizard/courseWizardAction';
 
-export default function WhyEnrollThisCourse() {
+export default function WhyEnrollThisCourse({ defaultValues }) {
+  const detail = defaultValues?.detail;
   const dispatch = useDispatch();
-  // Redux key: 'why_enroll'
-  const enrollList = useSelector((state) => state.courseWizard.formData.whyEnrol || []);
-
+  const whyEnrollList = detail?.why_enrol || [];
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState('add'); // 'add' | 'edit'
   const [editingItem, setEditingItem] = useState(null);
 
-  // Save to Redux
-  const saveList = (newList) => {
-    dispatch(updateFormData({ key: 'whyEnrol', data: newList }));
-  };
-
   // ---------- Add Item ----------
-  const addItem = (data) => {
-    console.log(data);
-    // Generate ID
-    const newItem = {
-      ...data,
-      id: data.id || crypto.randomUUID(),
-    };
-
-    const newList = [...enrollList, newItem];
-    saveList(newList);
-    setModalOpen(false);
+  const addItem = async (data) => {
+    try {
+      await dispatch(createWhyEnrollItem(data)).unwrap();
+      SwalUtils.success('Item added successfully');
+      setModalOpen(false);
+    } catch (err) {
+      SwalUtils.error(err.data.message || err.message || 'Failed to add item');
+    }
   };
 
   // ---------- Edit Item ----------
   const openEdit = (id) => {
-    const found = enrollList.find((item) => item.id === id);
+    const found = whyEnrollList.find((item) => item.id === id);
     if (!found) return;
     setEditingItem(found);
     setModalType('edit');
     setModalOpen(true);
   };
 
-  const handleEditSubmit = (data) => {
-    const updated = enrollList.map((item) =>
-      item.id === editingItem.id ? { ...item, ...data } : item
-    );
-    saveList(updated);
-    setEditingItem(null);
-    setModalOpen(false);
+  const handleEditSubmit = async (data, id) => {
+    try {
+      await dispatch(updateWhyEnrollItem({ id: id, itemData: data })).unwrap();
+      SwalUtils.success('Update Successful');
+      setModalOpen(false);
+    } catch (err) {
+      SwalUtils.error(err?.data?.message || err?.message || 'Fail To Update');
+    }
   };
 
   // ---------- Delete Item ----------
   const deleteItem = (id) => {
-    const performDelete = () => {
-      const updated = enrollList.filter((item) => item.id !== id);
-      saveList(updated);
+    const performDelete = async () => {
+      try {
+        await dispatch(deleteWhyEnrollItem(id)).unwrap();
+        SwalUtils.success('Item Delete Succesfull');
+      } catch (err) {
+        SwalUtils.error(err.data.message || err.message || 'Failed to add item');
+      }
     };
     SwalUtils.confirm(performDelete, 'Yes, delete it');
   };
 
   // ---------- Toggle Active ----------
   const toggleItem = (id, status) => {
-    const performToggle = () => {
-      const updated = enrollList.map((item) =>
-        item.id === id ? { ...item, is_active: status } : item
-      );
-      saveList(updated);
+    const performToggle = async () => {
+      try {
+        await dispatch(updateWhyEnrollItem({ id: id, itemData: { is_active: status } })).unwrap();
+        SwalUtils.success('Update Successful');
+        setModalOpen(false);
+      } catch (err) {
+        SwalUtils.error(err?.data?.message || err?.message || 'Fail To Update');
+      }
     };
     SwalUtils.confirm(performToggle, 'Yes, update status');
   };
@@ -91,20 +95,21 @@ export default function WhyEnrollThisCourse() {
               onSubmit={modalType === 'edit' ? handleEditSubmit : addItem}
               title={modalType === 'edit' ? 'Edit Why Enroll' : 'Add Why Enroll'}
               defaultValues={modalType === 'edit' ? editingItem : undefined}
+              course_detail_id={detail?.id}
             />
           </div>
         </Modal>
       )}
 
       <div className="space-y-sm">
-        {enrollList.length ? (
-          enrollList.map((item) => (
+        {whyEnrollList?.length ? (
+          whyEnrollList?.map((item) => (
             <WhyEnrollCard
-              key={item.id}
+              key={item?.id}
               item={item}
-              onEdit={() => openEdit(item.id)}
-              onDelete={() => deleteItem(item.id)}
-              onToggle={(status) => toggleItem(item.id, status)}
+              onEdit={() => openEdit(item?.id)}
+              onDelete={() => deleteItem(item?.id)}
+              onToggle={toggleItem}
             />
           ))
         ) : (

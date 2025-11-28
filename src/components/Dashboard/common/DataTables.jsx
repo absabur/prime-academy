@@ -78,7 +78,7 @@ export default function DataTables({
 
                       {/* 2. The Select Element with inlined values/labels */}
                       <select
-                        onChange={(e) => statusChange(row.id, statusKey, e.target.value)}
+                        onChange={(e) => statusChange(row.id, row.slug, statusKey, e.target.value)}
                         value={row[statusKey]}
                         className="appearance-none bg-transparent border-none p-0 focus:outline-none focus:ring-0 pr-5 cursor-pointer text-sm font-medium text-center "
                       >
@@ -110,12 +110,12 @@ export default function DataTables({
                       {handelEdit && (
                         <DashBroadActionButton
                           type={'edit'}
-                          onClick={() => handelEdit(row.id || row.page_name)}
+                          onClick={() => handelEdit(row.id || row.page_name, row?.slug)}
                         />
                       )}
                       {deleteButton && (
                         <DashBroadActionButton
-                          onClick={() => handelDelete(row.id || row.page_name)}
+                          onClick={() => handelDelete(row.id || row.page_name, row?.slug)}
                           type={'delete'}
                           id={row.id}
                         />

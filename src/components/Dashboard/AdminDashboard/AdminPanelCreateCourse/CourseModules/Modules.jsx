@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateFormData } from '../../../../redux/courseWizard/courseWizardSlice';
+import { updateFormData } from '../../../../../redux/courseWizard/courseWizardSlice';
 import { Plus } from 'lucide-react';
-import Modal from '../../../common/Modal';
-import ModuleAddEditFrom from './CourseModules/ModuleAddEditFrom';
-import ModulesCard from './CourseModules/ModulesCard';
-import SwalUtils from '../../../../utils/sweetAlert';
-import PreNextButtonSection from './PreNextButtonSection';
+import Modal from '../../../../common/Modal';
+import ModuleAddEditFrom from './ModuleAddEditFrom';
+import ModulesCard from './ModulesCard';
+import SwalUtils from '../../../../../utils/sweetAlert';
+import PreNextButtonSection from '../PreNextButtonSection';
+import {
+  createCourseModules,
+  deleteCourseModules,
+  updateCourseModules,
+} from '../../../../../redux/courseWizard/courseWizardAction';
 
-export default function Modules() {
+export default function Modules({ defaultValues }) {
   const dispatch = useDispatch();
-  const modules = useSelector((state) => state.courseWizard.formData.modules || []);
+  const modules = defaultValues.detail?.modules || [];
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState('add'); // 'add' | 'edit'
@@ -19,17 +24,11 @@ export default function Modules() {
   // helper: return modules sorted by order (immutable)
   const getSorted = (arr) => [...arr].sort((a, b) => a.order - b.order);
 
-  // save modules to redux (always save sorted)
-  const saveModules = (newModules) => {
-    dispatch(updateFormData({ key: 'modules', data: getSorted(newModules) }));
-  };
-
   // ---------- Add Module ----------
-  const addModule = (data) => {
+  const addModule = async (data) => {
     // if user didn't set order, auto assign next
     const nextOrder = modules.length ? Math.max(...modules.map((m) => m.order)) + 1 : 1;
     const orderToUse = data.order ?? nextOrder;
-
     // check conflict
     const conflict = modules.some((m) => m.order === orderToUse);
     if (conflict) {
@@ -37,8 +36,17 @@ export default function Modules() {
       return;
     }
 
-    const newModules = [...modules, { ...data, order: orderToUse }];
-    saveModules(newModules);
+    const newModule = { ...data, order: orderToUse, course_detail: defaultValues.detail.id };
+
+    try {
+      await dispatch(createCourseModules(newModule)).unwrap();
+      SwalUtils.success('Module added successfully');
+    } catch (error) {
+      console.log(error);
+      SwalUtils.error(error?.data?.message || error?.message || 'Failed to add module');
+      return;
+    }
+
     setModalOpen(false);
   };
 
@@ -51,7 +59,7 @@ export default function Modules() {
     setModalOpen(true);
   };
 
-  const handleEditSubmit = (data) => {
+  const handleEditSubmit = async (data) => {
     // editingModule holds original module (may be null if something odd)
     const originalOrder = editingModule?.order;
     // if user didn't set order in form, keep original
@@ -62,29 +70,54 @@ export default function Modules() {
       SwalUtils.error('Module order already exists. Choose another order.');
       return;
     }
-
-    const updated = modules.map((m) =>
-      m.order === originalOrder ? { ...m, ...data, order: orderToUse } : m
-    );
-    saveModules(updated);
-    setEditingModule(null);
-    setModalOpen(false);
+    try {
+      await dispatch(
+        updateCourseModules({
+          id: editingModule.id,
+          modulesData: { ...data, order: orderToUse, course_detail: defaultValues.detail.id },
+        })
+      ).unwrap();
+      SwalUtils.success('Module updated successfully');
+      setEditingModule(null);
+      setModalOpen(false);
+    } catch (error) {
+      console.log(error);
+      SwalUtils.error(error?.data?.message || error?.message || 'Failed to update module');
+      return;
+    }
   };
 
   // ---------- Delete Module ----------
-  const deleteModule = (order) => {
-    const performDelete = () => {
-      const updated = modules.filter((m) => m.order !== order);
-      saveModules(updated);
+  const deleteModule = async (id) => {
+    const performDelete = async () => {
+      try {
+        await dispatch(deleteCourseModules(id)).unwrap();
+        SwalUtils.success('Module deleted successfully');
+      } catch (error) {
+        console.log(error);
+        SwalUtils.error(error?.data?.message || error?.message || 'Failed to delete module');
+        return;
+      }
     };
     SwalUtils.confirm(performDelete, 'Yes, delete it');
   };
 
   // ---------- Toggle Active ----------
-  const toggleModule = (order, status) => {
-    const performToggle = () => {
-      const updated = modules.map((m) => (m.order === order ? { ...m, is_active: status } : m));
-      saveModules(updated);
+  const toggleModule = async (status, id) => {
+    const performToggle = async () => {
+      try {
+        await dispatch(
+          updateCourseModules({
+            id: id,
+            modulesData: { is_active: status },
+          })
+        ).unwrap();
+        SwalUtils.success('Module status updated successfully');
+      } catch (error) {
+        console.log(error);
+        SwalUtils.error(error?.data?.message || error?.message || 'Failed to update module status');
+        return;
+      }
     };
     SwalUtils.confirm(performToggle, 'Yes, update it');
   };
@@ -117,8 +150,8 @@ export default function Modules() {
               key={moduleitem.order}
               moduleitem={moduleitem}
               onEdit={() => openEdit(moduleitem.order)}
-              onDelete={() => deleteModule(moduleitem.order)}
-              onToggle={(status) => toggleModule(moduleitem.order, status)}
+              onDelete={() => deleteModule(moduleitem.id)}
+              onToggle={toggleModule}
             />
           ))
         ) : (

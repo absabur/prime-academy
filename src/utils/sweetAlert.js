@@ -59,7 +59,31 @@ const SwalUtils = {
     }).then((result) => {
       if (result.isConfirmed) {
         onConfirm();
-      } 
+      }
+    });
+  },
+
+  doubleOption: (
+    onConfirm,
+    onDenied,
+    titleText = 'Do you want to save the changes?',
+    confirmButtonText = 'Save',
+    denyButtonText = "Don't save"
+  ) => {
+    Swal.fire({
+      title: titleText,
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText,
+      denyButtonText,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        onConfirm();
+        Swal.fire('Published!', '', 'success');
+      } else if (result.isDenied) {
+        onDenied();
+        Swal.fire('Changes are not Published', '', 'info');
+      }
     });
   },
 };

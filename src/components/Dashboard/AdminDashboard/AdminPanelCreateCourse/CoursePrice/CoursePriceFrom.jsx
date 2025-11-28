@@ -1,89 +1,124 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import SwalUtils from '../../../../utils/sweetAlert';
-import PreNextButtonSection from './PreNextButtonSection';
-import { useDispatch, useSelector } from 'react-redux';
-import { nextStep, updateFormData } from '../../../../redux/courseWizard/courseWizardSlice';
+import PreNextButtonSection from '../PreNextButtonSection';
 
-export default function CoursePricingForm({ title = 'Course Pricing' }) {
-  const { pricing } = useSelector((state) => state.courseWizard.formData);
-
-  const defaultValues = {
-    base_price: pricing?.base_price || '',
-    is_free: pricing?.is_free || false,
-    is_active: pricing?.is_active || false,
-    installment_available: pricing?.installment_available || false,
-    currency: pricing?.currency || 'BDT',
-    discount_percentage: pricing?.discount_percentage || '',
-    discount_amount: pricing?.discount_amount || '',
-    discount_start_date: pricing?.discount_start_date
-      ? new Date(pricing.discount_start_date).toISOString().slice(0, 16)
-      : '',
-    discount_end_date: pricing?.discount_end_date
-      ? new Date(pricing.discount_end_date).toISOString().slice(0, 16)
-      : '',
-    installment_count: pricing?.installment_count || '',
-  };
-
+export default function CoursePricingForm({
+  title = 'Course Pricing',
+  defaultValues = {},
+  onsubmit,
+}) {
   const {
     register,
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues,
+    mode: 'onChange',
   });
 
-  const dispatch = useDispatch();
+  const EMPTY_FORM_STATE = {
+    base_price: '',
+    currency: 'BDT',
+    is_free: 'false', // Matches your string logic
+    is_active: 'true',
+    discount_percentage: '',
+    discount_amount: '',
+    discount_start_date: '',
+    discount_end_date: '',
+    installment_available: 'false',
+    installment_count: '',
+  };
+
+  useEffect(() => {
+    // Set default values when they change
+
+    if (Object.keys(defaultValues).length === 0) {
+      reset(EMPTY_FORM_STATE);
+    }
+
+    if (defaultValues && Object.keys(defaultValues).length > 0) {
+      const formattedValues = {
+        ...defaultValues,
+        // Boolean values (show_in_megamenu, show_in_home_tab, is_active) to string for <select>
+        is_free: defaultValues.is_free ? 'true' : 'false',
+        is_active: defaultValues.is_active ? 'true' : 'false',
+        installment_available: defaultValues.installment_available ? 'true' : 'false',
+        discount_start_date: defaultValues?.discount_start_date
+          ? new Date(defaultValues.discount_start_date).toISOString().slice(0, 16)
+          : '',
+        discount_end_date: defaultValues?.discount_end_date
+          ? new Date(defaultValues.discount_end_date).toISOString().slice(0, 16)
+          : '',
+      };
+      reset(formattedValues);
+    }
+  }, [defaultValues, reset]);
 
   const isFree = watch('is_free') === 'true';
   const basePrice = parseFloat(watch('base_price')) || 0;
   const discountPercent = parseFloat(watch('discount_percentage')) || 0;
   const discountAmount = parseFloat(watch('discount_amount')) || 0;
+  const installmentAvailable = watch('installment_available') === 'true';
 
-  const onSubmit = (data) => {
-    dispatch(updateFormData({ key: 'pricing', data }));
-    dispatch(nextStep());
+  const handelSubmit = (data) => {
+    if (data?.discount_start_date === '') {
+      delete data.discount_start_date;
+    }
+
+    if (data?.discount_end_date === '') {
+      delete data.discount_end_date;
+    }
+    if (data?.discount_percentage === '') {
+      delete data.discount_percentage;
+    }
+
+    if (data?.discount_amount === '') {
+      delete data.discount_amount;
+    }
+
+    if (onsubmit) {
+      onsubmit(data);
+    }
   };
 
   useEffect(() => {
-    if (discountPercent > 100) {
-      SwalUtils.error('Discount percentage cannot exceed 100%.');
-      setValue('discount_percentage', 100);
-    }
-
-    if (discountPercent > 1) {
+    if (discountPercent > 0) {
       setValue('discount_amount', 0);
     }
 
-    if (discountAmount > basePrice) {
-      SwalUtils.error('Discount amount cannot exceed base price.');
-      setValue('discount_amount', basePrice);
-    }
-
-    if (discountAmount > 1) {
+    if (discountAmount > 0) {
       setValue('discount_percentage', 0);
     }
-  }, [isFree, basePrice, setValue, discountPercent, discountAmount]);
+
+    if (installmentAvailable === false) {
+      setValue('installment_count', 0);
+    }
+  }, [discountAmount, discountPercent, installmentAvailable, setValue]);
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(handelSubmit)}
       className="bg-white p-lg rounded-lg shadow-around-sm space-y-md"
     >
       <h2 className="text-xl font-bold border-b border-black/10 text-primary py-sm">{title}</h2>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
         {/* Base Price */}
         <div>
           <label className="block mb-sm font-medium">Base Price</label>
           <input
+            disabled={isFree}
             type="number"
             step="0.01"
-            {...register('base_price', { required: 'Base price is required' })}
+            {...register('base_price', {
+              required: !isFree && 'Base price is required',
+              min: { value: 0, message: 'Price cannot be negative' },
+            })}
             className="w-full border border-black/10 px-md py-sm rounded-md"
             placeholder="Enter base price"
+            onWheel={(e) => e.target.blur()}
           />
           {errors.base_price && <p className="text-red-500 text-sm">{errors.base_price.message}</p>}
         </div>
@@ -100,6 +135,7 @@ export default function CoursePricingForm({ title = 'Course Pricing' }) {
             <option value="BDT">BDT</option>
             <option value="USD">USD</option>
           </select>
+          {errors.currency && <p className="text-red-500 text-sm">{errors.currency.message}</p>}
         </div>
 
         {/* Is Free */}
@@ -132,10 +168,17 @@ export default function CoursePricingForm({ title = 'Course Pricing' }) {
           <input
             type="number"
             step="0.01"
-            {...register('discount_percentage')}
+            {...register('discount_percentage', {
+              min: { value: 0, message: 'Min 0%' },
+              max: { value: 100, message: 'Cannot exceed 100%' },
+            })}
             className="w-full border border-black/10 px-md py-sm rounded-md"
             disabled={isFree || discountAmount > 0}
+            onWheel={(e) => e.target.blur()}
           />
+          {errors.discount_percentage && (
+            <p className="text-red-500 text-sm">{errors.discount_percentage.message}</p>
+          )}
         </div>
 
         {/* Discount Amount */}
@@ -144,10 +187,23 @@ export default function CoursePricingForm({ title = 'Course Pricing' }) {
           <input
             type="number"
             step="0.01"
-            {...register('discount_amount')}
+            {...register('discount_amount', {
+              min: { value: 0, message: 'Cannot be negative' },
+              validate: (value) => {
+                const numberValue = Number(value);
+                if (numberValue > Number(basePrice)) {
+                  return 'Discount cannot exceed base price';
+                }
+                return true;
+              },
+            })}
+            onWheel={(e) => e.target.blur()}
             className="w-full border border-black/10 px-md py-sm rounded-md"
             disabled={isFree || discountPercent > 0}
           />
+          {errors.discount_amount && (
+            <p className="text-red-500 text-sm">{errors.discount_amount.message}</p>
+          )}
         </div>
 
         {/* Dates */}
@@ -164,9 +220,20 @@ export default function CoursePricingForm({ title = 'Course Pricing' }) {
           <label className="block mb-sm font-medium">Discount End Date</label>
           <input
             type="datetime-local"
-            {...register('discount_end_date')}
+            {...register('discount_end_date', {
+              validate: (val) => {
+                const start = watch('discount_start_date');
+                if (start && val && new Date(val) < new Date(start)) {
+                  return 'End date cannot be before start date';
+                }
+                return true;
+              },
+            })}
             className="w-full border border-black/10 px-md py-sm rounded-md"
           />
+          {errors.discount_end_date && (
+            <p className="text-red-500 text-sm">{errors.discount_end_date.message}</p>
+          )}
         </div>
 
         {/* Installment */}
@@ -185,13 +252,22 @@ export default function CoursePricingForm({ title = 'Course Pricing' }) {
           <label className="block mb-sm font-medium">Installment Count</label>
           <input
             type="number"
-            {...register('installment_count')}
+            {...register('installment_count', {
+              required: installmentAvailable && 'Count is required for installments',
+              min: {
+                value: installmentAvailable ? 2 : 0,
+                message: 'At least 2 installments required',
+              },
+            })}
             className="w-full border border-black/10 px-md py-sm rounded-md"
             placeholder="e.g. 3"
             disabled={watch('installment_available') === 'false'}
+            onWheel={(e) => e.target.blur()}
           />
+          {errors.installment_count && (
+            <p className="text-red-500 text-sm">{errors.installment_count.message}</p>
+          )}
         </div>
-
         {/* button */}
         <PreNextButtonSection className="col-span-2" />
       </div>

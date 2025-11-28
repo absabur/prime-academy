@@ -2,7 +2,7 @@ import React from 'react';
 import ToggleButton from '../../../common/ToggleButton';
 import { GripVertical, Pencil, Trash2 } from 'lucide-react';
 
-const ModulesCard = ({ moduleitem, handelDelete, onToggle, onEdit }) => {
+const ModulesCard = ({ moduleitem, onDelete, onToggle, onEdit }) => {
   return (
     <div
       className="
@@ -40,8 +40,8 @@ const ModulesCard = ({ moduleitem, handelDelete, onToggle, onEdit }) => {
         </span>
 
         <ToggleButton
-          handleToggle={(value) => onToggle(value, moduleitem.order)}
-          id={moduleitem.order}
+          handleToggle={(value) => onToggle(value, moduleitem.id)}
+          id={moduleitem.id}
           isActive={moduleitem.is_active}
         />
 
@@ -51,14 +51,14 @@ const ModulesCard = ({ moduleitem, handelDelete, onToggle, onEdit }) => {
             onEdit(moduleitem.order);
           }}
           type="button"
-          className="p-2 text-gray-500 hover:text-blue-600 rounded-full hover:bg-blue-50 transition"
+          className="p-2 text-gray-500 hover:text-primary rounded-full hover:bg-primary/10 transition"
         >
           <Pencil className="w-5 h-5" />
         </button>
 
         {/* Delete Button */}
         <button
-          onClick={() => handelDelete(moduleitem.order)}
+          onClick={() => onDelete()}
           type="button"
           className="p-2 text-gray-500 hover:text-red-600 rounded-full hover:bg-red-50 transition"
         >

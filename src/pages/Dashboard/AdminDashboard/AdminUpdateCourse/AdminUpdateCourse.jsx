@@ -1,6 +1,6 @@
 import CourseCreateAndUpdate from '../../../../components/Dashboard/AdminDashboard/AdminPanelCreateCourse/CreateAndUpdateCourse/CourseCreateAndUpdate';
 
-const AdminPanelCreateCourse = () => {
+const AdminUpdateCourse = () => {
   return (
     <div>
       <CourseCreateAndUpdate />
@@ -8,4 +8,4 @@ const AdminPanelCreateCourse = () => {
   );
 };
 
-export default AdminPanelCreateCourse;
+export default AdminUpdateCourse;

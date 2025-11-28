@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { UploadCloud, X } from 'lucide-react';
+import { UploadCloud } from 'lucide-react';
+// Adjust these import paths based on your file structure
 import SecondaryButton from '../../../../common/SecondaryButton';
 import PrimaryButton from '../../../../common/PrimaryButton';
 import CKEDITOR from '../../../common/CKEDITOR';
 
 const defaultValuesSchema = {
-  title: '',
-  text: '',
+  name: '',
+  description: '',
   icon: '',
   is_active: true,
 };
 
-export default function WhyEnrollAddEditForm({
-  title = 'Add Why Enroll Item',
+export default function SuccessStoriesForm({
+  title = 'Add Course Item',
   onSubmit,
   onCancel,
-  course_detail_id,
+  course_detail_id, // The UUID for course_detail
   defaultValues = defaultValuesSchema,
 }) {
   const [preview, setPreview] = useState(null);
@@ -60,22 +61,25 @@ export default function WhyEnrollAddEditForm({
   }, [watchedIcon]);
 
   const handleFormSubmit = (data) => {
-    let finalIcon = defaultValues?.icon;
-
-    // If new file uploaded
+    // If new file uploaded -> Send FormData
     if (watchedIcon && watchedIcon[0] instanceof File) {
       const formData = new FormData();
-      formData.append('title', data.title);
-      formData.append('text', data.text);
+      formData.append('name', data.name);
+      formData.append('description', data.description);
       formData.append('icon', data.icon[0]);
       formData.append('is_active', data.is_active);
-      formData.append('course_detail', course_detail_id);
+      formData.append('course_detail', course_detail_id); // The UUID
       onSubmit(formData, data.id);
       return;
     }
 
-    // If NO new file uploaded → send JSON body
+    // If NO new file uploaded -> send JSON body
+    // We strip the 'icon' field if it's just a URL string to avoid sending text to a file field
     const { icon, ...finaldata } = data;
+
+    // Ensure course_detail is included in the JSON payload
+    finaldata.course_detail = course_detail_id;
+
     onSubmit(finaldata, data.id);
   };
 
@@ -87,27 +91,27 @@ export default function WhyEnrollAddEditForm({
       <h2 className="text-xl font-bold border-b border-black/10 text-primary py-sm">{title}</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-        {/* Category Title */}
+        {/* Name (Mapped from string) */}
         <div className="md:col-span-2">
-          <label className="block mb-sm font-medium">Category Title</label>
+          <label className="block mb-sm font-medium">Name</label>
           <input
             type="text"
-            {...register('title', { required: 'Category title is required' })}
+            {...register('name', { required: 'Name is required' })}
             className={`w-full border ${
-              errors.title ? 'border-red-500' : 'border-black/10'
+              errors.name ? 'border-red-500' : 'border-black/10'
             } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
-            placeholder="e.g. Web Development"
+            placeholder="e.g. Rahad Mondal"
           />
-          {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
+          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
         </div>
 
-        {/* ✅ CKEditor */}
+        {/* Description (CKEditor - Mapped from string) */}
         <div className="md:col-span-2">
-          <label className="block mb-sm font-medium">Content</label>
+          <label className="block mb-sm font-medium">Description</label>
           <Controller
-            name="text"
+            name="description"
             control={control}
-            rules={{ required: 'Policy Content is required' }}
+            rules={{ required: 'Description is required' }}
             render={({ field: { onChange, value } }) => (
               <CKEDITOR
                 value={value || ''}
@@ -118,12 +122,14 @@ export default function WhyEnrollAddEditForm({
               />
             )}
           />
-          {errors.text && <p className="text-red-500 text-sm mt-1">{errors?.text?.message}</p>}
+          {errors.description && (
+            <p className="text-red-500 text-sm mt-1">{errors?.description?.message}</p>
+          )}
         </div>
 
-        {/* Image Upload */}
+        {/* Icon / Image Upload */}
         <div className="md:col-span-2">
-          <label className="block mb-1 font-medium text-gray-700">Icon / Image</label>
+          <label className="block mb-1 font-medium text-gray-700">Icon</label>
 
           <div className="flex items-start gap-4">
             {/* Preview Box */}
@@ -155,7 +161,7 @@ export default function WhyEnrollAddEditForm({
           </div>
         </div>
 
-        {/* Active Status */}
+        {/* Is Active Status */}
         <div>
           <label className="block mb-sm font-medium">Active Status</label>
           <select

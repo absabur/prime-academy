@@ -1,17 +1,35 @@
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { FaImage } from 'react-icons/fa6';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchCourseCategories } from '../../../../../redux/courses/courseAction';
-import { nextStep, updateFormData } from '../../../../../redux/courseWizard/courseWizardSlice';
-import PreNextButtonSection from '../PreNextButtonSection';
 import { UploadCloud } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { FaPlus } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  createCourseCategories,
+  fetchCourseCategories,
+} from '../../../../../redux/courses/courseAction';
+import PrimaryButton from '../../../../common/PrimaryButton';
+import SecondaryButton from '../../../../common/SecondaryButton';
+import CKEDITOR from '../../../common/CKEDITOR';
+import PreNextButtonSection from '../PreNextButtonSection';
+import SwalUtils from '../../../../../utils/sweetAlert';
+
+const defaultValuesSchema = {
+  category: '',
+  batch: null,
+  show_in_megamenu: false,
+  show_in_home_tab: false,
+  title: '',
+  short_description: '',
+  full_description: '',
+  header_image: '',
+  status: '',
+  is_active: true,
+};
 
 export default function MainCourseAddEditFrom({
   title = 'Course Details',
   onSubmit,
-  onCancel,
-  defaultValues = {}, // Course object for edit
+  defaultValues = defaultValuesSchema,
 }) {
   const {
     register,
@@ -19,32 +37,29 @@ export default function MainCourseAddEditFrom({
     formState: { errors },
     reset,
     watch,
+    control,
   } = useForm({ defaultValues });
 
   const [preview, setPreview] = useState(defaultValues.header_image || null);
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.course);
   const headerImage = watch('header_image');
+  const [departmentDropDown, setdepartmentDropDown] = useState(false);
+  const [departmentName, setDepartmentName] = useState('');
 
   // 🧠 Edit এর জন্য ফর্ম আপডেট
   useEffect(() => {
     if (defaultValues && Object.keys(defaultValues).length > 0) {
       const formattedValues = {
         ...defaultValues,
-        // Boolean values (show_in_megamenu, show_in_home_tab, is_active) to string for <select>
-        show_in_megamenu: defaultValues.show_in_megamenu ? 'true' : 'false',
-        show_in_home_tab: defaultValues.show_in_home_tab ? 'true' : 'false',
-        is_active: defaultValues.is_active ? 'true' : 'false',
+        category: defaultValues.category?.id || '',
       };
       reset(formattedValues);
 
-      if (defaultValues.header_image) {
-        const file = defaultValues.header_image[0];
-        console.log(defaultValues.header_image.url);
-        console.log(defaultValues.header_image[0] instanceof File); // true/false
-        // if (file) {
-        //   setPreview(URL.createObjectURL(file));
-        // }
+      if (typeof defaultValues.header_image === 'string' && defaultValues.header_image) {
+        setPreview(defaultValues.header_image);
+      } else {
+        setPreview(null);
       }
     }
   }, [defaultValues, reset]);
@@ -70,12 +85,8 @@ export default function MainCourseAddEditFrom({
     // 🔹 Boolean values (which come as strings from form) need to be converted
     const submitData = {
       ...data,
-      show_in_megamenu: data.show_in_megamenu === 'true',
-      show_in_home_tab: data.show_in_home_tab === 'true',
-      is_active: data.is_active === 'true',
+      is_active: true,
     };
-
-    console.log(submitData);
 
     // 🔹 check if user selected a new file (Safari-compatible check)
     const file = submitData.header_image && submitData.header_image[0];
@@ -92,18 +103,28 @@ export default function MainCourseAddEditFrom({
           formData.append(key, value);
         }
       }
-
-      // onSubmit(formData, defaultValues.id || null);
+      onSubmit(formData, defaultValues.id || null);
     } else {
       delete submitData.header_image; // remove file field if no new file is selected
-      // onSubmit(submitData, defaultValues.id || null);
+      onSubmit(submitData, defaultValues.id || null);
     }
+    if (!defaultValues?.id) {
+      reset();
+      setPreview(null);
+    }
+  };
 
-    dispatch(updateFormData({ key: 'courseInfo', data: submitData }));
-    dispatch(nextStep());
-
-    // reset();
-    // setPreview(null);
+  const handleAddDepartment = async () => {
+    try {
+      await dispatch(createCourseCategories({ name: departmentName })).unwrap();
+      SwalUtils.success('Course Category Create Done');
+      setdepartmentDropDown(false);
+      setDepartmentName('');
+      dispatch(fetchCourseCategories());
+    } catch (error) {
+      console.log(error);
+      SwalUtils.error(error?.message || error?.data?.message);
+    }
   };
 
   return (
@@ -131,20 +152,57 @@ export default function MainCourseAddEditFrom({
         {/* 2. Category */}
         <div>
           <label className="block mb-sm font-medium">Category</label>
-          <select
-            {...register('category', { required: 'Category is required' })}
-            className={`w-full border ${
-              errors.category ? 'border-red-500' : 'border-black/10'
-            } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
-          >
-            <option value="">Select Category</option>
-            {/* Replace with your actual category list mapping */}
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+          <div className="relative flex gap-sm ">
+            <select
+              {...register('category', { required: 'Category is required' })}
+              className={`w-full border ${
+                errors.category ? 'border-red-500' : 'border-black/10'
+              } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
+            >
+              <option value="">Select Category</option>
+              {/* Replace with your actual category list mapping */}
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={() => setdepartmentDropDown(true)}
+              type="button"
+              className="self-end text-4xl mb-xs "
+              title="Add Department"
+            >
+              <FaPlus />
+            </button>
+            {/* Department small form */}
+            {departmentDropDown && (
+              <div className="absolute right-0 bg-white shadow-xl rounded-md p-md top-12 z-50 border space-y-sm border-black/10 w-56">
+                <input
+                  value={departmentName}
+                  onChange={(e) => setDepartmentName(e.target.value)}
+                  type="text"
+                  placeholder="Department name"
+                  className="w-full border border-black/20 px-sm py-xs rounded-md focus:outline-none"
+                />
+                <div className="flex justify-end gap-xs">
+                  <SecondaryButton
+                    className="text-black  border-primary hover:bg-secondary hover:text-white hover:border-secondary"
+                    onClick={() => setdepartmentDropDown(false)}
+                    type="button"
+                    text={`Cancel`}
+                    minWidth="fit"
+                  />
+                  <PrimaryButton
+                    type="button"
+                    onClick={handleAddDepartment}
+                    text={`Add`}
+                    minWidth="fit"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
           {errors.category && (
             <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>
           )}
@@ -167,15 +225,22 @@ export default function MainCourseAddEditFrom({
         </div>
 
         {/* 4. Full Description (Full Width) */}
+        {/* ✅ CKEditor */}
         <div className="md:col-span-2">
           <label className="block mb-sm font-medium">Full Description</label>
-          <textarea
-            {...register('full_description')}
-            rows="4"
-            className={`w-full border ${
-              errors.full_description ? 'border-red-500' : 'border-black/10'
-            } px-md py-sm rounded-md focus:outline-none focus:shadow-lg resize-y`}
-            placeholder="Enter the complete course details"
+          <Controller
+            name="full_description"
+            control={control}
+            rules={{ required: 'Full Description is required' }}
+            render={({ field: { onChange, value } }) => (
+              <CKEDITOR
+                value={value || ''}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  onChange(data);
+                }}
+              />
+            )}
           />
           {errors.full_description && (
             <p className="text-red-500 text-sm mt-1">{errors.full_description.message}</p>
@@ -184,7 +249,7 @@ export default function MainCourseAddEditFrom({
 
         {/* 5. Header Image (File Upload) */}
         <div className="md:col-span-2">
-          <label className="block mb-1 font-medium text-gray-700">Icon / Image</label>
+          <label className="block mb-1 font-medium text-gray-700">Header Image</label>
 
           <div className="flex items-start gap-4">
             {/* Preview Box */}
@@ -198,7 +263,7 @@ export default function MainCourseAddEditFrom({
 
             {/* Upload Input */}
             <div className="flex-1">
-              <label className="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 hover:border-blue-400 transition-colors">
+              <label className="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 hover:border-primary transition-colors">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   <UploadCloud className="w-6 h-6 text-gray-400 mb-1" />
                   <p className="text-xs text-gray-500">
@@ -216,74 +281,17 @@ export default function MainCourseAddEditFrom({
           </div>
         </div>
 
-        {/* 6. Status */}
+        {/* 9. Batch*/}
         <div>
-          <label className="block mb-sm font-medium">Publication Status</label>
-          <select
-            {...register('status', { required: 'Status is required' })}
+          <label className="block mb-sm font-medium">Batch</label>
+          <input
+            {...register('batch')}
+            type="text"
             className={`w-full border ${
-              errors.status ? 'border-red-500' : 'border-black/10'
+              errors.batch ? 'border-red-500' : 'border-black/10'
             } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
-          >
-            <option value="">Select Status</option>
-            <option value="draft">Draft</option>
-            <option value="published">Published</option>
-          </select>
-          {errors.status && <p className="text-red-500 text-sm mt-1">{errors.status.message}</p>}
-        </div>
-
-        {/* 7. Show in Megamenu */}
-        <div>
-          <label className="block mb-sm font-medium">Show in Megamenu?</label>
-          <select
-            {...register('show_in_megamenu', { required: 'Megamenu status is required' })}
-            className={`w-full border ${
-              errors.show_in_megamenu ? 'border-red-500' : 'border-black/10'
-            } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
-          >
-            <option value="">Select Option</option>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-          </select>
-          {errors.show_in_megamenu && (
-            <p className="text-red-500 text-sm mt-1">{errors.show_in_megamenu.message}</p>
-          )}
-        </div>
-
-        {/* 8. Show in Home Tab */}
-        <div>
-          <label className="block mb-sm font-medium">Show in Home Tab?</label>
-          <select
-            {...register('show_in_home_tab', { required: 'Home tab status is required' })}
-            className={`w-full border ${
-              errors.show_in_home_tab ? 'border-red-500' : 'border-black/10'
-            } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
-          >
-            <option value="">Select Option</option>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-          </select>
-          {errors.show_in_home_tab && (
-            <p className="text-red-500 text-sm mt-1">{errors.show_in_home_tab.message}</p>
-          )}
-        </div>
-
-        {/* 9. Is Active */}
-        <div>
-          <label className="block mb-sm font-medium">Is Active?</label>
-          <select
-            {...register('is_active', { required: 'Active status is required' })}
-            className={`w-full border ${
-              errors.is_active ? 'border-red-500' : 'border-black/10'
-            } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
-          >
-            <option value="">Select Status</option>
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </select>
-          {errors.is_active && (
-            <p className="text-red-500 text-sm mt-1">{errors.is_active.message}</p>
-          )}
+          ></input>
+          {errors.batch && <p className="text-red-500 text-sm mt-1">{errors.batch.message}</p>}
         </div>
 
         {/* Buttons */}
@@ -292,11 +300,3 @@ export default function MainCourseAddEditFrom({
     </form>
   );
 }
-
-// Example usage:
-// <AddProductForm
-//   onSubmit={handleProductSubmission}
-//   onCancel={closeModal}
-//   defaultValues={productToEdit}
-//   categories={[{id: 'uuid1', name: 'Electronics'}, {id: 'uuid2', name: 'Books'}]}
-// />

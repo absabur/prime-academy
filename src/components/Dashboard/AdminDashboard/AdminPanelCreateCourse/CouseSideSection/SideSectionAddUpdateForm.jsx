@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { UploadCloud, X } from 'lucide-react';
+import { UploadCloud } from 'lucide-react';
+// Adjust these import paths based on your file structure
 import SecondaryButton from '../../../../common/SecondaryButton';
 import PrimaryButton from '../../../../common/PrimaryButton';
 import CKEDITOR from '../../../common/CKEDITOR';
@@ -8,12 +9,14 @@ import CKEDITOR from '../../../common/CKEDITOR';
 const defaultValuesSchema = {
   title: '',
   text: '',
-  icon: '',
+  button_text: '',
+  button_url: '',
+  image: '',
   is_active: true,
 };
 
-export default function WhyEnrollAddEditForm({
-  title = 'Add Why Enroll Item',
+export default function SideSectionAddUpdateForm({
+  formTitle = 'Add Course Content', // Renamed prop to avoid conflict with data 'title'
   onSubmit,
   onCancel,
   course_detail_id,
@@ -31,7 +34,7 @@ export default function WhyEnrollAddEditForm({
   } = useForm({ defaultValues });
 
   // Watch the file input to update preview dynamically
-  const watchedIcon = watch('icon');
+  const watchedImage = watch('image');
 
   // 🧠 1. Handle Resetting Form & Previews when defaultValues change (Edit Mode)
   useEffect(() => {
@@ -39,8 +42,8 @@ export default function WhyEnrollAddEditForm({
       reset(defaultValues);
 
       // Set existing image preview if available
-      if (typeof defaultValues.icon === 'string' && defaultValues.icon) {
-        setPreview(defaultValues.icon);
+      if (typeof defaultValues.image === 'string' && defaultValues.image) {
+        setPreview(defaultValues.image);
       } else {
         setPreview(null);
       }
@@ -49,33 +52,38 @@ export default function WhyEnrollAddEditForm({
 
   // 🧠 2. Handle New File Selection for Preview
   useEffect(() => {
-    if (watchedIcon && watchedIcon.length > 0 && watchedIcon[0] instanceof File) {
-      const file = watchedIcon[0];
+    if (watchedImage && watchedImage.length > 0 && watchedImage[0] instanceof File) {
+      const file = watchedImage[0];
       const url = URL.createObjectURL(file);
       setPreview(url);
 
       // Cleanup memory
       return () => URL.revokeObjectURL(url);
     }
-  }, [watchedIcon]);
+  }, [watchedImage]);
 
   const handleFormSubmit = (data) => {
-    let finalIcon = defaultValues?.icon;
-
-    // If new file uploaded
-    if (watchedIcon && watchedIcon[0] instanceof File) {
+    // If new file uploaded -> Send FormData
+    if (watchedImage && watchedImage[0] instanceof File) {
       const formData = new FormData();
       formData.append('title', data.title);
       formData.append('text', data.text);
-      formData.append('icon', data.icon[0]);
+      formData.append('button_text', data.button_text);
+      formData.append('button_url', data.button_url);
+      formData.append('image', data.image[0]); // Mapped to 'image'
       formData.append('is_active', data.is_active);
       formData.append('course_detail', course_detail_id);
+
       onSubmit(formData, data.id);
       return;
     }
 
-    // If NO new file uploaded → send JSON body
-    const { icon, ...finaldata } = data;
+    // If NO new file uploaded -> send JSON body
+    const { image, ...finaldata } = data;
+
+    // Ensure course_detail is included
+    finaldata.course_detail = course_detail_id;
+
     onSubmit(finaldata, data.id);
   };
 
@@ -84,30 +92,52 @@ export default function WhyEnrollAddEditForm({
       onSubmit={handleSubmit(handleFormSubmit)}
       className="bg-white p-lg rounded-lg shadow-around-sm space-y-md"
     >
-      <h2 className="text-xl font-bold border-b border-black/10 text-primary py-sm">{title}</h2>
+      <h2 className="text-xl font-bold border-b border-black/10 text-primary py-sm">{formTitle}</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-        {/* Category Title */}
+        {/* Title */}
         <div className="md:col-span-2">
-          <label className="block mb-sm font-medium">Category Title</label>
+          <label className="block mb-sm font-medium">Title</label>
           <input
             type="text"
-            {...register('title', { required: 'Category title is required' })}
+            {...register('title', { required: 'Title is required' })}
             className={`w-full border ${
               errors.title ? 'border-red-500' : 'border-black/10'
             } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
-            placeholder="e.g. Web Development"
+            placeholder="e.g. Learn With Rahad Mondal"
           />
           {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
         </div>
 
-        {/* ✅ CKEditor */}
+        {/* Button Text */}
+        <div>
+          <label className="block mb-sm font-medium">Button Text</label>
+          <input
+            type="text"
+            {...register('button_text')}
+            className="w-full border border-black/10 px-md py-sm rounded-md focus:outline-none focus:shadow-lg"
+            placeholder="e.g. Join Now"
+          />
+        </div>
+
+        {/* Button URL */}
+        <div>
+          <label className="block mb-sm font-medium">Button URL</label>
+          <input
+            type="text"
+            {...register('button_url')}
+            className="w-full border border-black/10 px-md py-sm rounded-md focus:outline-none focus:shadow-lg"
+            placeholder="e.g. https://..."
+          />
+        </div>
+
+        {/* Text / Content (CKEditor) */}
         <div className="md:col-span-2">
-          <label className="block mb-sm font-medium">Content</label>
+          <label className="block mb-sm font-medium">Content Text</label>
           <Controller
             name="text"
             control={control}
-            rules={{ required: 'Policy Content is required' }}
+            rules={{ required: 'Content is required' }}
             render={({ field: { onChange, value } }) => (
               <CKEDITOR
                 value={value || ''}
@@ -123,7 +153,7 @@ export default function WhyEnrollAddEditForm({
 
         {/* Image Upload */}
         <div className="md:col-span-2">
-          <label className="block mb-1 font-medium text-gray-700">Icon / Image</label>
+          <label className="block mb-1 font-medium text-gray-700">Image</label>
 
           <div className="flex items-start gap-4">
             {/* Preview Box */}
@@ -147,7 +177,7 @@ export default function WhyEnrollAddEditForm({
                 <input
                   type="file"
                   accept="image/*,image/heic,image/heif"
-                  {...register('icon')}
+                  {...register('image')}
                   className="hidden"
                 />
               </label>
@@ -155,7 +185,7 @@ export default function WhyEnrollAddEditForm({
           </div>
         </div>
 
-        {/* Active Status */}
+        {/* Is Active Status */}
         <div>
           <label className="block mb-sm font-medium">Active Status</label>
           <select
@@ -181,7 +211,7 @@ export default function WhyEnrollAddEditForm({
           />
           <PrimaryButton
             type="submit"
-            text={title.toLocaleLowerCase().includes('add') ? 'Add' : 'Update '}
+            text={formTitle.toLocaleLowerCase().includes('add') ? 'Add' : 'Update '}
           />
         </div>
       </div>

@@ -1,47 +1,50 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
-
 import PreNextButtonSection from '../PreNextButtonSection';
-import { nextStep, updateFormData } from '../../../../../redux/courseWizard/courseWizardSlice';
 
-export default function CourseHeroForm({ title = 'Course Hero Section' }) {
-  // Assuming the key in your redux store for this section is 'hero'
-  const { coursedetails } = useSelector((state) => state.courseWizard.formData);
-
-  const defaultValues = {
-    course: coursedetails?.course || '', // You might want to pre-fill this from URL params or parent state
-    hero_text: coursedetails?.hero_text || '',
-    hero_description: coursedetails?.hero_description || '',
-    hero_button: coursedetails?.hero_button || '',
-    is_active: coursedetails?.is_active ?? true, // Default to true based on your JSON
-  };
-
+export default function CourseHeroForm({
+  title = 'Course Hero Section',
+  defaultValues = {},
+  onSubmit,
+}) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues,
   });
 
-  const dispatch = useDispatch();
+  const EMPTY_FROM_STATE = {
+    hero_text: '',
+    hero_description: '',
+    hero_button: '',
+    is_active: true,
+  };
 
-  const onSubmit = (data) => {
-    // Convert string 'true'/'false' back to boolean if select input returns strings
+  useEffect(() => {
+    // Reset form when defaultValues change
+    if (!defaultValues || Object.keys(defaultValues).length === 0) {
+      reset(EMPTY_FROM_STATE);
+    } else {
+      reset(defaultValues);
+    }
+  }, [JSON.stringify(defaultValues), reset]);
+
+  const handelSubmit = (data) => {
     const formattedData = {
       ...data,
+      // select value always returns string
       is_active: data.is_active === 'true' || data.is_active === true,
     };
 
-    // Dispatch to redux store with a unique key (e.g., 'coursedetails')
-    dispatch(updateFormData({ key: 'coursedetails', data: formattedData }));
-    dispatch(nextStep());
+    onSubmit(formattedData);
   };
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(handelSubmit)}
       className="bg-white p-lg rounded-lg shadow-around-sm space-y-md"
     >
       <h2 className="text-xl font-bold border-b border-black/10 text-primary py-sm">{title}</h2>
@@ -94,8 +97,8 @@ export default function CourseHeroForm({ title = 'Course Hero Section' }) {
             {...register('is_active')}
             className="w-full border border-black/10 px-md py-sm rounded-md"
           >
-            <option value={true}>Active</option>
-            <option value={false}>Inactive</option>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
           </select>
         </div>
 

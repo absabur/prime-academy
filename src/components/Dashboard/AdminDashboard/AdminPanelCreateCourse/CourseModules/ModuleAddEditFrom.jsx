@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import SecondaryButton from '../../../../common/SecondaryButton';
+import PrimaryButton from '../../../../common/PrimaryButton';
 
 const defaultCourseValues = {
   title: '',
@@ -14,9 +16,6 @@ export default function ModuleAddEditFrom({
   onCancel,
   defaultValues = defaultCourseValues,
 }) {
-
-  
-
   const {
     register,
     handleSubmit,
@@ -48,12 +47,7 @@ export default function ModuleAddEditFrom({
       order: isNaN(numericOrder) ? 0 : numericOrder,
       is_active: isActiveBool,
     };
-
-    // onSubmit ফাংশনে finalData পাঠানো হয়েছে
     onSubmit(finalData);
-
-    // ফর্ম reset করার প্রয়োজন হলে
-    // reset(defaultCourseValues);
   };
 
   return (
@@ -70,7 +64,7 @@ export default function ModuleAddEditFrom({
             {...register('title', { required: 'Title is required' })}
             className={`w-full border ${
               errors.title ? 'border-red-500' : 'border-gray-300'
-            } px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            } px-4 py-2 rounded-md focus:outline-none `}
             placeholder="Enter course title"
           />
           {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
@@ -84,7 +78,7 @@ export default function ModuleAddEditFrom({
             rows="3"
             className={`w-full border ${
               errors.short_description ? 'border-red-500' : 'border-gray-300'
-            } px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            } px-4 py-2 rounded-md focus:outline-none `}
             placeholder="Enter a brief description"
           ></textarea>
           {errors.short_description && (
@@ -104,7 +98,7 @@ export default function ModuleAddEditFrom({
             })}
             className={`w-full border ${
               errors.order ? 'border-red-500' : 'border-gray-300'
-            } px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            } px-4 py-2 rounded-md focus:outline-none `}
             placeholder="Enter display order"
           />
           {errors.order && <p className="text-red-500 text-sm mt-1">{errors.order.message}</p>}
@@ -117,7 +111,7 @@ export default function ModuleAddEditFrom({
             {...register('is_active', { required: 'Select active status' })}
             className={`w-full border ${
               errors.is_active ? 'border-red-500' : 'border-gray-300'
-            } px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            } px-4 py-2 rounded-md focus:outline-none `}
           >
             <option value="">Select Status</option>
             <option value="true">Active</option>
@@ -131,19 +125,17 @@ export default function ModuleAddEditFrom({
 
         {/* Buttons */}
         <div className="flex justify-end gap-2 mt-4">
-          <button
-            type="button"
+          <SecondaryButton
             onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none"
-          >
-            Cancel
-          </button>
-          <button
+            type="button"
+            text={'Cancel'}
+            className="border-2 border-primary text-primary hover:bg-secondary hover:text-white hover:border-secondary"
+          />
+
+          <PrimaryButton
             type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
-          >
-            {title.includes('Edit') ? 'Update Module' : 'Add Module'}
-          </button>
+            text={title.includes('Edit') ? 'Update Module' : 'Add Module'}
+          />
         </div>
       </div>
     </form>

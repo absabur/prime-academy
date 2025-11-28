@@ -16,6 +16,21 @@ export const fetchCourseCategories = createAsyncThunk(
   }
 );
 
+export const createCourseCategories = createAsyncThunk(
+  'course/createCourseCategories',
+  async (categoryData, { rejectWithValue }) => {
+    try {
+      const response = await api.post(
+        `${import.meta.env.VITE_API_URL}/api/courses/categories/`,
+        categoryData
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message.data);
+    }
+  }
+);
+
 export const fetchCourses = createAsyncThunk(
   'course/fetchCourses',
   async ({ category = null, page = 1, page_size = 10, search = null }, { rejectWithValue }) => {
@@ -128,6 +143,18 @@ export const updateCourse = createAsyncThunk(
       return response.data; // return the updated student data
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to update student');
+    }
+  }
+);
+
+export const deleteCourse = createAsyncThunk(
+  'course/deleteCourse',
+  async (courseId, { rejectWithValue }) => {
+    try {
+      await api.delete(`${import.meta.env.VITE_API_URL}/api/courses/${courseId}/`);
+      return courseId; // return the deleted course ID
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to delete course');
     }
   }
 );

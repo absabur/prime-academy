@@ -74,6 +74,7 @@ import PaymentSuccess from '../pages/Root/PaymentSuccess/PaymentSuccess';
 import PaymentFail from '../pages/Root/PaymentFail/PaymentFail';
 import PaymentCancel from '../pages/Root/PaymentCancel/PaymentCancel';
 import WishlistPage from '../pages/Root/WishList/WishList';
+import AdminUpdateCourse from '../pages/Dashboard/AdminDashboard/AdminUpdateCourse/AdminUpdateCourse';
 
 function RoutesComponent() {
   const { pathname } = useLocation();
@@ -135,6 +136,7 @@ function RoutesComponent() {
           <Route path="/admin-dashboard" element={<AdminPanelDashboard />} />
           <Route path="/admin-dashboard/courses" element={<AdminPanelCourses />} />
           <Route path="/admin-dashboard/courses/create" element={<AdminPanelCreateCourse />} />
+          <Route path="/admin-dashboard/courses/edit/:slug" element={<AdminUpdateCourse />} />
           <Route path="/admin-dashboard/students" element={<AdminPanelStudents />} />
           <Route path="/admin-dashboard/teachers" element={<AdminPanelTeachers />} />
           <Route path="/admin-dashboard/employees" element={<AdminPanelEmployees />} />

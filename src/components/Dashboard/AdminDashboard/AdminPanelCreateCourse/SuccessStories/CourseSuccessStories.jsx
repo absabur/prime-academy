@@ -1,75 +1,83 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import SwalUtils from '../../../../../utils/sweetAlert';
-import { updateFormData } from '../../../../../redux/courseWizard/courseWizardSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Plus } from 'lucide-react';
 import WhyEnrollCard from '../WhyEnroll/WhyEnrollsCard';
 import PreNextButtonSection from '../PreNextButtonSection';
 import WhyEnrollAddEditForm from '../WhyEnroll/WhyEnrollAddEditForm';
 import Modal from '../../../../common/Modal';
+import {
+  createSuccessStories,
+  deleteSuccessStories,
+  updateSuccessStories,
+} from '../../../../../redux/courseWizard/courseWizardAction';
+import SuccessStoriesForm from './SuccessStoriesForm';
 
-const CourseSuccessStories = () => {
+const CourseSuccessStories = ({ defaultValues }) => {
+  const detail = defaultValues?.detail;
   const dispatch = useDispatch();
-  // Redux key: 'benefits'
-  const successStoriesList = useSelector(
-    (state) => state.courseWizard.formData.successStories || []
-  );
+
+  const successStoriesList = detail?.success_stories || [];
+
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState('add'); // 'add' | 'edit'
   const [editingItem, setEditingItem] = useState(null);
 
-  // Save to Redux
-  const saveList = (newList) => {
-    dispatch(updateFormData({ key: 'successStories', data: newList }));
-  };
-
   // ---------- Add Item ----------
-  const addItem = (data) => {
-    // Generate ID
-    const newItem = {
-      ...data,
-      id: data.id || crypto.randomUUID(),
-    };
-
-    const newList = [...successStoriesList, newItem];
-    saveList(newList);
-    setModalOpen(false);
+  const addItem = async (data) => {
+    try {
+      await dispatch(createSuccessStories(data)).unwrap();
+      SwalUtils.success('Item added successfully');
+      setModalOpen(false);
+    } catch (err) {
+      console.log(err);
+      SwalUtils.error(err.data.message || err.message || 'Failed to add item');
+    }
   };
 
   // ---------- Edit Item ----------
   const openEdit = (id) => {
-    const found = successStoriesList.find((item) => item.id === id);
+    const found = successStoriesList.find((item) => item?.id === id);
     if (!found) return;
     setEditingItem(found);
     setModalType('edit');
     setModalOpen(true);
   };
 
-  const handleEditSubmit = (data) => {
-    const updated = successStoriesList.map((item) =>
-      item.id === editingItem.id ? { ...item, ...data } : item
-    );
-    saveList(updated);
-    setEditingItem(null);
-    setModalOpen(false);
+  const handleEditSubmit = async (data, id) => {
+    try {
+      await dispatch(updateSuccessStories({ id: id, itemData: data })).unwrap();
+      SwalUtils.success('Update Successful');
+      setModalOpen(false);
+    } catch (err) {
+      SwalUtils.error(err?.data?.message || err?.message || 'Fail To Update');
+    }
   };
 
   // ---------- Delete Item ----------
   const deleteItem = (id) => {
-    const performDelete = () => {
-      const updated = successStoriesList.filter((item) => item.id !== id);
-      saveList(updated);
+    const performDelete = async () => {
+      try {
+        await dispatch(deleteSuccessStories(id)).unwrap();
+        SwalUtils.success('Item Delete Succesfull');
+      } catch (err) {
+        SwalUtils.error(err.data.message || err.message || 'Failed to add item');
+      }
     };
     SwalUtils.confirm(performDelete, 'Yes, delete it');
   };
 
   // ---------- Toggle Active ----------
   const toggleItem = (id, status) => {
-    const performToggle = () => {
-      const updated = successStoriesList.map((item) =>
-        item.id === id ? { ...item, is_active: status } : item
-      );
-      saveList(updated);
+    console.log(id, status);
+    const performToggle = async () => {
+      try {
+        await dispatch(updateSuccessStories({ id: id, itemData: { is_active: status } })).unwrap();
+        SwalUtils.success('Update Successful');
+        setModalOpen(false);
+      } catch (err) {
+        SwalUtils.error(err?.data?.message || err?.message || 'Fail To Update');
+      }
     };
     SwalUtils.confirm(performToggle, 'Yes, update status');
   };
@@ -83,7 +91,8 @@ const CourseSuccessStories = () => {
       {modalOpen && (
         <Modal setModal={setModalOpen} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>
-            <WhyEnrollAddEditForm
+            <SuccessStoriesForm
+              course_detail_id={detail?.id}
               onCancel={() => {
                 setEditingItem(null);
                 setModalOpen(false);
@@ -100,11 +109,11 @@ const CourseSuccessStories = () => {
         {successStoriesList.length ? (
           successStoriesList.map((item) => (
             <WhyEnrollCard
-              key={item.id}
+              key={item?.id}
               item={item}
               onEdit={() => openEdit(item.id)}
               onDelete={() => deleteItem(item.id)}
-              onToggle={(status) => toggleItem(item.id, status)}
+              onToggle={toggleItem}
             />
           ))
         ) : (

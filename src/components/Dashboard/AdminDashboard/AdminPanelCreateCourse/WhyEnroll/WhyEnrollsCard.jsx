@@ -7,14 +7,14 @@ const WhyEnrollCard = ({ item, onDelete, onToggle, onEdit }) => {
 
   // Logic to handle Image Preview (File object vs URL string)
   useEffect(() => {
-    if (item.icon instanceof File) {
-      const url = URL.createObjectURL(item.icon);
+    if (item.icon instanceof File || item.image instanceof File) {
+      const url = URL.createObjectURL(item.icon ?? item.image);
       setImgSrc(url);
       return () => URL.revokeObjectURL(url);
     } else {
-      setImgSrc(item.icon);
+      setImgSrc(item.icon ?? item.image);
     }
-  }, [item.icon]);
+  }, [item.icon, item.image]);
 
   return (
     <div
@@ -49,10 +49,8 @@ const WhyEnrollCard = ({ item, onDelete, onToggle, onEdit }) => {
             title={item.title}
             className="text-base font-semibold text-gray-900 truncate max-w-[200px]"
           >
-            {item.title}
+            {item.title ?? item.name}
           </h3>
-          {/* Optional: Show a snippet of the text below the title */}
-          <p className="text-xs text-gray-500 truncate max-w-[200px]">{item.text}</p>
         </div>
       </div>
 
@@ -75,7 +73,7 @@ const WhyEnrollCard = ({ item, onDelete, onToggle, onEdit }) => {
 
         {/* Edit Button */}
         <button
-          onClick={() => onEdit(item.id)}
+          onClick={() => onEdit()}
           type="button"
           className="p-2 text-gray-500 hover:text-blue-600 rounded-full hover:bg-blue-50 transition"
         >

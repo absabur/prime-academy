@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
+  createCourseCategories,
+  deleteCourse,
   fetchAdminCourses,
   fetchCourseCategories,
   fetchCourses,
@@ -30,6 +32,7 @@ const courseSlice = createSlice({
     loadingCourse: true,
     loadingCourseCategory: false,
     error: null,
+    message: null,
   },
   reducers: {
     setActiveCategory: (state, action) => {
@@ -57,6 +60,21 @@ const courseSlice = createSlice({
         state.categories = action.payload.data.results;
       })
       .addCase(fetchCourseCategories.rejected, (state, action) => {
+        state.loadingCourseCategory = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // create categories
+    builder
+      .addCase(createCourseCategories.pending, (state) => {
+        state.loadingCourseCategory = true;
+        state.error = null;
+      })
+      .addCase(createCourseCategories.fulfilled, (state, action) => {
+        state.loadingCourseCategory = false;
+        state.message = 'Course Category Create Successfull';
+      })
+      .addCase(createCourseCategories.rejected, (state, action) => {
         state.loadingCourseCategory = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
@@ -168,6 +186,21 @@ const courseSlice = createSlice({
         state.message = 'Courses updated successfully';
       })
       .addCase(updateCourse.rejected, (state, action) => {
+        state.loadingAdminCourse = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // delete course
+    builder
+      .addCase(deleteCourse.pending, (state) => {
+        state.loadingAdminCourse = true;
+        state.error = null;
+      })
+      .addCase(deleteCourse.fulfilled, (state, action) => {
+        state.loadingAdminCourse = false;
+        state.message = 'Course deleted successfully';
+      })
+      .addCase(deleteCourse.rejected, (state, action) => {
         state.loadingAdminCourse = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });

@@ -1,31 +1,33 @@
-import { useState } from 'react';
-import Modal from '../../../../common/Modal';
-import WhyEnrollAddEditForm from '../WhyEnroll/WhyEnrollAddEditForm';
-import WhyEnrollCard from '../WhyEnroll/WhyEnrollsCard';
-import PreNextButtonSection from '../PreNextButtonSection';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import SwalUtils from '../../../../../utils/sweetAlert';
-
+import Modal from '../../../../common/Modal';
+import SideSectionAddUpdateForm from './SideSectionAddUpdateForm';
+import WhyEnrollCard from '../WhyEnroll/WhyEnrollsCard';
 import { Plus } from 'lucide-react';
+import PreNextButtonSection from '../PreNextButtonSection';
 import {
-  createBenefits,
-  deleteBenefits,
-  updateBenefits,
+  createSideSection,
+  deleteSideSection,
+  updateSideSection,
 } from '../../../../../redux/courseWizard/courseWizardAction';
 
-const CourseBenefits = ({ defaultValues }) => {
+const CourseSideSection = ({ defaultValues }) => {
   const detail = defaultValues?.detail;
   const dispatch = useDispatch();
-  // Redux key: 'benefits'
-  const benefitsList = detail?.benefits || [];
+  const sideImageSectionList = detail?.side_image_sections || [];
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState('add'); // 'add' | 'edit'
   const [editingItem, setEditingItem] = useState(null);
 
   // ---------- Add Item ----------
   const addItem = async (data) => {
+    if (sideImageSectionList.length >= 2) {
+      SwalUtils.error('Maximum Two Item Allow');
+      return;
+    }
     try {
-      await dispatch(createBenefits(data)).unwrap();
+      await dispatch(createSideSection(data)).unwrap();
       SwalUtils.success('Item added successfully');
       setModalOpen(false);
     } catch (err) {
@@ -35,7 +37,7 @@ const CourseBenefits = ({ defaultValues }) => {
 
   // ---------- Edit Item ----------
   const openEdit = (id) => {
-    const found = benefitsList.find((item) => item.id === id);
+    const found = sideImageSectionList.find((item) => item.id === id);
     if (!found) return;
     setEditingItem(found);
     setModalType('edit');
@@ -44,7 +46,7 @@ const CourseBenefits = ({ defaultValues }) => {
 
   const handleEditSubmit = async (data, id) => {
     try {
-      await dispatch(updateBenefits({ id: id, itemData: data })).unwrap();
+      await dispatch(updateSideSection({ id: id, itemData: data })).unwrap();
       SwalUtils.success('Update Successful');
       setModalOpen(false);
     } catch (err) {
@@ -56,7 +58,7 @@ const CourseBenefits = ({ defaultValues }) => {
   const deleteItem = (id) => {
     const performDelete = async () => {
       try {
-        await dispatch(deleteBenefits(id)).unwrap();
+        await dispatch(deleteSideSection(id)).unwrap();
         SwalUtils.success('Item Delete Succesfull');
       } catch (err) {
         SwalUtils.error(err.data.message || err.message || 'Failed to add item');
@@ -69,7 +71,7 @@ const CourseBenefits = ({ defaultValues }) => {
   const toggleItem = (id, status) => {
     const performToggle = async () => {
       try {
-        await dispatch(updateBenefits({ id: id, itemData: { is_active: status } })).unwrap();
+        await dispatch(updateSideSection({ id: id, itemData: { is_active: status } })).unwrap();
         SwalUtils.success('Update Successful');
         setModalOpen(false);
       } catch (err) {
@@ -79,39 +81,38 @@ const CourseBenefits = ({ defaultValues }) => {
     SwalUtils.confirm(performToggle, 'Yes, update status');
   };
 
-  
   return (
     <div className="border border-gray-200 rounded-lg bg-white shadow-sm p-md space-y-sm">
       <h2 className="text-xl font-bold border-b border-black/10 text-primary py-sm mb-4">
-        Course Benefits
+        Side Section
       </h2>
 
       {modalOpen && (
         <Modal setModal={setModalOpen} noClose={true}>
           <div className="w-full" onClick={(e) => e.stopPropagation()}>
-            <WhyEnrollAddEditForm
-              course_detail_id={detail?.id}
+            <SideSectionAddUpdateForm
               onCancel={() => {
                 setEditingItem(null);
                 setModalOpen(false);
               }}
               onSubmit={modalType === 'edit' ? handleEditSubmit : addItem}
-              title={modalType === 'edit' ? 'Edit Course Benefits' : 'Add Course Benefits'}
+              title={modalType === 'edit' ? 'Edit Why Enroll' : 'Add Why Enroll'}
               defaultValues={modalType === 'edit' ? editingItem : undefined}
+              course_detail_id={detail?.id}
             />
           </div>
         </Modal>
       )}
 
       <div className="space-y-sm">
-        {benefitsList?.length ? (
-          benefitsList?.map((item) => (
+        {sideImageSectionList.length ? (
+          sideImageSectionList.map((item) => (
             <WhyEnrollCard
               key={item?.id}
               item={item}
               onEdit={() => openEdit(item.id)}
               onDelete={() => deleteItem(item.id)}
-              onToggle={(status) => toggleItem(item.id, status)}
+              onToggle={toggleItem}
             />
           ))
         ) : (
@@ -128,7 +129,7 @@ const CourseBenefits = ({ defaultValues }) => {
         className="p-3 flex gap-xs justify-center items-center border-2 border-black/30 rounded-lg w-full border-dashed text-black/30 hover:border-primary hover:text-primary"
       >
         <Plus size={15} />
-        Add Course Benefit
+        Add A Side Item
       </button>
 
       <PreNextButtonSection className={'mt-xl'} isForm={false} />
@@ -136,4 +137,4 @@ const CourseBenefits = ({ defaultValues }) => {
   );
 };
 
-export default CourseBenefits;
+export default CourseSideSection;
