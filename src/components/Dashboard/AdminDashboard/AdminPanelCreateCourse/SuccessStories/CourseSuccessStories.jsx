@@ -30,7 +30,6 @@ const CourseSuccessStories = ({ defaultValues }) => {
       SwalUtils.success('Item added successfully');
       setModalOpen(false);
     } catch (err) {
-      console.log(err);
       SwalUtils.error(err.data.message || err.message || 'Failed to add item');
     }
   };
@@ -69,7 +68,6 @@ const CourseSuccessStories = ({ defaultValues }) => {
 
   // ---------- Toggle Active ----------
   const toggleItem = (id, status) => {
-    console.log(id, status);
     const performToggle = async () => {
       try {
         await dispatch(updateSuccessStories({ id: id, itemData: { is_active: status } })).unwrap();

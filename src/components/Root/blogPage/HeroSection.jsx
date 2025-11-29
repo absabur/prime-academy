@@ -23,11 +23,6 @@ const SingleBlogHero = () => {
       bannerImage={singleBlogHero?.banner_image}
       title={blog.title ?? singleBlogHero?.title}
       description={blog.excerpt ?? singleBlogHero?.description}
-      breadcrumbs={[
-        { url: '/', text: 'Home' },
-        { url: '/blogs', text: 'Blogs & Resources' },
-        { url: `/blogs/${blog?.slug}`, text: blog?.title },
-      ]}
       button1={{
         url: singleBlogHero?.button1_url,
         text: singleBlogHero?.button1_text,

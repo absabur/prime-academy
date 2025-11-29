@@ -55,7 +55,6 @@ const courseWizardSlice = createSlice({
       state.step = action.payload;
     },
     restoreFormData: (state, action) => {
-      console.log(action.payload);
       state.formData = {
         ...state.formData,
         ...action.payload,

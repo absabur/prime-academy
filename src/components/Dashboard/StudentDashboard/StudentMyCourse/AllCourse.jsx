@@ -12,7 +12,7 @@ const CourseCard = ({ course }) => {
   const { course_title, is_completed_status, course_slug } = course;
   const isOngoing = !is_completed_status;
 
-  let previewSrc = course?.course_info?.header_image;
+  let previewSrc = course?.imageUrl;
   if (previewSrc?.startsWith('/')) {
     previewSrc = `${import.meta.env.VITE_API_URL}${previewSrc}`;
   }
@@ -72,18 +72,13 @@ const CourseCard = ({ course }) => {
 export default function AllCourse() {
   const [activeFilter, setActiveFilter] = useState('All'); // 'All' or 'Ongoing'
   const dispatch = useDispatch();
-  const { myCourses } = useSelector((state) => state.course);
-
-  const filteredCourses = myCourses.filter((course) => {
-    if (activeFilter === 'Ongoing') {
-      return !course.is_completed_status;
-    }
-    return true;
-  });
+  const { myCourses, loadingmyCourses } = useSelector((state) => state.course);
 
   useEffect(() => {
-    dispatch(fetchMyCourses());
-  }, []);
+    // Fetch courses based on active filter
+    const status = activeFilter === 'Ongoing' ? 'ongoing' : null;
+    dispatch(fetchMyCourses(status));
+  }, [activeFilter, dispatch]);
 
   return (
     <>
@@ -117,9 +112,19 @@ export default function AllCourse() {
         {/* Courses Grid */}
         {/* ✅ CHANGED: xl:grid-cols-2 -> lg:grid-cols-2 */}
         <main className="grid grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 gap-lg">
-          {filteredCourses.map((course) => (
-            <CourseCard key={course.id} course={course} />
-          ))}
+          {loadingmyCourses ? (
+            <div className="col-span-2 flex items-center justify-center py-12">
+              <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : myCourses.length === 0 ? (
+            <div className="col-span-2 text-center py-12">
+              <p className="text-gray-500">
+                No courses found. You haven't enrolled in any courses yet.
+              </p>
+            </div>
+          ) : (
+            myCourses.map((course) => <CourseCard key={course.id} course={course} />)
+          )}
         </main>
       </div>
     </>

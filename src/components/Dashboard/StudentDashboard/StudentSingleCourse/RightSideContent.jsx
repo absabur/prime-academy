@@ -1,4 +1,3 @@
-import React from 'react';
 import NoLiveClassesCard from '../StudentMyCourse/NoLiveClassCard';
 import { CourseCompletedCard, JobPlacementCard, PrivateGroupCard } from './RightContent';
 

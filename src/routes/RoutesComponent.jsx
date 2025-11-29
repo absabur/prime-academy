@@ -67,6 +67,7 @@ import StudentRecording from '../pages/Dashboard/StudentDashboard/StudentRecordi
 import StudentResources from '../pages/Dashboard/StudentDashboard/StudentResources/StudentResources';
 import RoleLoginLayout from '../layouts/RoleLoginLayout';
 import SingleCourseStudent from '../pages/Dashboard/StudentDashboard/StudentSingleCourse/SingleCourseStudent';
+import StudentModuleContent from '../pages/Dashboard/StudentDashboard/StudentModuleContent/StudentModuleContent';
 import Cart from '../pages/Root/Cart/Cart';
 import CheckoutPage from '../pages/Root/Checkout/Checkout';
 import AdminPanelCreateCourse from '../pages/Dashboard/AdminDashboard/AdminCreateCourse/AdminPanelCreateCourse';
@@ -165,6 +166,10 @@ function RoutesComponent() {
           <Route
             path="/student-dashboard/my-course/:courseSlug"
             element={<SingleCourseStudent />}
+          />
+          <Route
+            path="/student-dashboard/my-course/:courseSlug/module/:moduleId"
+            element={<StudentModuleContent />}
           />
           <Route path="/student-dashboard/recording" element={<StudentRecording />} />
           <Route path="/student-dashboard/resources" element={<StudentResources />} />

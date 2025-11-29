@@ -122,7 +122,6 @@ export default function MainCourseAddEditFrom({
       setDepartmentName('');
       dispatch(fetchCourseCategories());
     } catch (error) {
-      console.log(error);
       SwalUtils.error(error?.message || error?.data?.message);
     }
   };

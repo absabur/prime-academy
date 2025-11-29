@@ -75,7 +75,7 @@ export const NavigationTabs = () => {
           { key: 'Assignment', text: 'Assignment' },
           { key: 'Recording', text: 'Recording' },
           { key: 'Resource', text: 'Resource' },
-          { key: 'Exam', text: 'Exam' },
+          { key: 'Attendance', text: 'Attendance' },
           { key: 'Certificate', text: 'Certificate' },
         ].map((item, index) => {
           if (searchParams.get('tab') == item.key) {

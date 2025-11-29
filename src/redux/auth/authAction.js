@@ -23,7 +23,6 @@ export const loginUser = createAsyncThunk(
       });
       return res.data; // success
     } catch (err) {
-      console.log(err);
       // capture API error message
       if (err.response && err.response.data) {
         return rejectWithValue(err.response.data); // pass backend error

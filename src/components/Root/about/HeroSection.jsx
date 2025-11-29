@@ -23,10 +23,6 @@ const AboutHero = () => {
       className="relative"
       title={aboutHero?.title}
       description={aboutHero?.description}
-      breadcrumbs={[
-        { url: '/', text: 'Home' },
-        { url: '/about', text: 'About Us' },
-      ]}
       button1={{
         url: aboutHero?.button1_url,
         text: aboutHero?.button1_text,

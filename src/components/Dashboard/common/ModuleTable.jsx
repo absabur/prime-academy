@@ -3,6 +3,15 @@ const ModuleTable = ({ modules = [], tableColumns = [], colEarly = false, noPare
   // This is crucial for the dynamic CSS grid
   const totalGridCols = tableColumns.reduce((acc, col) => acc + col.colSpan, 0);
 
+  // Safety check
+  if (!modules || modules.length === 0) {
+    return (
+      <div className="mt-lg text-center py-12">
+        <p className="text-gray-500">No data available</p>
+      </div>
+    );
+  }
+
   return (
     <div className="mt-lg">
       {/* --- Modules Section (Dynamic) --- */}
@@ -12,7 +21,9 @@ const ModuleTable = ({ modules = [], tableColumns = [], colEarly = false, noPare
           className={`mb-lg bg-white rounded-md shadow-sm border border-black/10 ${noParent ? 'p-0' : 'p-md'}`}
         >
           {!noParent && (
-            <h3 className="text-xl font-semibold text-black mb-4">Module {module.moduleNumber}</h3>
+            <h3 className="text-xl font-semibold text-black mb-4">
+              Module {module.moduleNumber}{module.moduleTitle ? `: ${module.moduleTitle}` : ''}
+            </h3>
           )}
           <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-black/10">
             {/* Table Header (Dynamic) */}
@@ -35,12 +46,12 @@ const ModuleTable = ({ modules = [], tableColumns = [], colEarly = false, noPare
             </div>
 
             {/* Table Rows (Dynamic) */}
-            {module.sessions.map((session, sessionIndex) => (
+            {(module.sessions || []).map((session, sessionIndex) => (
               <div
                 key={sessionIndex}
                 className={`flex flex-col gap-4 p-4 
                             ${colEarly ? 'xl:grid xl:gap-md xl:items-center xl:px-md xl:py-md' : 'lg:grid lg:gap-md lg:items-center lg:px-md lg:py-md'} text-black/80 ${
-                              sessionIndex < module.sessions.length - 1
+                              sessionIndex < (module.sessions || []).length - 1
                                 ? 'border-b border-black/10'
                                 : ''
                             } lg:hover:bg-black/5 transition-colors duration-150`}

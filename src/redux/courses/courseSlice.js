@@ -9,6 +9,7 @@ import {
   fetchMyCourses,
   fetchOurCourses,
   fetchSingleCourse,
+  fetchStudentCourseModule,
   updateCourse,
 } from './courseAction';
 
@@ -22,15 +23,17 @@ const courseSlice = createSlice({
     megaCourses: [],
     loadingmyCourses: true,
     myCourses: [],
+    studentCourseModule: [],
     course: {},
     coursePagination: {},
     pageSize: 12,
-    loadingAdminCourse: false,
+    loadingAdminCourse: true,
     loadingCourses: true,
     loadingOurCourses: true,
     loadingMegaCourses: true,
     loadingCourse: true,
-    loadingCourseCategory: false,
+    loadingCourseCategory: true,
+    loadingStudentCourseModule: true,
     error: null,
     message: null,
   },
@@ -153,7 +156,16 @@ const courseSlice = createSlice({
       })
       .addCase(fetchMyCourses.fulfilled, (state, action) => {
         state.loadingmyCourses = false;
-        state.myCourses = action.payload.data.results;
+        // Transform enrollment data to extract course information
+        state.myCourses = action.payload.data.results.map((enrollment) => ({
+          id: enrollment.id,
+          course_title: enrollment.course_title,
+          course_slug: enrollment.course_slug,
+          is_completed_status: enrollment.is_completed_status,
+          imageUrl: enrollment.course_info?.header_image || '/placeholder-course.jpg',
+          progress_percentage: enrollment.progress_percentage,
+          batch: enrollment.course_info?.batch,
+        }));
       })
       .addCase(fetchMyCourses.rejected, (state, action) => {
         state.loadingmyCourses = false;
@@ -202,6 +214,21 @@ const courseSlice = createSlice({
       })
       .addCase(deleteCourse.rejected, (state, action) => {
         state.loadingAdminCourse = false;
+        state.error = action.payload?.message ? action.payload?.message : action.payload;
+      });
+
+    // student course module
+    builder
+      .addCase(fetchStudentCourseModule.pending, (state) => {
+        state.loadingStudentCourseModule = true;
+        state.error = null;
+      })
+      .addCase(fetchStudentCourseModule.fulfilled, (state, action) => {
+        state.loadingStudentCourseModule = false;
+        state.studentCourseModule = action.payload.results;
+      })
+      .addCase(fetchStudentCourseModule.rejected, (state, action) => {
+        state.loadingStudentCourseModule = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
   },

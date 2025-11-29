@@ -13,7 +13,7 @@ const FAQsHero = () => {
   }, []);
 
   useEffect(() => {
-    let current = heros.filter((item) => item.page_name == "faqs");
+    let current = heros.filter((item) => item.page_name == 'faqs');
     setFaqsHero(current[0]);
   }, [heros]);
 
@@ -23,10 +23,6 @@ const FAQsHero = () => {
       title={faqsHero?.title}
       description={faqsHero?.description}
       updatedDate="16th March 2023"
-      breadcrumbs={[
-        { url: '/', text: 'Home' },
-        { url: '/faqs', text: 'FAQs' },
-      ]}
       button1={{
         url: faqsHero?.button1_url,
         text: faqsHero?.button1_text,

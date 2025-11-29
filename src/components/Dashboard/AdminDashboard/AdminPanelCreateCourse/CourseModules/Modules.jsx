@@ -42,7 +42,6 @@ export default function Modules({ defaultValues }) {
       await dispatch(createCourseModules(newModule)).unwrap();
       SwalUtils.success('Module added successfully');
     } catch (error) {
-      console.log(error);
       SwalUtils.error(error?.data?.message || error?.message || 'Failed to add module');
       return;
     }
@@ -81,7 +80,6 @@ export default function Modules({ defaultValues }) {
       setEditingModule(null);
       setModalOpen(false);
     } catch (error) {
-      console.log(error);
       SwalUtils.error(error?.data?.message || error?.message || 'Failed to update module');
       return;
     }
@@ -94,7 +92,6 @@ export default function Modules({ defaultValues }) {
         await dispatch(deleteCourseModules(id)).unwrap();
         SwalUtils.success('Module deleted successfully');
       } catch (error) {
-        console.log(error);
         SwalUtils.error(error?.data?.message || error?.message || 'Failed to delete module');
         return;
       }
@@ -114,7 +111,6 @@ export default function Modules({ defaultValues }) {
         ).unwrap();
         SwalUtils.success('Module status updated successfully');
       } catch (error) {
-        console.log(error);
         SwalUtils.error(error?.data?.message || error?.message || 'Failed to update module status');
         return;
       }

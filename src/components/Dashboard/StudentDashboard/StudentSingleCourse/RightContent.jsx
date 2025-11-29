@@ -1,11 +1,7 @@
 import React from 'react';
-import { ClipboardList, Phone, MessageCircle, Facebook, Target } from 'lucide-react';
+import { ClipboardList, Facebook, MessageCircle, Phone, Target } from 'lucide-react';
 import PrimaryButton from '../../../common/PrimaryButton';
 
-/**
- * Card 1: Job Placement Team
- * A component showing contact options for the placement team.
- */
 export const JobPlacementCard = () => (
   <div className="bg-white p-5 md:p-6 rounded-2xl shadow-lg w-full mb-md">
     {/* Header Section */}
@@ -86,6 +82,6 @@ export const CourseCompletedCard = () => (
     </div>
 
     {/* Button */}
-    <PrimaryButton className='w-full' text={`Report Details`} />
+    <PrimaryButton className="w-full" text={`Report Details`} />
   </div>
 );

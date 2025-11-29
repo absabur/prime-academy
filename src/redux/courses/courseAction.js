@@ -37,11 +37,13 @@ export const fetchCourses = createAsyncThunk(
     try {
       const categoryParam = category ? `&category=${category}` : '';
       const searchParam = search ? `&search=${search}` : '';
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/courses/?status=published&page=${page}&page_size=${page_size}${categoryParam}${searchParam}&is_active=true`
-      );
+      const apiUrl = `${import.meta.env.VITE_API_URL}/api/courses/?status=published&page=${page}&page_size=${page_size}${categoryParam}${searchParam}&is_active=true`;
+      
+      const response = await axios.get(apiUrl);
+      
       return response.data;
     } catch (error) {
+      console.error('❌ Error fetching courses:', error);
       return rejectWithValue(error.response?.data || 'Something went wrong');
     }
   }
@@ -49,10 +51,11 @@ export const fetchCourses = createAsyncThunk(
 
 export const fetchMyCourses = createAsyncThunk(
   'course/fetchMyCourses',
-  async (_, { rejectWithValue }) => {
+  async (status = null, { rejectWithValue }) => {
     try {
+      const statusParam = status ? `?status=${status}` : '';
       const response = await api.get(
-        `${import.meta.env.VITE_API_URL}/api/enrollments/my_enrollments/`
+        `${import.meta.env.VITE_API_URL}/api/enrollments/my_enrollments/${statusParam}`
       );
       return response.data;
     } catch (error) {
@@ -155,6 +158,26 @@ export const deleteCourse = createAsyncThunk(
       return courseId; // return the deleted course ID
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to delete course');
+    }
+  }
+);
+
+export const fetchStudentCourseModule = createAsyncThunk(
+  'course/fetchStudentCourseModule',
+  async (courseIdOrSlug, { rejectWithValue }) => {
+    try {
+      const response = await api.get(
+        `${import.meta.env.VITE_API_URL}/api/courses/${courseIdOrSlug}/`
+      );
+
+      const moduleResponse = await api.get(
+        `${import.meta.env.VITE_API_URL}/api/modules/student/by-course/?course_id=${response.data.data.id}`
+      );
+
+      return moduleResponse.data; // the course data
+    } catch (error) {
+      // handle network or API errors
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );

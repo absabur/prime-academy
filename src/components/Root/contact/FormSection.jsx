@@ -172,7 +172,7 @@ const FormSection = () => {
               />
               <label htmlFor="agree_to_policy" className="font-heading font-bold text-base">
                 I agree to the{' '}
-                <Link className="text-primary-light" to={`/privacy-policy`}>
+                <Link className="text-primary-light" to={`/privacy`}>
                   Privacy Policy
                 </Link>
                 .*

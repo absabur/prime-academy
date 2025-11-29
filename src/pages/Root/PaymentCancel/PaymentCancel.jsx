@@ -18,9 +18,6 @@ const PaymentCancel = () => {
       // Show info notification
       SwalUtils.info('You have cancelled the payment process.', 'Payment Cancelled');
     }
-
-    // Log for debugging
-    console.log('Payment cancelled for transaction:', tran_id);
   }, []);
 
   return (

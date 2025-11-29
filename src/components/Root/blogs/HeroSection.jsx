@@ -22,10 +22,6 @@ const BlogHero = () => {
       bannerImage={blogsHero?.banner_image}
       title={blogsHero?.title}
       description={blogsHero?.description}
-      breadcrumbs={[
-        { url: '/', text: 'Home' },
-        { url: '/blogs', text: 'Blogs & Resources' },
-      ]}
       button1={{
         url: blogsHero?.button1_url,
         text: blogsHero?.button1_text,

@@ -13,17 +13,28 @@ import BlogCard from './BlogCard';
 import PrimaryButton from '../../common/PrimaryButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchLatestBlogs } from '@/redux/blogs/blogAction';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const OurBlogs = () => {
   const { latestBlogs } = useSelector((state) => state.blog);
   const dispatch = useDispatch();
+  const [activeBlogs, setActiveBlogs] = useState([]);
 
   useEffect(() => {
     if (!latestBlogs.length) {
       dispatch(fetchLatestBlogs());
     }
   }, []);
+
+  useEffect(() => {
+    if (latestBlogs.length) {
+      setActiveBlogs(latestBlogs.filter((blog) => blog.show_in_home_latest));
+    }
+  }, [latestBlogs]);
+
+  if (!activeBlogs.length) {
+    return null;
+  }
 
   return (
     <OuterSection>
@@ -41,7 +52,7 @@ const OurBlogs = () => {
           className="grid grid-cols-1 md:grid-cols-3 gap-lg items-stretch"
           style={{ padding: '10px' }}
         >
-          {latestBlogs.map((blog) => (
+          {activeBlogs.map((blog) => (
             <BlogCard key={blog.title} blog={blog} />
           ))}
         </div>
