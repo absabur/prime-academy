@@ -13,7 +13,7 @@ const CourseHero = () => {
   }, []);
 
   useEffect(() => {
-    let current = heros.filter((item) => item.page_name == import.meta.env.COURSES_HERO_PAGE_NAME);
+    let current = heros.filter((item) => item.page_name == import.meta.env.VITE_COURSES_HERO_PAGE_NAME);
     setCourseHero(current[0]);
   }, [heros]);
 

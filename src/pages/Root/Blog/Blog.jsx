@@ -27,7 +27,7 @@ const Blog = () => {
   const { seos } = useSelector((state) => state.seo);
 
   useEffect(() => {
-    dispatch(fetchImgIconContents({ page: import.meta.env.SINGLE_BLOG_CONTENT_PAGE_NAME }));
+    dispatch(fetchImgIconContents({ page: import.meta.env.VITE_SINGLE_BLOG_CONTENT_PAGE_NAME }));
   }, []);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const Blog = () => {
   }, []);
 
   useEffect(() => {
-    setPageSeo(seos.find((item) => item.page_name == import.meta.env.SINGLE_BLOG_SEO_PAGE_NAME));
+    setPageSeo(seos.find((item) => item.page_name == import.meta.env.VITE_SINGLE_BLOG_SEO_PAGE_NAME));
   }, [seos]);
 
   const seoData = pageSeo

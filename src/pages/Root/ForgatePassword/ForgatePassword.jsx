@@ -54,7 +54,7 @@ export default function ForgatePassword() {
 
   useEffect(() => {
     setPageSeo(
-      seos.find((item) => item.page_name == import.meta.env.FORGOT_PASSWORD_SEO_PAGE_NAME)
+      seos.find((item) => item.page_name == import.meta.env.VITE_FORGOT_PASSWORD_SEO_PAGE_NAME)
     );
   }, [seos]);
 

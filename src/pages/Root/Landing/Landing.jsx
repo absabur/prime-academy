@@ -94,7 +94,7 @@ export default function LandingPage() {
   }, []);
 
   useEffect(() => {
-    setPageSeo(seos.find((item) => item.page_name == import.meta.env.LANDING_SEO_PAGE_NAME));
+    setPageSeo(seos.find((item) => item.page_name == import.meta.env.VITE_LANDING_SEO_PAGE_NAME));
   }, [seos]);
 
   useSEO(pageSeo ? mapApiSeoToUseSEO(pageSeo) : {});

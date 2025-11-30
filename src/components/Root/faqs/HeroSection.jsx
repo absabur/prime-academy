@@ -13,7 +13,7 @@ const FAQsHero = () => {
   }, []);
 
   useEffect(() => {
-    let current = heros.filter((item) => item.page_name == import.meta.env.FAQS_HERO_PAGE_NAME);
+    let current = heros.filter((item) => item.page_name == import.meta.env.VITE_FAQS_HERO_PAGE_NAME);
     setFaqsHero(current[0]);
   }, [heros]);
 

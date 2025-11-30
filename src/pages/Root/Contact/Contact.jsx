@@ -17,7 +17,7 @@ const Contact = () => {
   }, []);
 
   useEffect(() => {
-    setPageSeo(seos.find((item) => item.page_name == import.meta.env.CONTACT_SEO_PAGE_NAME));
+    setPageSeo(seos.find((item) => item.page_name == import.meta.env.VITE_CONTACT_SEO_PAGE_NAME));
   }, [seos]);
 
   useSEO(pageSeo ? mapApiSeoToUseSEO(pageSeo) : {});

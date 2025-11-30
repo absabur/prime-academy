@@ -37,7 +37,7 @@ const BlogPage = () => {
   }, []);
 
   useEffect(() => {
-    setPageSeo(seos.find((item) => item.page_name == import.meta.env.BLOGS_SEO_PAGE_NAME));
+    setPageSeo(seos.find((item) => item.page_name == import.meta.env.VITE_BLOGS_SEO_PAGE_NAME));
   }, [seos]);
 
   useSEO(pageSeo ? mapApiSeoToUseSEO(pageSeo) : {});

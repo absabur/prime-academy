@@ -26,7 +26,7 @@ const About = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchImgIconContents({ page: import.meta.env.ABOUT_CONTENT_PAGE_NAME }));
+    dispatch(fetchImgIconContents({ page: import.meta.env.VITE_ABOUT_CONTENT_PAGE_NAME }));
   }, []);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const About = () => {
   }, []);
 
   useEffect(() => {
-    setPageSeo(seos.find((item) => item.page_name == import.meta.env.ABOUT_SEO_PAGE_NAME));
+    setPageSeo(seos.find((item) => item.page_name == import.meta.env.VITE_ABOUT_SEO_PAGE_NAME));
   }, [seos]);
 
   useSEO(pageSeo ? mapApiSeoToUseSEO(pageSeo) : {});

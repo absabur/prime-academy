@@ -13,7 +13,7 @@ const AboutHero = () => {
   }, []);
 
   useEffect(() => {
-    let current = heros.filter((item) => item.page_name == import.meta.env.ABOUT_HERO_PAGE_NAME);
+    let current = heros.filter((item) => item.page_name == import.meta.env.VITE_ABOUT_HERO_PAGE_NAME);
     setAboutHero(current[0]);
   }, [heros]);
 
