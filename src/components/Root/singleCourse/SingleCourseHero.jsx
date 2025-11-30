@@ -53,7 +53,7 @@ const SingleCourseHero = () => {
   }, [wishlistError]);
 
   useEffect(() => {
-    let current = heros.filter((item) => item.page_name == 'single-course');
+    let current = heros.filter((item) => item.page_name == import.meta.env.SINGLE_COURSE_HERO_PAGE_NAME);
     setCourseHero(current[0]);
   }, [heros]);
 

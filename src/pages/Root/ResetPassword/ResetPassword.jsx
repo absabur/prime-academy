@@ -77,7 +77,9 @@ export default function ResetPassword() {
   }, []);
 
   useEffect(() => {
-    setPageSeo(seos.find((item) => item.page_name === 'forgate-password'));
+    setPageSeo(
+      seos.find((item) => item.page_name === import.meta.env.RESET_PASSWORD_SEO_PAGE_NAME)
+    );
   }, [seos]);
 
   useSEO(pageSeo ? mapApiSeoToUseSEO(pageSeo) : {});

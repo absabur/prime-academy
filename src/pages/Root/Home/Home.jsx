@@ -27,7 +27,7 @@ const HomePage = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchImgIconContents({ page: 'home' }));
+    dispatch(fetchImgIconContents({ page: import.meta.env.HOME_CONTENT_PAGE_NAME }));
   }, []);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    setPageSeo(seos.find((item) => item.page_name == 'home'));
+    setPageSeo(seos.find((item) => item.page_name == import.meta.env.HOME_SEO_PAGE_NAME));
   }, [seos]);
 
   useSEO(pageSeo ? mapApiSeoToUseSEO(pageSeo) : {});

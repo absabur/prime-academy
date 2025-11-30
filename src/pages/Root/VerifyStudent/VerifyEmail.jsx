@@ -29,7 +29,7 @@ export default function VerifyEmail() {
   }, []);
 
   useEffect(() => {
-    setPageSeo(seos.find((item) => item.page_name == 'verify-student'));
+    setPageSeo(seos.find((item) => item.page_name == import.meta.env.VERIFY_STUDENT_SEO_PAGE_NAME));
   }, [seos]);
 
   useSEO(pageSeo ? mapApiSeoToUseSEO(pageSeo) : {});

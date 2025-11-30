@@ -208,7 +208,7 @@ export default function EditHeroForm({
         </div>
 
         {/* --- Slides Section --- */}
-        {defaultValues.page_name == 'home' && (
+        {defaultValues.page_name == import.meta.env.HOME_HERO_PAGE_NAME && (
           <div className="md:col-span-2 space-y-3">
             <label className="block font-medium">Slide Texts</label>
 

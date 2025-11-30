@@ -13,7 +13,7 @@ const ContactHero = () => {
   }, []);
 
   useEffect(() => {
-    let current = heros.filter((item) => item.page_name == "contact");
+    let current = heros.filter((item) => item.page_name == import.meta.env.CONTACT_HERO_PAGE_NAME);
     setContactHero(current[0]);
   }, [heros]);
 

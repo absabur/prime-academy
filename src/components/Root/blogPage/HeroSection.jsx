@@ -14,7 +14,9 @@ const SingleBlogHero = () => {
   }, []);
 
   useEffect(() => {
-    let current = heros.filter((item) => item.page_name == 'single-blog');
+    let current = heros.filter(
+      (item) => item.page_name == import.meta.env.SINGLE_BLOG_CONTENT_PAGE_NAME
+    );
     setSingleBlogHero(current[0]);
   }, [heros]);
 

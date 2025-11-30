@@ -27,7 +27,7 @@ const SingleCourse = () => {
   }, [slug]);
 
   useEffect(() => {
-    setPageSeo(seos.find((item) => item.page_name == 'single-course'));
+    setPageSeo(seos.find((item) => item.page_name == import.meta.env.SINGLE_COURSE_SEO_PAGE_NAME));
   }, [seos]);
 
   useSEO(pageSeo ? mapApiSeoToUseSEO(pageSeo) : {});

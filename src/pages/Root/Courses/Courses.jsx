@@ -24,7 +24,7 @@ const CoursesPage = () => {
   }, []);
 
   useEffect(() => {
-    setPageSeo(seos.find((item) => item.page_name == 'courses'));
+    setPageSeo(seos.find((item) => item.page_name == import.meta.env.COURSES_SEO_PAGE_NAME));
   }, [seos]);
 
   useSEO(pageSeo ? mapApiSeoToUseSEO(pageSeo) : {});

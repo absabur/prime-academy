@@ -64,7 +64,7 @@ export default function LoginRole() {
   }, []);
 
   useEffect(() => {
-    setPageSeo(seos.find((item) => item.page_name == 'login-role'));
+    setPageSeo(seos.find((item) => item.page_name == import.meta.env.LOGIN_ROLE_SEO_PAGE_NAME));
   }, [seos]);
 
   useSEO(pageSeo ? mapApiSeoToUseSEO(pageSeo) : {});
