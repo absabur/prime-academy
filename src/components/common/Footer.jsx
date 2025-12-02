@@ -133,13 +133,6 @@ const Footer = () => {
               <h3 className="text-md font-bold">Address</h3>
               <address className="not-italic text-white/70 text-base">{address}</address>
             </div>
-            <div className="col-span-4">
-              <img
-                className="w-full rounded-lg"
-                src="/assets/SSLCommerz-Pay-With-logo.png"
-                alt="Payment Partners"
-              />
-            </div>
           </div>
         </InnerSection>
       </OuterSection>

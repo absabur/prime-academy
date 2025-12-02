@@ -163,7 +163,7 @@ const Navbar = () => {
         >
           <div className="flex justify-between items-center w-full" style={{ overflow: 'visible' }}>
             {/* Logo */}
-            <Link to="/" aria-label="Go to Home" onClick={() => setMenuOpen(false)}>
+            <Link className='relative z-[1000000]' to="/" aria-label="Go to Home" onClick={() => setMenuOpen(false)}>
               <img src={logoSrc} className="w-[170px] sm:w-[190px]" alt="Prime Logo" />
             </Link>
 
