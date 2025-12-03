@@ -38,9 +38,9 @@ export const fetchCourses = createAsyncThunk(
       const categoryParam = category ? `&category=${category}` : '';
       const searchParam = search ? `&search=${search}` : '';
       const apiUrl = `${import.meta.env.VITE_API_URL}/api/courses/?status=published&page=${page}&page_size=${page_size}${categoryParam}${searchParam}&is_active=true`;
-      
+
       const response = await axios.get(apiUrl);
-      
+
       return response.data;
     } catch (error) {
       console.error('❌ Error fetching courses:', error);

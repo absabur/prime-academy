@@ -180,7 +180,9 @@ const courseSlice = createSlice({
       })
       .addCase(fetchSingleCourse.fulfilled, (state, action) => {
         state.loadingCourse = false;
-        state.course = action.payload.data; // store single course
+        state.course = action.payload.data?.success
+          ? action.payload.data?.data
+          : action.payload.data; // store single course
       })
       .addCase(fetchSingleCourse.rejected, (state, action) => {
         state.loadingCourse = false;
