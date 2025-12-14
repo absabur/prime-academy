@@ -13,11 +13,11 @@ const StudentModuleContent = () => {
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleContentUpdate = () => {
-    setRefreshKey(prev => prev + 1);
+    setRefreshKey((prev) => prev + 1);
   };
 
   const handleBack = () => {
-    navigate(`/student-dashboard/my-course/${courseSlug}?tab=Modules`);
+    navigate(`/student-dashboard/my-course/${courseSlug}/${moduleId}?tab=Modules`);
   };
 
   return (
@@ -35,18 +35,13 @@ const StudentModuleContent = () => {
 
       <ThreeColLayout
         leftComponent={
-          <ModuleContentMain 
-            moduleId={moduleId} 
-            currentTab={tab} 
+          <ModuleContentMain
+            moduleId={moduleId}
+            currentTab={tab}
             onContentUpdate={handleContentUpdate}
           />
         }
-        rightComponent={
-          <ModuleContentSidebar 
-            moduleId={moduleId} 
-            key={refreshKey}
-          />
-        }
+        rightComponent={<ModuleContentSidebar moduleId={moduleId} key={refreshKey} />}
       />
     </>
   );

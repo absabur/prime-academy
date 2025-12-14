@@ -5,7 +5,7 @@ const imgIconContentSlice = createSlice({
   name: 'imgIconContent',
   initialState: {
     imgIconContents: [],
-    loadingImgIconContents: true,
+    loadingImgIconContents: false,
     ourValues: null,
     academyOverview: null,
     error: null,

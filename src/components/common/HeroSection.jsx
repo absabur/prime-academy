@@ -95,25 +95,21 @@ const HeroSection = ({
                     FREE
                   </span>
                 ) : (
-                  <div className="flex items-center gap-2">
-                    {pricing?.installment_available ? (
-                      <div className="text-white flex items-center gap-sm">
-                        <span className="text-lg">Price:</span>
-                        <span className="font-bold text-2xl md:text-secondary">
-                          {pricing?.installment_amount}
-                        </span>
-                        x<span className="">{pricing?.installment_count} Installment</span>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg text-white">Price:</span>
+                      <span className="font-bold text-2xl md:text-secondary text-white">
+                        {pricing.effective_price}
+                      </span>
+                      {pricing.base_price && pricing.base_price !== pricing.effective_price && (
+                        <del className="text-gray-300 text-sm">{pricing.base_price}</del>
+                      )}
+                    </div>
+                    {pricing?.installment_preview && (
+                      <div className="text-white flex items-center gap-1 text-sm bg-blue-600/20 px-3 py-1.5 rounded-md w-fit">
+                        <span>💳</span>
+                        <span>{pricing.installment_preview.description}</span>
                       </div>
-                    ) : (
-                      <>
-                        <span className="text-lg text-white">Price:</span>
-                        <span className="font-bold text-2xl md:text-secondary text-white">
-                          {pricing.effective_price}
-                        </span>
-                        {pricing.base_price && pricing.base_price !== pricing.effective_price && (
-                          <del className="text-gray-300 text-sm">{pricing.base_price}</del>
-                        )}
-                      </>
                     )}
                   </div>
                 )}

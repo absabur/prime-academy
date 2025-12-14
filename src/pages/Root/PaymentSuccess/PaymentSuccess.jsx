@@ -71,8 +71,44 @@ const PaymentSuccess = () => {
           order_number: order_number,
           val_id: val_id,
         });
+        
         if (response.data.success) {
-          setPaymentData(response.data.data);
+          const orderData = response.data.data;
+          
+          // Always fetch full order details to get batch info and items
+          if (latest_order_id) {
+            try {
+              const orderResponse = await api.get(`/api/orders/${latest_order_id}/`);
+              
+              const fullOrder = orderResponse.data.data;
+              
+              // Extract enrolled courses with batch info from order items
+              const enrolledCoursesWithBatch = fullOrder.items?.map(item => ({
+                course_title: item.course_title || item.course?.title,
+                batch_name: item.batch_info?.batch_name || item.batch_info?.display_name,
+                batch_number: item.batch_info?.batch_number,
+              })) || [];
+              
+              // Merge order details with payment data
+              const fullOrderData = {
+                ...orderData,
+                is_installment: fullOrder.is_installment,
+                installment_plan: fullOrder.installment_plan,
+                installments_paid: fullOrder.installments_paid,
+                total_amount: fullOrder.total_amount,
+                next_payment_due: fullOrder.next_payment_due,
+                next_payment_amount: fullOrder.next_payment_amount,
+                enrolled_courses: enrolledCoursesWithBatch, // Use courses with batch info
+              };
+              
+              setPaymentData(fullOrderData);
+            } catch (orderErr) {
+              console.warn('Could not fetch full order details:', orderErr);
+              setPaymentData(orderData);
+            }
+          } else {
+            setPaymentData(orderData);
+          }
 
           // Clear cart
           await api.post(`${import.meta.env.VITE_API_URL}/api/cart/clear/`, {
@@ -90,7 +126,7 @@ const PaymentSuccess = () => {
           );
           setTimeout(() => {
             navigate('/student-dashboard/my-courses');
-          }, 3000);
+          }, 8000);
         } else {
           setError(response.data.message);
           SwalUtils.error('Verification Failed', response.data.message);
@@ -161,30 +197,78 @@ const PaymentSuccess = () => {
               <p className="font-semibold text-green-600 capitalize">{paymentData?.status}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Amount Paid</p>
-              <p className="font-semibold text-gray-900">
-                {paymentData?.currency} {paymentData?.amount}
+              <p className="text-sm text-gray-600">
+                {paymentData?.is_installment ? 'First Installment Paid' : 'Amount Paid'}
               </p>
+              <p className="font-semibold text-gray-900">
+                {paymentData?.currency} {
+                  paymentData?.is_installment && paymentData?.total_amount && paymentData?.installment_plan
+                    ? (parseFloat(paymentData.total_amount) / paymentData.installment_plan).toFixed(2)
+                    : paymentData?.amount
+                }
+              </p>
+              {paymentData?.is_installment && (
+                <p className="text-xs text-blue-600 mt-1">
+                  {paymentData?.installments_paid || 1}/{paymentData?.installment_plan} installments
+                </p>
+              )}
             </div>
             <div>
-              <p className="text-sm text-gray-600">Courses Enrolled</p>
-              <p className="font-semibold text-gray-900">{paymentData?.enrollment_count}</p>
+              <p className="text-sm text-gray-600">
+                {paymentData?.is_installment ? 'Total Course Fee' : 'Courses Enrolled'}
+              </p>
+              <p className="font-semibold text-gray-900">
+                {paymentData?.is_installment 
+                  ? `${paymentData?.currency} ${paymentData?.total_amount}`
+                  : paymentData?.enrollment_count
+                }
+              </p>
             </div>
           </div>
+          
+          {/* Installment Payment Info */}
+          {paymentData?.is_installment && (
+            <div className="mt-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+              <p className="text-sm font-semibold text-blue-900 mb-2">💳 Payment Plan Details</p>
+              <div className="text-sm text-gray-700 space-y-1">
+                <p>• Total installments: {paymentData?.installment_plan}</p>
+                <p>• Paid installments: {paymentData?.installments_paid || 1}</p>
+                <p>• Remaining: {(paymentData?.installment_plan - (paymentData?.installments_paid || 1))}</p>
+                {paymentData?.next_payment_due && (
+                  <p className="text-blue-700 font-medium mt-2">
+                    Next payment: {paymentData?.currency} {paymentData?.next_payment_amount} due on {new Date(paymentData?.next_payment_due).toLocaleDateString()}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="text-left">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Your Enrolled Courses:</h2>
           <ul className="space-y-2">
-            {paymentData?.enrolled_courses?.map((course, index) => (
-              <li
-                key={index}
-                className="flex items-center gap-3 bg-gray-50 p-4 rounded-lg border border-gray-200"
-              >
-                <CircleCheck className="w-5 h-5 text-green-500 flex-shrink-0" />
-                <span className="text-gray-700 font-medium">{course}</span>
-              </li>
-            ))}
+            {paymentData?.enrolled_courses?.map((course, index) => {
+              // Check if course is an object with batch info or just a string
+              const courseName = typeof course === 'string' ? course : course.course_title || course.title;
+              const batchName = typeof course === 'object' ? (course.batch_name || course.batch_info?.batch_name || course.batch_info?.display_name) : null;
+              
+              return (
+                <li
+                  key={index}
+                  className="flex items-center gap-3 bg-gray-50 p-4 rounded-lg border border-gray-200"
+                >
+                  <CircleCheck className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <div className="flex-1">
+                    <span className="text-gray-700 font-medium">{courseName}</span>
+                    {batchName && (
+                      <span className="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                        📚 {batchName}
+                      </span>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </div>
 

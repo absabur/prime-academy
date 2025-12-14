@@ -8,7 +8,7 @@ const formatDateShort = (dateString) => {
   return d.toLocaleString();
 };
 
-const StudentCourseAttendance = ({ courseSlug }) => {
+const StudentCourseAttendance = ({ courseSlug, moduleId, refreshTrigger }) => {
   const [loading, setLoading] = useState(true);
   const [summary, setSummary] = useState(null);
 
@@ -18,6 +18,59 @@ const StudentCourseAttendance = ({ courseSlug }) => {
     const fetchAttendance = async () => {
       setLoading(true);
       try {
+        // If moduleId is provided, fetch only that module's attendance
+        if (moduleId) {
+          const classesRes = await api.get(`/api/live-classes/?module_id=${moduleId}`);
+          if (!classesRes.data?.success) {
+            if (mounted)
+              setSummary({ modules: [], totalClasses: 0, totalAttended: 0, percentage: 0 });
+            return;
+          }
+
+          const classes = classesRes.data.data || [];
+
+          const classesWithAttendance = await Promise.all(
+            classes.map(async (lc) => {
+              // Prefer attendance included in class object
+              if (lc.my_attendance) return { ...lc, my_attendance: lc.my_attendance };
+
+              // Use student-specific endpoint to get own attendance
+              try {
+                const attResp = await api.get(`/api/live-classes/${lc.id}/my-attendance/`);
+                if (attResp.data?.success && attResp.data.data) {
+                  return { ...lc, my_attendance: attResp.data.data };
+                }
+              } catch (e) {
+                // ignore - attendance not available
+              }
+
+              return { ...lc, my_attendance: null };
+            })
+          );
+
+          const total = classesWithAttendance.length;
+          const attended = classesWithAttendance.filter(
+            (c) => c.my_attendance?.attended
+          ).length;
+          const percentage = total > 0 ? Math.round((attended / total) * 100) : 0;
+
+          if (mounted) {
+            setSummary({
+              modules: [
+                {
+                  module_title: 'Current Module',
+                  classes: classesWithAttendance,
+                },
+              ],
+              totalClasses: total,
+              totalAttended: attended,
+              percentage,
+            });
+          }
+          return;
+        }
+
+        // Otherwise, fetch all modules (for course-level attendance)
         const modulesRes = await api.get(`/api/courses/${courseSlug}/modules/`);
         if (!modulesRes.data?.success) {
           if (mounted)
@@ -38,28 +91,16 @@ const StudentCourseAttendance = ({ courseSlug }) => {
                   // Prefer attendance included in class object
                   if (lc.my_attendance) return { ...lc, my_attendance: lc.my_attendance };
 
-                  // Try dedicated student attendance endpoint
+                  // Use student-specific endpoint to get own attendance
                   try {
                     const attResp = await api.get(
-                      `/api/live-classes/${lc.id}/attendances/?student=true`
+                      `/api/live-classes/${lc.id}/my-attendance/`
                     );
-                    if (attResp.data?.success && attResp.data.data.length > 0) {
-                      return { ...lc, my_attendance: attResp.data.data[0] };
+                    if (attResp.data?.success && attResp.data.data) {
+                      return { ...lc, my_attendance: attResp.data.data };
                     }
                   } catch (e) {
-                    // ignore
-                  }
-
-                  // Fallback to attendances list and pick probable self record
-                  try {
-                    const attResp2 = await api.get(`/api/live-classes/${lc.id}/attendances/`);
-                    if (attResp2.data?.success && attResp2.data.data.length > 0) {
-                      const found =
-                        attResp2.data.data.find((a) => a.is_self) || attResp2.data.data[0];
-                      return { ...lc, my_attendance: found };
-                    }
-                  } catch (e) {
-                    // ignore
+                    // ignore - attendance not available
                   }
 
                   return { ...lc, my_attendance: null };
@@ -110,7 +151,7 @@ const StudentCourseAttendance = ({ courseSlug }) => {
     return () => {
       mounted = false;
     };
-  }, [courseSlug]);
+  }, [courseSlug, moduleId, refreshTrigger]);
 
   if (loading) {
     return (
@@ -155,23 +196,22 @@ const StudentCourseAttendance = ({ courseSlug }) => {
 
                 return (
                   <li key={c.id} className="flex items-center justify-between">
-                    <div className="truncate">
+                    <div className="truncate flex-1">
                       <div className="font-medium">{c.title || c.name || 'Class'}</div>
-                      <div className="text-xs text-gray-500">
-                        {scheduled ? new Date(scheduled).toLocaleString() : 'No schedule'}
-                      </div>
+                      {scheduled && (
+                        <div className="text-xs text-gray-500">
+                          {new Date(scheduled).toLocaleString()}
+                        </div>
+                      )}
                     </div>
 
-                    <div className="ml-3 text-xs text-right">
-                      {isPast ? (
-                        attended ? (
-                          <div className="text-green-600">
-                            Present —{' '}
-                            {formatDateShort(c.my_attendance.joined_at || c.my_attendance.joinedAt)}
-                          </div>
-                        ) : (
-                          <div className="text-red-600">Missed</div>
-                        )
+                    <div className="ml-3 text-xs text-right whitespace-nowrap">
+                      {attended ? (
+                        <div className="text-green-600">Present</div>
+                      ) : !scheduled ? (
+                        <div className="text-blue-600">Upcoming</div>
+                      ) : isPast ? (
+                        <div className="text-red-600">Missed</div>
                       ) : (
                         <div className="text-blue-600">Upcoming</div>
                       )}

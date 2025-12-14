@@ -107,7 +107,7 @@ const CourseSuccessStories = ({ defaultValues }) => {
         {successStoriesList.length ? (
           successStoriesList.map((item) => (
             <WhyEnrollCard
-              key={item?.id}
+              key={item.id}
               item={item}
               onEdit={() => openEdit(item.id)}
               onDelete={() => deleteItem(item.id)}

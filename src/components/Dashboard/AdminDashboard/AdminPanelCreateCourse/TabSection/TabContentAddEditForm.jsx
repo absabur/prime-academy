@@ -5,6 +5,7 @@ import { UploadCloud, FileVideo, Image as ImageIcon } from 'lucide-react';
 import SecondaryButton from '../../../../common/SecondaryButton';
 import PrimaryButton from '../../../../common/PrimaryButton';
 import CKEDITOR from '../../../common/CKEDITOR';
+import { useSelector } from 'react-redux';
 
 const defaultValuesSchema = {
   media_type: 'image', // 'image' or 'video'
@@ -43,6 +44,7 @@ export default function TabContentAddEditForm({
   const watchedMediaType = watch('media_type');
   const watchedImage = watch('image');
   const watchedThumbnail = watch('video_thumbnail');
+  const { courseWizardLoading } = useSelector((state) => state.courseWizard);
 
   // 🧠 1. Handle Resetting Form & Previews (Edit Mode)
   useEffect(() => {
@@ -51,14 +53,14 @@ export default function TabContentAddEditForm({
 
       // Setup Image Preview
       if (typeof defaultValues.image === 'string' && defaultValues.image) {
-        setImagePreview(`https://prime-api.enghasan.com${defaultValues.image}`);
+        setImagePreview(`${import.meta.env.VITE_API_URL}${defaultValues.image}`);
       } else {
         setImagePreview(null);
       }
 
       // Setup Video Thumbnail Preview
       if (typeof defaultValues.video_thumbnail === 'string' && defaultValues.video_thumbnail) {
-        setThumbnailPreview(`https://prime-api.enghasan.com${defaultValues.video_thumbnail}`);
+        setThumbnailPreview(`${import.meta.env.VITE_API_URL}${defaultValues.video_thumbnail}`);
       } else {
         setThumbnailPreview(null);
       }
@@ -339,7 +341,19 @@ export default function TabContentAddEditForm({
           />
           <PrimaryButton
             type="submit"
-            text={formTitle.toLocaleLowerCase().includes('add') ? 'Add' : 'Update '}
+            disabled={courseWizardLoading}
+            text={
+              courseWizardLoading ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  {formTitle.includes('Update') ? 'Updating...' : 'Creating...'}
+                </span>
+              ) : formTitle.includes('Update') ? (
+                'Update '
+              ) : (
+                'Add '
+              )
+            }
           />
         </div>
       </div>

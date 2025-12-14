@@ -36,7 +36,7 @@ const SwalUtils = {
   },
 
   warning: (message, title = 'Warning!') => {
-    Swal.fire({
+    return Swal.fire({
       title,
       text: message,
       icon: 'warning',

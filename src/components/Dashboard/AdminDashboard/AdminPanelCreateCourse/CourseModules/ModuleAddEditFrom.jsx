@@ -2,12 +2,13 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import SecondaryButton from '../../../../common/SecondaryButton';
 import PrimaryButton from '../../../../common/PrimaryButton';
+import { useSelector } from 'react-redux';
 
 const defaultCourseValues = {
   title: '',
-  short_description: '',
+  short_description: '', // API actually expects short_description
   order: 0,
-  is_active: 'true', // select field-এর জন্য string ব্যবহার
+  is_active: 'true',
 };
 
 export default function ModuleAddEditFrom({
@@ -22,6 +23,7 @@ export default function ModuleAddEditFrom({
     formState: { errors },
     reset,
   } = useForm({ defaultValues });
+  const { courseWizardLoading } = useSelector((state) => state.courseWizard);
 
   // 🧠 যখন defaultValues পরিবর্তন হবে (Edit এর সময়), তখন ফর্ম আপডেট করো
   useEffect(() => {
@@ -134,7 +136,19 @@ export default function ModuleAddEditFrom({
 
           <PrimaryButton
             type="submit"
-            text={title.includes('Edit') ? 'Update Module' : 'Add Module'}
+            disabled={courseWizardLoading}
+            text={
+              courseWizardLoading ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  {title.includes('Edit') ? 'Updating...' : 'Creating...'}
+                </span>
+              ) : title.includes('Edit') ? (
+                'Update Module'
+              ) : (
+                'Add Module'
+              )
+            }
           />
         </div>
       </div>

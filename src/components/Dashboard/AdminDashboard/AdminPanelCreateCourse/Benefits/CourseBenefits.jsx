@@ -79,7 +79,6 @@ const CourseBenefits = ({ defaultValues }) => {
     SwalUtils.confirm(performToggle, 'Yes, update status');
   };
 
-  
   return (
     <div className="border border-gray-200 rounded-lg bg-white shadow-sm p-md space-y-sm">
       <h2 className="text-xl font-bold border-b border-black/10 text-primary py-sm mb-4">

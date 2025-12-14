@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Plus } from 'lucide-react';
-import SwalUtils from '../../../../../utils/sweetAlert';
-import Modal from '../../../../common/Modal';
-import { updateFormData } from '../../../../../redux/courseWizard/courseWizardSlice';
-import WhyEnrollAddEditForm from './WhyEnrollAddEditForm';
-import WhyEnrollCard from './WhyEnrollsCard';
-import PreNextButtonSection from '../PreNextButtonSection';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   createWhyEnrollItem,
   deleteWhyEnrollItem,
   updateWhyEnrollItem,
 } from '../../../../../redux/courseWizard/courseWizardAction';
+import SwalUtils from '../../../../../utils/sweetAlert';
+import Modal from '../../../../common/Modal';
+import PreNextButtonSection from '../PreNextButtonSection';
+import WhyEnrollAddEditForm from './WhyEnrollAddEditForm';
+import WhyEnrollCard from './WhyEnrollsCard';
 
 export default function WhyEnrollThisCourse({ defaultValues }) {
   const detail = defaultValues?.detail;
@@ -103,9 +102,9 @@ export default function WhyEnrollThisCourse({ defaultValues }) {
 
       <div className="space-y-sm">
         {whyEnrollList?.length ? (
-          whyEnrollList?.map((item) => (
+          whyEnrollList?.map((item, index) => (
             <WhyEnrollCard
-              key={item?.id}
+              key={item?.id + index}
               item={item}
               onEdit={() => openEdit(item?.id)}
               onDelete={() => deleteItem(item?.id)}

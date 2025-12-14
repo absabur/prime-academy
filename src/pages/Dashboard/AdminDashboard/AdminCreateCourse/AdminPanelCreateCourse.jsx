@@ -7,5 +7,5 @@ const AdminPanelCreateCourse = () => {
     </div>
   );
 };
-
+ 
 export default AdminPanelCreateCourse;

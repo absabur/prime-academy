@@ -25,6 +25,19 @@ import SecondaryButton from '@/components/common/SecondaryButton';
 import { FaPlus } from 'react-icons/fa';
 import { fetchFooters } from '../../../../redux/footer/footerAction';
 
+const safeUUID = () => {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID(); // ✅ Correct
+  }
+
+  // Fallback for older browsers/server
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0,
+      v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
+
 // Main Component
 const UpdateFooter = ({ setModal }) => {
   const dispatch = useDispatch();
@@ -60,17 +73,17 @@ const UpdateFooter = ({ setModal }) => {
     if (adminPanelFooter) {
       const processedFooter = {
         ...adminPanelFooter,
-        // ✅ FIX 1: Use crypto.randomUUID() as a fallback
+        // ✅ FIX 1: Use safeUUID() as a fallback
         social_links: adminPanelFooter.social_links.map((link) => ({
           ...link,
-          id: link.id || crypto.randomUUID(),
+          id: link.id || safeUUID(),
         })),
         link_groups: adminPanelFooter.link_groups.map((group) => ({
           ...group,
-          id: group.id || crypto.randomUUID(),
+          id: group.id || safeUUID(),
           links: group.links.map((link) => ({
             ...link,
-            id: link.id || crypto.randomUUID(),
+            id: link.id || safeUUID(),
           })),
         })),
       };
@@ -113,7 +126,7 @@ const UpdateFooter = ({ setModal }) => {
           platform: '',
           url: '',
           order: data.social_links.length + 1,
-          id: crypto.randomUUID(), // ✅ FIX 3: Use crypto.randomUUID()
+          id: safeUUID(), // ✅ FIX 3: Use safeUUID()
         },
       ],
     });
@@ -169,7 +182,7 @@ const UpdateFooter = ({ setModal }) => {
               url: '',
               is_external: false,
               order: group.links.length + 1,
-              id: crypto.randomUUID(), // ✅ FIX 3: Use crypto.randomUUID()
+              id: safeUUID(), // ✅ FIX 3: Use safeUUID()
             },
           ];
           return { ...group, links };
@@ -198,7 +211,7 @@ const UpdateFooter = ({ setModal }) => {
           title: 'New Section',
           order: prev.link_groups.length + 1,
           links: [],
-          id: crypto.randomUUID(), // ✅ FIX 3: Use crypto.randomUUID()
+          id: safeUUID(), // ✅ FIX 3: Use safeUUID()
         },
       ],
     }));

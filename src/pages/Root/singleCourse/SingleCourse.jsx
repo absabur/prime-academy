@@ -1,6 +1,7 @@
 // Importing the SingleCourseHero component (main hero section for the course page)
 import SingleCourseHero from '@/components/Root/singleCourse/SingleCourseHero';
 import SingleCourseTab from '../../../components/Root/singleCourse/SingleCourseTab';
+import BatchInformation from '@/components/Root/singleCourse/BatchInformation';
 import { useEffect, useState } from 'react';
 import LeftSideContent from '@/components/Root/singleCourse/LeftSideContent/LeftSideContent';
 import RightSideContent from '@/components/Root/singleCourse/RightSideContent/RightSideContent';
@@ -38,6 +39,8 @@ const SingleCourse = () => {
     <>
       {/*  Hero section for single course page */}
       <SingleCourseHero />
+      {/* Batch Information Section */}
+      <BatchInformation />
       {/* Tab section click data change */}
       <SingleCourseTab openTab={openTab} setOpenTab={setOpenTab} />
       {openTab === 'left' && <LeftSideContent />}

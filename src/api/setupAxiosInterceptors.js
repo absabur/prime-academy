@@ -53,7 +53,6 @@ export const setupAxiosInterceptors = (store) => {
           const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/token/refresh/`, {
             refresh: refreshToken,
           });
-
           const newToken = res.data.access;
           store.dispatch(refreshAccessToken(res.data));
           processQueue(null, newToken);
@@ -66,7 +65,6 @@ export const setupAxiosInterceptors = (store) => {
           isRefreshing = false;
         }
       }
-
       return Promise.reject(error);
     }
   );

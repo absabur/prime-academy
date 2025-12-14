@@ -1,19 +1,25 @@
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import PrimaryButton from '../../../common/PrimaryButton';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { singelCourse, updateCourse } from '../../../../redux/courseWizard/courseWizardAction';
 import SwalUtils from '../../../../utils/sweetAlert';
 
-const PreNextButtonSection = ({ className = '', isForm = true }) => {
+const PreNextButtonSection = ({ className = '', isForm = true, onNext }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { slug } = useParams();
   const navigate = useNavigate();
   const step = Number(searchParams.get('step')) || 1;
-  const isTypeSubmit = step < 9;
-  const isLastStep = step === 9;
+  const isTypeSubmit = step < 10;
+  const isLastStep = step === 10;
   const dispatch = useDispatch();
-
+  const { courseWizardLoading } = useSelector((state) => state.courseWizard);
   const handleNext = async () => {
+    // If custom onNext handler is provided, use it
+    if (onNext) {
+      onNext();
+      return;
+    }
+
     if (isLastStep) {
       try {
         const course = await dispatch(singelCourse(slug)).unwrap();
@@ -79,7 +85,19 @@ const PreNextButtonSection = ({ className = '', isForm = true }) => {
       <PrimaryButton
         type={isForm && isTypeSubmit ? 'submit' : 'button'}
         onClick={handleNext}
-        text={isLastStep ? 'Published' : 'Next Step'}
+        disabled={courseWizardLoading}
+        text={
+          courseWizardLoading ? (
+            <span className="flex justify-center gap-2">
+              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              Processing
+            </span>
+          ) : isLastStep ? (
+            'Published'
+          ) : (
+            'Next Step'
+          )
+        }
         minWidth="fit"
       />
     </div>

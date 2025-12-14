@@ -7,6 +7,14 @@ const CourseCard = ({ item, index }) => {
   const basePrice = item?.pricing?.base_price;
   const effectivePrice = item?.pricing?.effective_price;
   const isFree = effectivePrice == 0 || effectivePrice == '0' || item?.pricing?.is_free;
+  
+  // Use the selectedBatch passed from parent
+  const selectedBatch = item.selectedBatch;
+  const hasOpenBatch = selectedBatch !== null;
+  
+  // Get installment info - ONLY use batch level, don't fallback to course
+  const installmentInfo = selectedBatch?.installment_preview;
+  const hasInstallment = selectedBatch?.has_installment;
 
   return (
     <Card
@@ -14,6 +22,13 @@ const CourseCard = ({ item, index }) => {
       className="relative flex flex-col h-full overflow-hidden rounded-xl transition-shadow duration-300 shadow-lg hover:shadow-2xl"
       style={{ gap: 0 }}
     >
+      {/* Installment Badge - Top Right Corner */}
+      {hasInstallment && (
+        <div className="absolute top-2 right-2 z-10 bg-primary/75 backdrop-blur-sm text-white px-3 py-0 rounded-full shadow-lg">
+          <span className="text-[11px] font-bold">{installmentInfo.count}x Installment</span>
+        </div>
+      )}
+      
       {/* Top: Image */}
       <img src={item.header_image} alt={item.title} className="w-full h-[180px] object-cover" />
 
@@ -24,9 +39,12 @@ const CourseCard = ({ item, index }) => {
         {/* 1. TITLE: Wrapped in a container with fixed min-height for two lines (min-h-12) */}
         {/* Note: 'h-12' or 'min-h-12' reserves space for roughly two lines of the 'text-xl' title */}
         <div className="min-h-15">
-          <Link to={item.slug}>
-            <h2 className="text-xl font-heading font-bold line-clamp-2" title={item.title}>
+          <Link to={selectedBatch ? `${item.slug}?batch=${selectedBatch.slug}` : item.slug}>
+            <h2 className="text-lg font-heading font-bold line-clamp-3" title={item.title}>
               {item.title}
+              {selectedBatch && (
+                <span className="text-blue-600"> - {selectedBatch.batch_name}</span>
+              )}
             </h2>
           </Link>
         </div>
@@ -40,30 +58,26 @@ const CourseCard = ({ item, index }) => {
 
         {/* --- Professional Pricing Display --- */}
         {effectivePrice !== undefined && effectivePrice !== null && (
-          <div className="flex items-center gap-sm">
-            {/* Added for spacing */}
+          <div className="flex flex-col gap-1">
             {isFree ? (
-              <span className="text-xl font-bold text-secondary-light bg-primary px-3 py-1 rounded-md">
+              <span className="text-xl font-bold text-secondary-light bg-primary px-3 py-1 rounded-md w-fit">
                 FREE
               </span>
             ) : (
               <>
-                Price:
-                {/* Effective Price (Main, prominent) */}
-                {item?.pricing?.installment_available ? (
-                  <p className="flex items-center gap-sm line-clamp-1 whitespace-nowrap">
-                    <span className="font-bold text-2xl text-primary">
-                      {item?.pricing?.installment_amount}
-                    </span>
-                    x<span>{item?.pricing?.installment_count} Installment</span>
-                  </p>
-                ) : (
-                  <>
-                    <span className="font-bold text-2xl text-primary">{effectivePrice}</span>
-                    {basePrice && basePrice !== effectivePrice && (
-                      <del className="text-gray-500 text-sm">{basePrice}</del>
-                    )}
-                  </>
+                <div className="flex items-center gap-sm">
+                  <span className="text-sm">Price:</span>
+                  <span className="font-bold text-2xl text-primary">{effectivePrice}</span>
+                  {basePrice && basePrice !== effectivePrice && (
+                    <del className="text-gray-500 text-sm">{basePrice}</del>
+                  )}
+                </div>
+                {/* Show installment info from selected batch */}
+                {hasInstallment && (
+                  <div className="flex items-center gap-1 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded w-fit">
+                    <span>💳</span>
+                    <span>{installmentInfo.description}</span>
+                  </div>
                 )}
               </>
             )}
@@ -73,7 +87,7 @@ const CourseCard = ({ item, index }) => {
 
         {/* Read More is naturally at the bottom due to 'mt-auto' */}
         <Link
-          to={item.slug}
+          to={selectedBatch ? `${item.slug}?batch=${selectedBatch.slug}` : item.slug}
           className="font-bold w-[fit-content] text-base text-black flex gap-sm items-center mt-auto hover:text-primary"
         >
           Read More <FaArrowRight />

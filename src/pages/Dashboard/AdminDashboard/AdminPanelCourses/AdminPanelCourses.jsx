@@ -48,7 +48,7 @@ const AdminPanelCourses = () => {
     dispatch(fetchAdminCourses({ order, search, category, is_enabled, status }));
   }, [dispatch, message, order, search, category, is_enabled, status]);
 
-  const handelStatus = async (id, slug, statusKey, value) => {
+  const handelStatus = async (id, statusKey, value, slug) => {
     const course = await dispatch(singelCourse(slug)).unwrap();
 
     if (!course.data.detail) {
@@ -97,7 +97,7 @@ const AdminPanelCourses = () => {
           <ToggleButton
             id={row.id + 'show_in_home_tab'}
             isActive={row.show_in_home_tab}
-            handleToggle={(value) => handelStatus(row.id, row.slug, 'show_in_home_tab', value)}
+            handleToggle={(value) => handelStatus(row.id, 'show_in_home_tab', value, row.slug)}
           />
         ),
     },
@@ -109,7 +109,7 @@ const AdminPanelCourses = () => {
           <ToggleButton
             id={row.id + 'show_in_megamenu'}
             isActive={row.show_in_megamenu}
-            handleToggle={(value) => handelStatus(row.id, row.slug, 'show_in_megamenu', value)}
+            handleToggle={(value) => handelStatus(row.id, 'show_in_megamenu', value, row.slug)}
           />
         ),
     },
@@ -120,7 +120,7 @@ const AdminPanelCourses = () => {
         row && (
           <StatusSelect
             currentValue={row.status}
-            statusChange={(value) => handelStatus(row.id, row.slug, 'status', value)}
+            statusChange={(value) => handelStatus(row.id, 'status', value, row.slug)}
             options={[
               { value: 'published', label: 'Published' },
               { value: 'draft', label: 'Draft' },

@@ -16,21 +16,6 @@ const DashBoardHeader = ({
       <h1 className="font-bold text-primary text-2xl flex-1">{title}</h1>
 
       <div className="flex gap-xl">
-        {/* {searchBar && (
-          <input
-            type="text"
-            className=" hidden md:inline-block flex-1 border border-black/10 shadow bg-white w-full px-md py-sm rounded-md focus:outline-none focus:shadow-xl"
-            placeholder="Search Students, Emails, Phones, Ids..."
-            value={searchParams.get('search') || ''}
-            onChange={(e) =>
-              setSearchParams({
-                ...Object.fromEntries(searchParams.entries()),
-                search: e.target.value,
-                page: 1, // optional: reset page when searching
-              })
-            }
-          />
-        )} */}
         {buttonText && (
           <PrimaryButton
             text={buttonText}

@@ -23,6 +23,7 @@ import {
   FaVideo,
   FaFolderOpen,
   FaSignInAlt,
+  FaReceipt,
 } from 'react-icons/fa';
 import { IoIosArrowDown } from 'react-icons/io';
 
@@ -60,6 +61,7 @@ export default function SideBar() {
       { name: 'My Courses', icon: FaBookOpen, path: '/student-dashboard/my-courses' },
       { name: 'Recording', icon: FaVideo, path: '/student-dashboard/recording' },
       { name: 'Resources', icon: FaFolderOpen, path: '/student-dashboard/resources' },
+      { name: 'Payment History', icon: FaReceipt, path: '/student-dashboard/payment-history' },
     ],
   };
 

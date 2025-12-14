@@ -22,7 +22,8 @@ const ModuleTable = ({ modules = [], tableColumns = [], colEarly = false, noPare
         >
           {!noParent && (
             <h3 className="text-xl font-semibold text-black mb-4">
-              Module {module.moduleNumber}{module.moduleTitle ? `: ${module.moduleTitle}` : ''}
+              Module {module.moduleNumber}
+              {module.moduleTitle ? `: ${module.moduleTitle}` : ''}
             </h3>
           )}
           <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-black/10">

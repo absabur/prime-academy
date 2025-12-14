@@ -5,7 +5,7 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState: {
     carts: [],
-    loadingCarts: true,
+    loadingCarts: false,
     loadingActionCarts: false,
     error: null,
     message: null,
@@ -22,7 +22,7 @@ const cartSlice = createSlice({
     // Carts
     builder
       .addCase(fetchCarts.pending, (state) => {
-        // state.loadingCarts = true;
+        state.loadingCarts = true;
         state.error = null;
       })
       .addCase(fetchCarts.fulfilled, (state, action) => {
@@ -46,7 +46,11 @@ const cartSlice = createSlice({
       })
       .addCase(createCart.rejected, (state, action) => {
         state.loadingActionCarts = false;
-        state.error = action.payload?.message ? action.payload?.message : action.payload.message;
+        // Handle various error formats from backend
+        state.error = action.payload?.message 
+          || action.payload?.error 
+          || action.payload?.detail 
+          || (typeof action.payload === 'string' ? action.payload : 'Failed to add to cart');
       });
 
     // delete cart

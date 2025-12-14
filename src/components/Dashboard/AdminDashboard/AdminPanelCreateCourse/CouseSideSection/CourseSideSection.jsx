@@ -96,7 +96,7 @@ const CourseSideSection = ({ defaultValues }) => {
                 setModalOpen(false);
               }}
               onSubmit={modalType === 'edit' ? handleEditSubmit : addItem}
-              title={modalType === 'edit' ? 'Edit Why Enroll' : 'Add Why Enroll'}
+              formTitle={modalType === 'edit' ? 'Edit Why Enroll' : 'Add Why Enroll'}
               defaultValues={modalType === 'edit' ? editingItem : undefined}
               course_detail_id={detail?.id}
             />
@@ -106,9 +106,9 @@ const CourseSideSection = ({ defaultValues }) => {
 
       <div className="space-y-sm">
         {sideImageSectionList.length ? (
-          sideImageSectionList.map((item) => (
+          sideImageSectionList.map((item, index) => (
             <WhyEnrollCard
-              key={item?.id}
+              key={item?.id + index}
               item={item}
               onEdit={() => openEdit(item.id)}
               onDelete={() => deleteItem(item.id)}

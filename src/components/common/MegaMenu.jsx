@@ -18,13 +18,10 @@ const MegaMenu = ({ isTransparent, textColor }) => {
   const { megaCourses, loadingMegaCourses } = useSelector((state) => state.course);
 
   useEffect(() => {
-    if (megaCourses?.length === 0) {
-      // Using strict equality
+    if (megaCourses.length === 0) {
       dispatch(fetchMegaCourses());
     }
-    // Dependency array is empty, this runs once.
-    // Add [dispatch, megaCourses] if you intend to re-fetch if megaCourses changes.
-  }, [dispatch, megaCourses]);
+  }, [dispatch, megaCourses.length]);
 
   // Close menu when clicking outside
   useEffect(() => {

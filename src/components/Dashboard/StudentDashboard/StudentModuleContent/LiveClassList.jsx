@@ -9,6 +9,7 @@ const LiveClassList = ({ moduleId, onContentUpdate }) => {
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [attendanceRefreshTrigger, setAttendanceRefreshTrigger] = useState(0);
 
   const { courseSlug } = useParams();
 
@@ -60,6 +61,9 @@ const LiveClassList = ({ moduleId, onContentUpdate }) => {
     // Refresh the list after marking attendance
     fetchLiveClasses();
     
+    // Trigger attendance summary refresh
+    setAttendanceRefreshTrigger(prev => prev + 1);
+    
     // Notify parent to refresh sidebar
     if (onContentUpdate) {
       onContentUpdate();
@@ -96,10 +100,10 @@ const LiveClassList = ({ moduleId, onContentUpdate }) => {
           <p className="text-gray-500 text-sm mt-2">Check back later for upcoming classes</p>
         </div>
 
-        {/* Course-level attendance summary shown under the empty state */}
+        {/* Module-specific attendance summary shown under the empty state */}
         <div className="mt-6">
           <div className="w-full flex-1 lg:flex-2">
-            <StudentCourseAttendance courseSlug={courseSlug} />
+            <StudentCourseAttendance courseSlug={courseSlug} moduleId={moduleId} refreshTrigger={attendanceRefreshTrigger} />
           </div>
         </div>
       </div>

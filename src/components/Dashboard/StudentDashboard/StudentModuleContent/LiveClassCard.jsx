@@ -11,8 +11,42 @@ const LiveClassCard = ({ classData, onAttendanceMarked }) => {
   const [attendanceRecord, setAttendanceRecord] = useState(null); // stores returned attendance
   const [joinedAt, setJoinedAt] = useState(null);
   const [leaving, setLeaving] = useState(false);
+  const [canShowJoinButton, setCanShowJoinButton] = useState(false);
   const newWindowRef = useRef(null);
   const popupCheckerRef = useRef(null);
+
+  // Check if join button should be visible
+  useEffect(() => {
+    const checkJoinAvailability = () => {
+      if (classData.status === 'ongoing') {
+        setCanShowJoinButton(true);
+        return;
+      }
+
+      if (classData.status === 'scheduled' && classData.scheduled_date) {
+        const now = new Date();
+        const classTime = new Date(classData.scheduled_date);
+        const diffInMinutes = (classTime - now) / (1000 * 60);
+        const durationMinutes = classData.duration_minutes || 120;
+
+        // Show join button 10 minutes before class starts until class ends (duration + 15 min buffer)
+        const canJoinEarly = diffInMinutes <= 10; // 10 minutes before
+        const hasEnded = diffInMinutes < -(durationMinutes + 15);
+        const shouldShow = canJoinEarly && !hasEnded;
+
+        setCanShowJoinButton(shouldShow);
+      } else {
+        setCanShowJoinButton(false);
+      }
+    };
+
+    checkJoinAvailability();
+
+    // Check every 30 seconds if button should appear
+    const interval = setInterval(checkJoinAvailability, 30000);
+
+    return () => clearInterval(interval);
+  }, [classData.status, classData.scheduled_date, classData.duration_minutes, classData.title]);
 
   useEffect(() => {
     if (classData.status === 'scheduled') {
@@ -28,7 +62,7 @@ const LiveClassCard = ({ classData, onAttendanceMarked }) => {
           const days = Math.floor(diff / (1000 * 60 * 60 * 24));
           const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
           const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          
+
           if (days > 0) {
             setTimeLeft(`${days}d ${hours}h ${minutes}m`);
           } else if (hours > 0) {
@@ -81,17 +115,7 @@ const LiveClassCard = ({ classData, onAttendanceMarked }) => {
       return;
     }
 
-    if (classData.status !== 'ongoing') {
-      await Swal.fire({
-        icon: 'info',
-        title: 'Class Not Started',
-        text: 'The class has not started yet. Please wait until the scheduled time.',
-        confirmButtonColor: '#3b82f6',
-      });
-      return;
-    }
-
-    // Call join endpoint to register attendance
+    // Try to mark attendance first (might fail if class hasn't started yet)
     try {
       const joinResp = await api.post(`/api/live-classes/${classData.id}/join/`);
       if (joinResp.data && joinResp.data.success) {
@@ -100,18 +124,72 @@ const LiveClassCard = ({ classData, onAttendanceMarked }) => {
         // record joinedAt (prefer server joined_at if provided)
         const serverJoined = attendance?.joined_at;
         setJoinedAt(serverJoined ? new Date(serverJoined) : new Date());
+
+        // ✅ Notify parent to refetch attendance data
+        if (onAttendanceMarked) {
+          onAttendanceMarked();
+        }
+      }
+      // Open meeting immediately after successful join
+      const newWindow = window.open(classData.meeting_url, '_blank', 'noopener,noreferrer');
+      newWindowRef.current = newWindow;
+
+      if (!newWindow) {
+        await Swal.fire({
+          icon: 'error',
+          title: 'Pop-up Blocked',
+          html: `
+            <p class="mb-3">Unable to open the meeting link. Your browser may be blocking pop-ups.</p>
+            <p class="text-sm text-gray-600">Meeting Link:</p>
+            <a href="${classData.meeting_url}" target="_blank" rel="noopener noreferrer" 
+               class="text-blue-600 hover:underline break-all">
+              ${classData.meeting_url}
+            </a>
+          `,
+          confirmButtonColor: '#ef4444',
+        });
+        return;
       }
     } catch (err) {
-      // don't block join if join endpoint fails; log for debugging
+      // If join fails, still try to open meeting
       console.error('Join endpoint failed:', err);
+
+      // Open meeting URL immediately (before any async operations)
+      const newWindow = window.open(classData.meeting_url, '_blank', 'noopener,noreferrer');
+      newWindowRef.current = newWindow;
+
+      if (err.response?.data?.message?.includes('not started')) {
+        // Class hasn't started yet, but still allow joining the waiting room
+        Swal.fire({
+          icon: 'info',
+          title: 'Joining Waiting Room',
+          text: "The class hasn't officially started yet, but you can join the waiting room. Your attendance will be marked once the class begins.",
+          confirmButtonColor: '#3b82f6',
+          timer: 3000,
+          timerProgressBar: true,
+        });
+      }
+
+      if (!newWindow) {
+        await Swal.fire({
+          icon: 'error',
+          title: 'Pop-up Blocked',
+          html: `
+            <p class="mb-3">Unable to open the meeting link. Your browser may be blocking pop-ups.</p>
+            <p class="text-sm text-gray-600">Meeting Link:</p>
+            <a href="${classData.meeting_url}" target="_blank" rel="noopener noreferrer" 
+               class="text-blue-600 hover:underline break-all">
+              ${classData.meeting_url}
+            </a>
+          `,
+          confirmButtonColor: '#ef4444',
+        });
+        return;
+      }
     }
 
-    // Open meeting URL in new tab
-    const newWindow = window.open(classData.meeting_url, '_blank', 'noopener,noreferrer');
-    newWindowRef.current = newWindow;
-
-    // If popup opened, poll for close to auto-mark attendance when meeting tab/window is closed
-    if (newWindow) {
+    // Set up popup checker to auto-mark attendance when meeting closes
+    if (newWindowRef.current) {
       popupCheckerRef.current = setInterval(() => {
         try {
           if (newWindowRef.current && newWindowRef.current.closed) {
@@ -125,9 +203,8 @@ const LiveClassCard = ({ classData, onAttendanceMarked }) => {
           // ignore cross-origin access issues
         }
       }, 1000);
-    }
-
-    if (!newWindow) {
+    } else {
+      // This should not happen as we already handled it above, but keep for safety
       await Swal.fire({
         icon: 'error',
         title: 'Pop-up Blocked',
@@ -154,14 +231,6 @@ const LiveClassCard = ({ classData, onAttendanceMarked }) => {
             showConfirmButton: false,
           });
         }
-      });
-    } else {
-      await Swal.fire({
-        icon: 'success',
-        title: 'Opening Meeting...',
-        text: 'The meeting link is opening in a new tab',
-        timer: 2000,
-        showConfirmButton: false,
       });
     }
   };
@@ -223,56 +292,6 @@ const LiveClassCard = ({ classData, onAttendanceMarked }) => {
     }
   };
 
-  const handleMarkAttendance = async () => {
-    try {
-      setMarkingAttendance(true);
-      
-      const now = new Date();
-      const joinedIso = joinedAt ? new Date(joinedAt).toISOString() : null;
-      const leftIso = now.toISOString();
-      const durationMinutes = classData.duration_minutes || Math.max(0, Math.floor((now - new Date(joinedAt || now)) / 60000));
-
-      const response = await api.post(`/api/live-classes/${classData.id}/mark_attendance/`, {
-        joined_at: joinedIso,
-        left_at: leftIso,
-        duration_minutes: durationMinutes,
-      });
-
-      if (response.data.success) {
-        setAttendanceMarked(true);
-        if (onAttendanceMarked) {
-          onAttendanceMarked();
-        }
-        
-        // Show success notification
-        await Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'Attendance marked successfully!',
-          timer: 2000,
-          showConfirmButton: false,
-        });
-      } else {
-        await Swal.fire({
-          icon: 'error',
-          title: 'Failed',
-          text: response.data.message || 'Failed to mark attendance',
-          confirmButtonColor: '#ef4444',
-        });
-      }
-    } catch (error) {
-      console.error('Error marking attendance:', error);
-      await Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: error.response?.data?.message || 'Failed to mark attendance',
-        confirmButtonColor: '#ef4444',
-      });
-    } finally {
-      setMarkingAttendance(false);
-    }
-  };
-
   const getStatusBadge = () => {
     switch (classData.status) {
       case 'scheduled':
@@ -321,14 +340,17 @@ const LiveClassCard = ({ classData, onAttendanceMarked }) => {
           <div className="flex items-center gap-2 mb-2">
             {getStatusBadge()}
             {classData.status === 'scheduled' && timeLeft && (
-              <span className="text-sm font-medium text-orange-600">
-                Starts in {timeLeft}
+              <span className="text-sm font-medium text-orange-600">Starts in {timeLeft}</span>
+            )}
+            {canShowJoinButton && classData.status === 'scheduled' && (
+              <span className="text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                Join available
               </span>
             )}
           </div>
           <h3 className="text-xl font-bold text-gray-800">{classData.title}</h3>
         </div>
-        
+
         <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full">
           <Video className="w-6 h-6 text-primary" />
         </div>
@@ -348,7 +370,7 @@ const LiveClassCard = ({ classData, onAttendanceMarked }) => {
 
       {/* Actions */}
       <div className="flex flex-wrap gap-3">
-        {classData.status === 'ongoing' && classData.can_join && (
+        {canShowJoinButton && (
           <PrimaryButton
             text={joinedAt ? 'Re-Join Class' : 'Join Class'}
             onClick={handleJoinClass}
@@ -368,26 +390,6 @@ const LiveClassCard = ({ classData, onAttendanceMarked }) => {
           </button>
         )}
 
-        {classData.status === 'completed' && !attendanceMarked && (
-          <button
-            onClick={handleMarkAttendance}
-            disabled={markingAttendance}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-          >
-            {markingAttendance ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Marking...
-              </>
-            ) : (
-              <>
-                <CheckCircle className="w-4 h-4" />
-                Mark Attendance
-              </>
-            )}
-          </button>
-        )}
-
         {attendanceMarked && (
           <div className="flex items-center gap-2 text-green-600 font-medium">
             <CheckCircle className="w-5 h-5" />
@@ -398,9 +400,16 @@ const LiveClassCard = ({ classData, onAttendanceMarked }) => {
         {/* Show attendance info for student */}
         {attendanceRecord && (
           <div className="w-full mt-3 text-sm text-gray-700">
-            <div>Joined: {attendanceRecord.joined_at ? formatDate(attendanceRecord.joined_at) : joinedAt?.toLocaleString()}</div>
+            <div>
+              Joined:{' '}
+              {attendanceRecord.joined_at
+                ? formatDate(attendanceRecord.joined_at)
+                : joinedAt?.toLocaleString()}
+            </div>
             {attendanceRecord.left_at && <div>Left: {formatDate(attendanceRecord.left_at)}</div>}
-            {attendanceRecord.duration_minutes != null && <div>Duration: {attendanceRecord.duration_minutes} minutes</div>}
+            {attendanceRecord.duration_minutes != null && (
+              <div>Duration: {attendanceRecord.duration_minutes} minutes</div>
+            )}
           </div>
         )}
 
@@ -429,4 +438,3 @@ const LiveClassCard = ({ classData, onAttendanceMarked }) => {
 };
 
 export default LiveClassCard;
-

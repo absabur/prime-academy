@@ -1,6 +1,17 @@
 import React from 'react';
-import { ClipboardList, Facebook, MessageCircle, Phone, Target } from 'lucide-react';
+import {
+  ClipboardList,
+  Facebook,
+  Loader2,
+  LucideTarget,
+  MessageCircle,
+  Phone,
+  Target,
+} from 'lucide-react';
 import PrimaryButton from '../../../common/PrimaryButton';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import api from '../../../../api/axios';
 
 export const JobPlacementCard = () => (
   <div className="bg-white p-5 md:p-6 rounded-2xl shadow-lg w-full mb-md">
@@ -51,37 +62,89 @@ export const PrivateGroupCard = () => (
  * Card 3: Course Completed
  * A component displaying course completion status and a progress bar.
  */
-export const CourseCompletedCard = () => (
-  <div className="bg-white p-5 md:p-6 rounded-2xl shadow-lg w-full mb-md flex flex-col items-center gap-4 text-center">
-    {/* Icon */}
-    <Target className="h-20 w-20 text-red-600" strokeWidth={1.5} />
 
-    {/* Text Content */}
-    <h2 className="text-2xl font-bold text-black/80">Course Completed</h2>
-    <p className="text-black/60">
-      All live classes, assignments, quizzes, tests have been completed.
-    </p>
+export const CourseCompletedCard = () => {
+  const { courseSlug } = useParams();
+  const [progress, setProgress] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-    {/* Progress Bar Section */}
-    <div className="border border-black/20 bg-white rounded-lg p-3 w-full text-left">
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-sm font-medium text-black/70">Overall Score</span>
-        <span className="text-sm font-bold text-blue-700">93.5%</span>
+  useEffect(() => {
+    const fetchProgress = async () => {
+      if (!courseSlug) return;
+
+      try {
+        setLoading(true);
+
+        // 1. Get Course ID from Slug
+        const currentCourse = sessionStorage.getItem('currentCourse');
+
+        if (currentCourse) {
+          // 2. Get Enrollment using Course ID
+          // Assuming endpoint filters by course_id to find the user's enrollment
+          const enrollmentRes = await api.get(`/api/enrollments/${currentCourse}`);
+
+          if (enrollmentRes.data.success) {
+            // Handle if data is returned as an array (common in list endpoints) or single object
+            const enrollmentData = Array.isArray(enrollmentRes.data.data)
+              ? enrollmentRes.data.data[0]
+              : enrollmentRes.data.data;
+            if (enrollmentData) {
+              setProgress(enrollmentData.progress_percentage || 0);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching course progress:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProgress();
+  }, [courseSlug]);
+
+  if (loading) {
+    return (
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-full mb-md flex justify-center items-center h-48">
+        <Loader2 className="h-8 w-8 text-primary animate-spin" />
       </div>
-      <div className="w-full bg-black/20 rounded-full h-2.5">
-        <div
-          className="h-2.5 rounded-full"
-          style={{
-            width: '93.5%',
-            // This gradient approximates the blue bar with a yellow tip
-            backgroundImage:
-              'linear-gradient(to right, var(--color-primary) 97%, var(--color-secondary) 100%)',
-          }}
-        ></div>
+    );
+  }
+
+  return (
+    <div className="bg-white p-5 md:p-6 rounded-2xl shadow-lg w-full mb-md flex flex-col items-center gap-4 text-center">
+      {/* Icon */}
+      <LucideTarget className="h-20 w-20 text-red-600" strokeWidth={1.5} />
+
+      {/* Text Content */}
+      <h2 className="text-2xl font-bold text-black/80">Course Completed</h2>
+      <p className="text-black/60">
+        All live classes, assignments, quizzes, tests have been completed.
+      </p>
+
+      {/* Progress Bar Section */}
+      <div className="border border-black/20 bg-white rounded-lg p-3 w-full text-left">
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-sm font-medium text-black/70">Overall Score</span>
+          <span className="text-sm font-bold text-blue-700">
+            {typeof progress === 'number' ? progress.toFixed(1) : progress}%
+          </span>
+        </div>
+        <div className="w-full bg-black/20 rounded-full h-2.5">
+          <div
+            className="h-2.5 rounded-full transition-all duration-1000 ease-out"
+            style={{
+              width: `${progress}%`,
+              // This gradient approximates the blue bar with a yellow tip
+              backgroundImage:
+                'linear-gradient(to right, var(--color-primary) 97%, var(--color-secondary) 100%)',
+            }}
+          ></div>
+        </div>
       </div>
+
+      {/* Button */}
+      <PrimaryButton className="w-full" text={`Report Details`} />
     </div>
-
-    {/* Button */}
-    <PrimaryButton className="w-full" text={`Report Details`} />
-  </div>
-);
+  );
+};

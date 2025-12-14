@@ -25,7 +25,6 @@ const AdminPanelStudents = () => {
     message,
   } = useSelector((state) => state.student);
 
-
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
   const [modalType, setModalType] = useState(''); // 'add' or 'edit'
@@ -85,8 +84,10 @@ const AdminPanelStudents = () => {
   };
 
   const handelStatus = async (id, statusKey, value) => {
-    dispatch(updateStudent({ id, studentData: { [statusKey]: value } }));
+    const boolValue = value === 'true' || value === true;
+    dispatch(updateStudent({ id, studentData: { [statusKey]: boolValue } }));
   };
+
   // preview function
   const handelPreview = (id) => {
     const singleStudent = students.find((s) => s.id === id);

@@ -1,7 +1,7 @@
 import { CheckCircle, Edit2, Image as ImageIcon, Trash2, Video, XCircle } from 'lucide-react';
 
 const CreateImageUrl = (path) => {
-  return `https://prime-api.enghasan.com${path}`;
+  return `${import.meta.env.VITE_API_URL}${path}`;
 };
 
 const TabContentCard = ({ content, onEdit, onDelete, onToggleStatus }) => {

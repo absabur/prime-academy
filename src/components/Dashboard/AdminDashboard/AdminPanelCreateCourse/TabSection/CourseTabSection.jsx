@@ -24,7 +24,6 @@ const CourseTabSection = ({ defaultValues }) => {
   const detail = defaultValues?.detail;
   const contentSections = detail?.content_sections[0];
 
-
   // 1. Initialize State from the JSON structure
   const [tabs, setTabs] = useState(contentSections?.tabs || []);
   const [activeTabId, setActiveTabId] = useState(contentSections?.tabs?.[0]?.id || null);

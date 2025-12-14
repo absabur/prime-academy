@@ -10,8 +10,11 @@ const HomeHero = () => {
   const { heros } = useSelector((state) => state.hero);
 
   // Data fetching and selection logic remains here
-  const homeHero = useMemo(() => heros?.find((item) => item.page_name === import.meta.env.VITE_HOME_HERO_PAGE_NAME), [heros]);
-
+  const homeHero = useMemo(
+    () => heros?.find((item) => item.page_name === import.meta.env.VITE_HOME_HERO_PAGE_NAME),
+    [heros]
+  );
+  
   useEffect(() => {
     if (!heros?.length) {
       dispatch(fetchHeros());

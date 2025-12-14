@@ -15,14 +15,13 @@ import SwalUtils from '../../../../../utils/sweetAlert';
 
 const defaultValuesSchema = {
   category: '',
-  batch: null,
   show_in_megamenu: false,
   show_in_home_tab: false,
   title: '',
   short_description: '',
   full_description: '',
   header_image: '',
-  status: '',
+  status: 'published',
   is_active: true,
 };
 
@@ -47,12 +46,15 @@ export default function MainCourseAddEditFrom({
   const [departmentDropDown, setdepartmentDropDown] = useState(false);
   const [departmentName, setDepartmentName] = useState('');
 
-  // 🧠 Edit এর জন্য ফর্ম আপডেট
+  // Edit mode: update form with existing data
   useEffect(() => {
     if (defaultValues && Object.keys(defaultValues).length > 0) {
       const formattedValues = {
         ...defaultValues,
-        category: defaultValues.category?.id || '',
+        // Handle category - it might be an object {id: X} or just the ID number
+        category: typeof defaultValues.category === 'object'
+          ? defaultValues.category?.id || ''
+          : defaultValues.category || '',
       };
       reset(formattedValues);
 
@@ -140,9 +142,8 @@ export default function MainCourseAddEditFrom({
           <input
             type="text"
             {...register('title', { required: 'Course title is required' })}
-            className={`w-full border ${
-              errors.title ? 'border-red-500' : 'border-black/10'
-            } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
+            className={`w-full border ${errors.title ? 'border-red-500' : 'border-black/10'
+              } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
             placeholder="Enter course title"
           />
           {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
@@ -154,9 +155,8 @@ export default function MainCourseAddEditFrom({
           <div className="relative flex gap-sm ">
             <select
               {...register('category', { required: 'Category is required' })}
-              className={`w-full border ${
-                errors.category ? 'border-red-500' : 'border-black/10'
-              } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
+              className={`w-full border ${errors.category ? 'border-red-500' : 'border-black/10'
+                } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
             >
               <option value="">Select Category</option>
               {/* Replace with your actual category list mapping */}
@@ -207,15 +207,51 @@ export default function MainCourseAddEditFrom({
           )}
         </div>
 
+        {/* Status */}
+        <div>
+          <label className="block mb-sm font-medium">Status</label>
+          <select
+            {...register('status', { required: 'Status is required' })}
+            className={`w-full border ${errors.status ? 'border-red-500' : 'border-black/10'
+              } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
+          >
+            <option value="">Select Status</option>
+            <option value="published">Published</option>
+            <option value="draft">Draft</option>
+            <option value="pending">Pending</option>
+          </select>
+          {errors.status && <p className="text-red-500 text-sm mt-1">{errors.status.message}</p>}
+        </div>
+
+        {/* Show in Home Tab & Mega Menu */}
+        <div className="flex flex-col gap-sm">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              {...register('show_in_home_tab')}
+              className="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary"
+            />
+            <span className="font-medium">Show in Home Tab</span>
+          </label>
+
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              {...register('show_in_megamenu')}
+              className="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary"
+            />
+            <span className="font-medium">Show in Mega Menu</span>
+          </label>
+        </div>
+
         {/* 3. Short Description (Full Width) */}
         <div className="md:col-span-2">
           <label className="block mb-sm font-medium">Short Description</label>
           <textarea
             {...register('short_description', { required: 'Short description is required' })}
             rows="2"
-            className={`w-full border ${
-              errors.short_description ? 'border-red-500' : 'border-black/10'
-            } px-md py-sm rounded-md focus:outline-none focus:shadow-lg resize-y`}
+            className={`w-full border ${errors.short_description ? 'border-red-500' : 'border-black/10'
+              } px-md py-sm rounded-md focus:outline-none focus:shadow-lg resize-y`}
             placeholder="Enter a brief course description (max 100-200 chars)"
           />
           {errors.short_description && (
@@ -278,19 +314,6 @@ export default function MainCourseAddEditFrom({
               </label>
             </div>
           </div>
-        </div>
-
-        {/* 9. Batch*/}
-        <div>
-          <label className="block mb-sm font-medium">Batch</label>
-          <input
-            {...register('batch')}
-            type="text"
-            className={`w-full border ${
-              errors.batch ? 'border-red-500' : 'border-black/10'
-            } px-md py-sm rounded-md focus:outline-none focus:shadow-lg`}
-          ></input>
-          {errors.batch && <p className="text-red-500 text-sm mt-1">{errors.batch.message}</p>}
         </div>
 
         {/* Buttons */}

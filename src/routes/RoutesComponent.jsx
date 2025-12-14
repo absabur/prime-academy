@@ -29,6 +29,7 @@ import FAQs from '../pages/Root/FAQs/FAQs';
 import About from '../pages/Root/About/About';
 import SingleCourse from '@/pages/Root/singleCourse/SingleCourse';
 import CoursesPage from '@/pages/Root/Courses/Courses';
+import VerifyInvoice from '@/pages/Root/VerifyInvoice';
 
 import Policy from '../pages/Root/Policy/Policy';
 
@@ -65,6 +66,7 @@ import StudentClassJoining from '../pages/Dashboard/StudentDashboard/StudentClas
 import StudentMyCourses from '../pages/Dashboard/StudentDashboard/StudentMyCourses/StudentMyCourses';
 import StudentRecording from '../pages/Dashboard/StudentDashboard/StudentRecording/StudentRecording';
 import StudentResources from '../pages/Dashboard/StudentDashboard/StudentResources/StudentResources';
+import StudentPaymentHistory from '../pages/Dashboard/StudentDashboard/StudentPaymentHistory';
 import RoleLoginLayout from '../layouts/RoleLoginLayout';
 import SingleCourseStudent from '../pages/Dashboard/StudentDashboard/StudentSingleCourse/SingleCourseStudent';
 import StudentModuleContent from '../pages/Dashboard/StudentDashboard/StudentModuleContent/StudentModuleContent';
@@ -99,6 +101,7 @@ function RoutesComponent() {
         <Route path="courses" element={<CoursesPage />} />
         <Route path="courses/:slug" element={<SingleCourse />} />
         <Route path="cart" element={<Cart />} />
+        <Route path="verify-invoice/:orderNumber" element={<VerifyInvoice />} />
       </Route>
 
       {/* 🚀 LANDING PAGE */}
@@ -164,7 +167,7 @@ function RoutesComponent() {
           <Route path="/student-dashboard/class-joining" element={<StudentClassJoining />} />
           <Route path="/student-dashboard/my-courses" element={<StudentMyCourses />} />
           <Route
-            path="/student-dashboard/my-course/:courseSlug"
+            path="/student-dashboard/my-course/:courseSlug/:batchId"
             element={<SingleCourseStudent />}
           />
           <Route
@@ -173,6 +176,7 @@ function RoutesComponent() {
           />
           <Route path="/student-dashboard/recording" element={<StudentRecording />} />
           <Route path="/student-dashboard/resources" element={<StudentResources />} />
+          <Route path="/student-dashboard/payment-history" element={<StudentPaymentHistory />} />
         </Route>
 
         {/* Account Routes */}

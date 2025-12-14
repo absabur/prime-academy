@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import PrimaryButton from '../../../../common/PrimaryButton';
 import SecondaryButton from '../../../../common/SecondaryButton';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const defaultValuesSchema = {
   tab_name: '',
@@ -23,7 +24,7 @@ export default function TabAddUpdateForm({
   } = useForm({
     defaultValues: defaultValuesSchema,
   });
-
+  const { courseWizardLoading } = useSelector((state) => state.courseWizard);
   // Edit মোড এর জন্য ডেটা রিসেট করা
   useEffect(() => {
     if (defaultValues) {
@@ -99,7 +100,19 @@ export default function TabAddUpdateForm({
           />
           <PrimaryButton
             type="submit"
-            text={formTitle.toLowerCase().includes('add') ? 'Add Tab' : 'Update Tab'}
+            disabled={courseWizardLoading}
+            text={
+              courseWizardLoading ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  {formTitle.includes('Update') ? 'Updating...' : 'Creating...'}
+                </span>
+              ) : formTitle.includes('Update') ? (
+                'Update '
+              ) : (
+                'Add '
+              )
+            }
           />
         </div>
       </div>

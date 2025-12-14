@@ -4,16 +4,14 @@ import api from '@/api/axios';
 import { CertificateCard, NavigationTabs, ResetCourseCard } from './LeftSideTopContent';
 import ModuleCard from './ModuleCard';
 import ModuleTable from '../../common/ModuleTable';
-import {
-  studentDashboardAssignmentTabColumnData,
-} from '../../../../utils/studentDashboardAssignmentTab';
+import { studentDashboardAssignmentTabColumnData } from '../../../../utils/studentDashboardAssignmentTab';
 import { studentRecordingColumnData } from '../../../../utils/studentRecordingColumnData';
-import {
-  studentDashboardResourceTabColumnData,
-} from '../../../../utils/studentDashboardResourceTab';
+import { studentDashboardResourceTabColumnData } from '../../../../utils/studentDashboardResourceTab';
 import StudentCourseAttendance from '../StudentModuleContent/StudentCourseAttendance';
+import { Download, ExternalLink } from 'lucide-react';
+import { VideoPlayerButton } from '../../../../pages/Dashboard/StudentDashboard/StudentRecording/StudentRecording';
 
-const LeftSideContent = () => {
+const LeftSideContent = ({ batchId }) => {
   const { courseSlug } = useParams();
   const [searchParams] = useSearchParams();
   const currentTab = searchParams.get('tab');
@@ -36,18 +34,20 @@ const LeftSideContent = () => {
     } else if (currentTab === 'Resource') {
       fetchResources();
     }
-  }, [currentTab, courseSlug]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTab, courseSlug, batchId]);
 
   const fetchModules = async () => {
     try {
       setLoadingModules(true);
 
-      const response = await api.get(`/api/courses/${courseSlug}/modules/`);
+      const response = await api.get(`/api/courses/${courseSlug}/modules/?batch_id=${batchId}`);
 
       if (response.data.success) {
         const modulesData = response.data.data;
 
         // Enrich modules with assignment, quiz counts, and first class date
+        // This was already using Promise.all, which is good. Kept logic identical.
         const enrichedModules = await Promise.all(
           modulesData.map(async (module) => {
             try {
@@ -106,19 +106,17 @@ const LeftSideContent = () => {
     try {
       setLoadingAssignments(true);
       // Get modules first
-      const modulesRes = await api.get(`/api/courses/${courseSlug}/modules/`);
+      const modulesRes = await api.get(`/api/courses/${courseSlug}/modules/?batch_id=${batchId}`);
       if (modulesRes.data.success && modulesRes.data.data.length > 0) {
         const modules = modulesRes.data.data;
-        const allAssignments = [];
 
-        // Fetch ONLY assignments for each module
-        for (const module of modules) {
+        // OPTIMIZATION: Use Promise.all instead of for...of loop
+        const assignmentsPromises = modules.map(async (module) => {
           try {
-            // Fetch assignments
             const assignmentRes = await api.get(`/api/assignments/?module_id=${module.id}`);
             if (assignmentRes.data.success) {
-              const assignmentsWithModule = assignmentRes.data.data.map((assignment) => {
-                // Format the assignment data to match the table structure
+              return assignmentRes.data.data.map((assignment) => {
+                // Format the assignment data
                 const formatDate = (dateString) => {
                   if (!dateString) return '—';
                   const date = new Date(dateString);
@@ -138,12 +136,18 @@ const LeftSideContent = () => {
                   module_id: module.id,
                 };
               });
-              allAssignments.push(...assignmentsWithModule);
             }
+            return [];
           } catch (err) {
             console.error(`Error fetching assignments for module ${module.id}:`, err);
+            return [];
           }
-        }
+        });
+
+        // Wait for all requests to finish in parallel
+        const results = await Promise.all(assignmentsPromises);
+        // Flatten the array of arrays into a single array
+        const allAssignments = results.flat();
 
         // Only set assignments if we found any
         if (allAssignments.length > 0) {
@@ -217,38 +221,60 @@ const LeftSideContent = () => {
   const fetchRecordings = async () => {
     try {
       setLoadingRecordings(true);
-      // Get modules first
-      const modulesRes = await api.get(`/api/courses/${courseSlug}/modules/`);
+      const modulesRes = await api.get(`/api/courses/${courseSlug}/modules/?batch_id=${batchId}`);
+
       if (modulesRes.data.success && modulesRes.data.data.length > 0) {
         const modules = modulesRes.data.data;
-        const allRecordings = [];
 
-        // Fetch live classes for each module and filter ones with recordings
-        for (const module of modules) {
+        // OPTIMIZATION: Use Promise.all to fetch all module recordings in parallel
+        const recordingsPromises = modules.map(async (module) => {
           try {
             const liveClassRes = await api.get(`/api/live-classes/?module_id=${module.id}`);
             if (liveClassRes.data.success) {
-              const recordingsOnly = liveClassRes.data.data
+              return liveClassRes.data.data
                 .filter((lc) => lc.has_recording && lc.recording_url)
                 .map((lc) => ({
                   ...lc,
                   module_title: module.title,
                   module_id: module.id,
                 }));
-              allRecordings.push(...recordingsOnly);
             }
+            return [];
           } catch (err) {
             console.error(`Error fetching recordings for module ${module.id}:`, err);
+            return [];
           }
-        }
+        });
 
-        // Only set recordings if we found any
+        const results = await Promise.all(recordingsPromises);
+        const allRecordings = results.flat();
+
         if (allRecordings.length > 0) {
-          // Group recordings by module for ModuleTable
           const groupedRecordings = modules
             .map((module, index) => ({
               moduleNumber: index + 1,
-              sessions: allRecordings.filter((r) => r.module_id === module.id),
+              moduleTitle: module.title,
+              sessions: allRecordings
+                .filter((r) => r.module_id === module.id)
+                .map((recording) => ({
+                  ...recording,
+                  headline: recording.title || recording.topic || 'Class Recording',
+                  duration: recording.duration || '—',
+                  time: recording.scheduled_date
+                    ? new Date(recording.scheduled_date).toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })
+                    : '—',
+                  watch: (
+                    <VideoPlayerButton
+                      videoUrl={recording.recording_url}
+                      title={recording.title || recording.topic}
+                    />
+                  ),
+                })),
             }))
             .filter((m) => m.sessions.length > 0);
 
@@ -270,16 +296,97 @@ const LeftSideContent = () => {
   const fetchResources = async () => {
     try {
       setLoadingResources(true);
-      // Try to fetch resources from backend
-      try {
-        const response = await api.get(`/api/courses/${courseSlug}/resources/`);
-        if (response.data.success) {
-          setResources(response.data.data);
-          setLoadingResources(false);
-          return;
+      setResources([]);
+
+      const modulesRes = await api.get(`/api/courses/${courseSlug}/modules/?batch_id=${batchId}`);
+
+      if (modulesRes.data.success && modulesRes.data.data.length > 0) {
+        const modules = modulesRes.data.data;
+
+        // OPTIMIZATION: Use Promise.all to fetch all resources in parallel
+        const resourcesPromises = modules.map(async (module) => {
+          try {
+            const resourcesRes = await api.get(`/api/resources?module_id=${module.id}`);
+            if (resourcesRes.data.success && resourcesRes.data.data.length > 0) {
+              return resourcesRes.data.data.map((resource) => ({
+                ...resource,
+                module_title: module.title,
+                module_id: module.id,
+              }));
+            }
+            return [];
+          } catch (err) {
+            console.error(`Error fetching resources for module ${module.id}:`, err);
+            return [];
+          }
+        });
+
+        const results = await Promise.all(resourcesPromises);
+        const allResources = results.flat();
+
+        if (allResources.length > 0) {
+          const groupedResources = modules
+            .map((module, index) => ({
+              moduleNumber: index + 1,
+              moduleTitle: module.title,
+              sessions: allResources
+                .filter((r) => r.module_id === module.id)
+                .map((resource) => {
+                  const resourceUrl = resource.file_url || resource.external_url;
+                  const isExternalLink =
+                    resourceUrl &&
+                    (resourceUrl.startsWith('http://') || resourceUrl.startsWith('https://'));
+
+                  return {
+                    ...resource,
+                    headline: resource.title || 'Class Material',
+                    time: resource.created_at
+                      ? new Date(resource.created_at).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })
+                      : '—',
+                    watch: (
+                      <button
+                        onClick={async () => {
+                          try {
+                            await api.get(`/api/resources/${resource.id}/download`);
+                            if (isExternalLink) {
+                              window.open(resourceUrl, '_blank', 'noopener,noreferrer');
+                            } else {
+                              window.open(resourceUrl, '_blank');
+                            }
+                          } catch (error) {
+                            console.error('Error downloading resource:', error);
+                            window.open(resourceUrl, '_blank');
+                          }
+                        }}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                      >
+                        {isExternalLink ? (
+                          <>
+                            <ExternalLink size={16} />
+                            Open
+                          </>
+                        ) : (
+                          <>
+                            <Download size={16} />
+                            Download
+                          </>
+                        )}
+                      </button>
+                    ),
+                  };
+                }),
+            }))
+            .filter((m) => m.sessions.length > 0);
+
+          setResources(groupedResources);
+        } else {
+          setResources([]);
         }
-      } catch (err) {
-        // If resources endpoint doesn't exist, show empty state
+      } else {
         setResources([]);
       }
     } catch (error) {
@@ -397,27 +504,3 @@ const LeftSideContent = () => {
 };
 
 export default LeftSideContent;
-
-const demoQuizData = [
-  {
-    moduleTitle: 'Module 1',
-    quizTitle: 'Module 1 Quiz',
-    dateRange: '11 Apr - 17 Apr',
-    description: 'Please check result for Answer sheet.',
-    mark: '10/10',
-  },
-  {
-    moduleTitle: 'Module 2',
-    quizTitle: 'Module 2 Quiz',
-    dateRange: '11 Apr - 17 Apr',
-    description: 'Please check result for Answer sheet.',
-    mark: '10/10',
-  },
-  {
-    moduleTitle: 'Module 3',
-    quizTitle: 'Module 3 Quiz',
-    dateRange: '11 Apr - 17 Apr',
-    description: 'Please check result for Answer sheet.',
-    mark: '',
-  },
-];

@@ -38,14 +38,26 @@ const CourseCards = () => {
     return () => clearTimeout(handler);
   }, [dispatch, currentPage, category, search, order, pageSize]);
 
+  // Simply return the course list without flattening by batches
+  // This allows "Published" courses to show up even if they don't have active batches yet
+  const getCoursesList = (courseList) => {
+    return courseList || [];
+  };
+
+  const coursesToDisplay = loadingCourses
+    ? previousCourses.current.length
+      ? previousCourses.current
+      : []
+    : courses;
+
   return (
     <section className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-lg">
       {/* ✅ Show skeletons if loading and no previous data */}
-      {loadingCourses && previousCourses.current.length == 0
+      {loadingCourses && coursesToDisplay.length == 0
         ? Array.from({ length: 3 }).map((_, index) => (
             <CourseCardSkeleton key={index} index={index} />
           ))
-        : (loadingCourses ? previousCourses.current : courses).map((item, index) => (
+        : coursesToDisplay.map((item, index) => (
             <CourseCard key={item.id || index} item={item} index={index} />
           ))}
 

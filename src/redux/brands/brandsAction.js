@@ -44,7 +44,11 @@ export const createBrand = createAsyncThunk(
   'brands/createBrand',
   async (data, { rejectWithValue, dispatch }) => {
     try {
-      const response = await api.post(`${import.meta.env.VITE_API_URL}/api/brands/`, data);
+      const response = await api.post(`${import.meta.env.VITE_API_URL}/api/brands/`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Optional
+        },
+      });
       dispatch(fetchBrands());
       dispatch(fetchBrandsAdmin());
       return response.data;

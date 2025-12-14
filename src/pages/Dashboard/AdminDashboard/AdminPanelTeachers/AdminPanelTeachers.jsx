@@ -52,6 +52,8 @@ const AdminPanelTeachers = () => {
     });
   };
 
+  
+
   // editTeacher Function
   const singleTeacher = async (id) => {
     const singelTeacher = teachers.find((t) => t.id == id);

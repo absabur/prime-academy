@@ -5,6 +5,7 @@ import { UploadCloud } from 'lucide-react';
 import SecondaryButton from '../../../../common/SecondaryButton';
 import PrimaryButton from '../../../../common/PrimaryButton';
 import CKEDITOR from '../../../common/CKEDITOR';
+import { useSelector } from 'react-redux';
 
 const defaultValuesSchema = {
   title: '',
@@ -23,6 +24,7 @@ export default function SideSectionAddUpdateForm({
   defaultValues = defaultValuesSchema,
 }) {
   const [preview, setPreview] = useState(null);
+  const { courseWizardLoading } = useSelector((state) => state.courseWizard);
 
   const {
     register,
@@ -211,7 +213,19 @@ export default function SideSectionAddUpdateForm({
           />
           <PrimaryButton
             type="submit"
-            text={formTitle.toLocaleLowerCase().includes('add') ? 'Add' : 'Update '}
+            disabled={courseWizardLoading}
+            text={
+              courseWizardLoading ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  {formTitle.includes('Edit') ? 'Updating...' : 'Creating...'}
+                </span>
+              ) : formTitle.includes('Edit') ? (
+                'Update '
+              ) : (
+                'Add '
+              )
+            }
           />
         </div>
       </div>

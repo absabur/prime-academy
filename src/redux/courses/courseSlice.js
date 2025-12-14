@@ -12,6 +12,13 @@ import {
   fetchStudentCourseModule,
   updateCourse,
 } from './courseAction';
+import {
+  createCourseBatch,
+  deleteCourseBatch,
+  fetchCourseBatches,
+  fetchSingleBatch,
+  updateCourseBatch,
+} from './courseBatchActions';
 
 const courseSlice = createSlice({
   name: 'course',
@@ -21,19 +28,25 @@ const courseSlice = createSlice({
     adminCourses: [],
     ourCourses: [],
     megaCourses: [],
-    loadingmyCourses: true,
+    loadingmyCourses: false,
     myCourses: [],
     studentCourseModule: [],
     course: {},
     coursePagination: {},
     pageSize: 12,
-    loadingAdminCourse: true,
-    loadingCourses: true,
-    loadingOurCourses: true,
-    loadingMegaCourses: true,
-    loadingCourse: true,
-    loadingCourseCategory: true,
-    loadingStudentCourseModule: true,
+    loadingAdminCourse: false,
+    loadingCourses: false,
+    loadingOurCourses: false,
+    loadingMegaCourses: false,
+    loadingCourse: false,
+    loadingCourseCategory: false,
+    loadingStudentCourseModule: false,
+    // Batch state
+    batches: [],
+    currentBatch: null,
+    loadingBatches: false,
+    batchError: null,
+    batchMessage: null,
     error: null,
     message: null,
   },
@@ -49,6 +62,12 @@ const courseSlice = createSlice({
     },
     clearError: (state) => {
       state.error = null;
+    },
+    clearBatchMessage: (state) => {
+      state.batchMessage = null;
+    },
+    clearBatchError: (state) => {
+      state.batchError = null;
     },
   },
   extraReducers: (builder) => {
@@ -85,11 +104,15 @@ const courseSlice = createSlice({
     // Courses
     builder
       .addCase(fetchCourses.pending, (state) => {
+        state.loadingCourses = true;
         state.error = null;
       })
       .addCase(fetchCourses.fulfilled, (state, action) => {
         state.loadingCourses = false;
-        state.courses = action.payload.data.results;
+        // Handle different response structures
+        const coursesData =
+          action.payload.data?.results || action.payload.data || action.payload || [];
+        state.courses = Array.isArray(coursesData) ? coursesData : [];
         state.coursePagination = {
           count: action.payload?.data?.count,
           next: action.payload?.data?.next,
@@ -124,6 +147,7 @@ const courseSlice = createSlice({
     // Our Courses
     builder
       .addCase(fetchOurCourses.pending, (state) => {
+        state.loadingOurCourses = true;
         state.error = null;
       })
       .addCase(fetchOurCourses.fulfilled, (state, action) => {
@@ -138,6 +162,7 @@ const courseSlice = createSlice({
     // Mega Menu Courses
     builder
       .addCase(fetchMegaCourses.pending, (state) => {
+        state.loadingMegaCourses = true;
         state.error = null;
       })
       .addCase(fetchMegaCourses.fulfilled, (state, action) => {
@@ -152,20 +177,54 @@ const courseSlice = createSlice({
     // My Courses
     builder
       .addCase(fetchMyCourses.pending, (state) => {
+        state.loadingmyCourses = true;
         state.error = null;
       })
       .addCase(fetchMyCourses.fulfilled, (state, action) => {
         state.loadingmyCourses = false;
         // Transform enrollment data to extract course information
-        state.myCourses = action.payload.data.results.map((enrollment) => ({
-          id: enrollment.id,
-          course_title: enrollment.course_title,
-          course_slug: enrollment.course_slug,
-          is_completed_status: enrollment.is_completed_status,
-          imageUrl: enrollment.course_info?.header_image || '/placeholder-course.jpg',
-          progress_percentage: enrollment.progress_percentage,
-          batch: enrollment.course_info?.batch,
-        }));
+        // Handle different response structures
+        const enrollments =
+          action.payload.data?.results || action.payload.data || action.payload || [];
+
+        if (!Array.isArray(enrollments)) {
+          console.error('Enrollments data is not an array:', enrollments);
+          state.myCourses = [];
+          return;
+        }
+
+        state.myCourses = enrollments.map((enrollment) => {
+          // Get batch info from the new batch_info field
+          const batchInfo = enrollment.batch_info || {};
+
+          return {
+            id: enrollment.id,
+            course_title: enrollment.course_title,
+            course_slug: enrollment.course_slug,
+            is_completed_status: enrollment.is_completed_status,
+            imageUrl: enrollment.course_info?.header_image || '/placeholder-course.jpg',
+            progress_percentage: enrollment.progress_percentage,
+            // Updated batch handling - use batch_info from API
+            batch: batchInfo.id || enrollment.batch || null,
+            batch_id: batchInfo.id || null,
+            batchName: batchInfo.batch_name || batchInfo.display_name || 'N/A',
+            batchNumber: batchInfo.batch_number || null,
+            batchSlug: batchInfo.slug || null,
+            batchStartDate: batchInfo.start_date || null,
+            batchEndDate: batchInfo.end_date || null,
+            batchStatus: batchInfo.status || null,
+            // Payment information
+            order: enrollment.order || {},
+            paymentStatus: enrollment.order?.payment_status || 'unknown',
+            isInstallment: enrollment.order?.is_installment || false,
+            installmentsPaid: enrollment.order?.installments_paid || 0,
+            totalInstallments: enrollment.order?.installment_plan || 0,
+            totalAmount: enrollment.order?.total_amount || 0,
+            amountPaid: enrollment.order?.amount_paid || 0,
+            nextPaymentDue: enrollment.order?.next_payment_due || null,
+            nextPaymentAmount: enrollment.order?.next_payment_amount || null,
+          };
+        });
       })
       .addCase(fetchMyCourses.rejected, (state, action) => {
         state.loadingmyCourses = false;
@@ -233,8 +292,90 @@ const courseSlice = createSlice({
         state.loadingStudentCourseModule = false;
         state.error = action.payload?.message ? action.payload?.message : action.payload;
       });
+
+    // Fetch course batches
+    builder
+      .addCase(fetchCourseBatches.pending, (state) => {
+        state.loadingBatches = true;
+        state.batchError = null;
+      })
+      .addCase(fetchCourseBatches.fulfilled, (state, action) => {
+        state.loadingBatches = false;
+        state.batches = action.payload.data?.results || action.payload.data || action.payload || [];
+      })
+      .addCase(fetchCourseBatches.rejected, (state, action) => {
+        state.loadingBatches = false;
+        state.batchError = action.payload?.message || action.payload;
+      });
+
+    // Create batch
+    builder
+      .addCase(createCourseBatch.pending, (state) => {
+        state.loadingBatches = true;
+        state.batchError = null;
+      })
+      .addCase(createCourseBatch.fulfilled, (state, action) => {
+        state.loadingBatches = false;
+        state.batchMessage = 'Batch created successfully';
+      })
+      .addCase(createCourseBatch.rejected, (state, action) => {
+        state.loadingBatches = false;
+        state.batchError = action.payload?.message || action.payload;
+      });
+
+    // Update batch
+    builder
+      .addCase(updateCourseBatch.pending, (state) => {
+        state.loadingBatches = true;
+        state.batchError = null;
+      })
+      .addCase(updateCourseBatch.fulfilled, (state, action) => {
+        state.loadingBatches = false;
+        state.batchMessage = 'Batch updated successfully';
+      })
+      .addCase(updateCourseBatch.rejected, (state, action) => {
+        state.loadingBatches = false;
+        state.batchError = action.payload?.message || action.payload;
+      });
+
+    // Delete batch
+    builder
+      .addCase(deleteCourseBatch.pending, (state) => {
+        state.loadingBatches = true;
+        state.batchError = null;
+      })
+      .addCase(deleteCourseBatch.fulfilled, (state, action) => {
+        state.loadingBatches = false;
+        state.batchMessage = 'Batch deleted successfully';
+      })
+      .addCase(deleteCourseBatch.rejected, (state, action) => {
+        state.loadingBatches = false;
+        state.batchError = action.payload?.message || action.payload;
+      });
+
+    // Fetch single batch
+    builder
+      .addCase(fetchSingleBatch.pending, (state) => {
+        state.loadingBatches = true;
+        state.batchError = null;
+      })
+      .addCase(fetchSingleBatch.fulfilled, (state, action) => {
+        state.loadingBatches = false;
+        state.currentBatch = action.payload.data || action.payload;
+      })
+      .addCase(fetchSingleBatch.rejected, (state, action) => {
+        state.loadingBatches = false;
+        state.batchError = action.payload?.message || action.payload;
+      });
   },
 });
 
-export const { setActiveCategory, clearCourse, clearMessage, clearError } = courseSlice.actions;
+export const {
+  setActiveCategory,
+  clearCourse,
+  clearMessage,
+  clearError,
+  clearBatchMessage,
+  clearBatchError,
+} = courseSlice.actions;
 export default courseSlice.reducer;

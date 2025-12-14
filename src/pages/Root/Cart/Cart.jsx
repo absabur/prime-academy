@@ -16,6 +16,11 @@ export default function ShoppingCartPage() {
   // Assuming 'status' and 'error' are also in your cart slice
   const { carts, error, message, loadingCarts } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+  
+  // Get installment info from batch level using has_installment flag
+  const firstItemBatch = carts?.items?.[0]?.batch_info;
+  const installmentInfo = firstItemBatch?.has_installment ? firstItemBatch.installment_preview : null;
+  const paymentSummary = carts?.payment_summary;
 
   useEffect(() => {
     if (message) {
@@ -98,6 +103,8 @@ export default function ShoppingCartPage() {
               preCouponTotal={preCouponTotal}
               originalPrice={originalSubtotal}
               cartItems={carts?.items}
+              installmentInfo={installmentInfo}
+              paymentSummary={paymentSummary}
             />
           </div>
         </div>

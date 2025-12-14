@@ -127,6 +127,39 @@ export const createCourseModules = createAsyncThunk(
   }
 );
 
+export const deleteCourseModules = createAsyncThunk(
+  'courseWizard/deleteCourseModules',
+  async (id, { rejectWithValue }) => {
+    try {
+      // API call to delete course modules
+      const response = await api.delete(
+        `${import.meta.env.VITE_API_URL}/api/courses/modules/${id}/`
+      );
+      return response.data; // return deleted course modules data
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to delete course modules');
+    }
+  }
+);
+
+// Fetch modules for a specific course
+export const fetchCourseModules = createAsyncThunk(
+  'courseWizard/fetchCourseModules',
+  async (courseIdOrSlug, { rejectWithValue }) => {
+    try {
+      // API call to fetch modules for a course using query parameter
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/api/courses/modules/`, {
+        params: {
+          course_id: courseIdOrSlug, // Can be course ID or slug
+        },
+      });
+      return response.data; // return modules array
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to fetch course modules');
+    }
+  }
+);
+
 export const updateCourseModules = createAsyncThunk(
   'courseWizard/updateCourseModules',
   async ({ id, modulesData }, { rejectWithValue }) => {
@@ -143,15 +176,20 @@ export const updateCourseModules = createAsyncThunk(
   }
 );
 
-export const deleteCourseModules = createAsyncThunk(
-  'courseWizard/deleteCourseModules',
-  async (id, { rejectWithValue }) => {
+// Fetch why enrol items for a specific course
+export const fetchWhyEnrollItems = createAsyncThunk(
+  'courseWizard/fetchWhyEnrollItems',
+  async (courseIdOrSlug, { rejectWithValue }) => {
     try {
-      // API call to delete course modules
-      await api.delete(`${import.meta.env.VITE_API_URL}/api/courses/modules/${id}/`);
-      return id; // return deleted module id
+      // API call to fetch why enrol items for a course using query parameter
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/api/courses/why-enrol/`, {
+        params: {
+          course_id: courseIdOrSlug, // Can be course ID or slug
+        },
+      });
+      return response.data; // return items array
     } catch (error) {
-      return rejectWithValue(error.response?.data || 'Failed to delete course modules');
+      return rejectWithValue(error.response?.data || 'Failed to fetch why enrol items');
     }
   }
 );
@@ -203,6 +241,24 @@ export const deleteWhyEnrollItem = createAsyncThunk(
   }
 );
 
+// Fetch benefits for a specific course
+export const fetchBenefits = createAsyncThunk(
+  'courseWizard/fetchBenefits',
+  async (courseIdOrSlug, { rejectWithValue }) => {
+    try {
+      // API call to fetch benefits for a course using query parameter
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/api/courses/benefits/`, {
+        params: {
+          course_id: courseIdOrSlug, // Can be course ID or slug
+        },
+      });
+      return response.data; // return items array
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to fetch benefits');
+    }
+  }
+);
+
 export const createBenefits = createAsyncThunk(
   'courseWizard/createBenefits',
   async (itemData, { rejectWithValue }) => {
@@ -246,6 +302,27 @@ export const deleteBenefits = createAsyncThunk(
       return response.data; // return created item data
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to create why enroll item');
+    }
+  }
+);
+
+// Fetch success stories for a specific course
+export const fetchSuccessStories = createAsyncThunk(
+  'courseWizard/fetchSuccessStories',
+  async (courseIdOrSlug, { rejectWithValue }) => {
+    try {
+      // API call to fetch success stories for a course using query parameter
+      const response = await api.get(
+        `${import.meta.env.VITE_API_URL}/api/courses/success-stories/`,
+        {
+          params: {
+            course_id: courseIdOrSlug, // Can be course ID or slug
+          },
+        }
+      );
+      return response.data; // return items array
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to fetch success stories');
     }
   }
 );
@@ -297,6 +374,24 @@ export const deleteSuccessStories = createAsyncThunk(
   }
 );
 
+// Fetch side sections for a specific course
+export const fetchSideSection = createAsyncThunk(
+  'courseWizard/fetchSideSection',
+  async (courseIdOrSlug, { rejectWithValue }) => {
+    try {
+      // API call to fetch side sections for a course using query parameter
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/api/courses/side-sections/`, {
+        params: {
+          course_id: courseIdOrSlug, // Can be course ID or slug
+        },
+      });
+      return response.data; // return items array
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to fetch side sections');
+    }
+  }
+);
+
 export const createSideSection = createAsyncThunk(
   'courseWizard/createSideSection',
   async (itemData, { rejectWithValue }) => {
@@ -340,6 +435,27 @@ export const deleteSideSection = createAsyncThunk(
       return response.data; // return created item data
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to create why enroll item');
+    }
+  }
+);
+
+// Fetch tab sections (content sections) for a specific course
+export const fetchTabSections = createAsyncThunk(
+  'courseWizard/fetchTabSections',
+  async (courseIdOrSlug, { rejectWithValue }) => {
+    try {
+      // API call to fetch content sections for a course using query parameter
+      const response = await api.get(
+        `${import.meta.env.VITE_API_URL}/api/courses/content-sections/`,
+        {
+          params: {
+            course_id: courseIdOrSlug, // Can be course ID or slug
+          },
+        }
+      );
+      return response.data; // return items array
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to fetch tab sections');
     }
   }
 );

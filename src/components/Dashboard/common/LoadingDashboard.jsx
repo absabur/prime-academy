@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const LoadingDashboard = ({ loading }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -6,7 +6,6 @@ const LoadingDashboard = ({ loading }) => {
 
   useEffect(() => {
     let timer;
-
     if (loading) {
       // Start showing loader
       setShouldRender(true);
@@ -19,6 +18,7 @@ const LoadingDashboard = ({ loading }) => {
         setTimeout(() => setShouldRender(false), 100); // match transition duration
       }, 200);
     }
+
 
     return () => clearTimeout(timer);
   }, [loading]);

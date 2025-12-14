@@ -1,31 +1,33 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { updateFormData } from '../../../../../redux/courseWizard/courseWizardSlice';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Plus } from 'lucide-react';
-import Modal from '../../../../common/Modal';
-import ModuleAddEditFrom from './ModuleAddEditFrom';
-import ModulesCard from './ModulesCard';
-import SwalUtils from '../../../../../utils/sweetAlert';
-import PreNextButtonSection from '../PreNextButtonSection';
 import {
   createCourseModules,
   deleteCourseModules,
   updateCourseModules,
 } from '../../../../../redux/courseWizard/courseWizardAction';
+import SwalUtils from '../../../../../utils/sweetAlert';
+import Modal from '../../../../common/Modal';
+import PreNextButtonSection from '../PreNextButtonSection';
+import ModuleAddEditFrom from './ModuleAddEditFrom';
+import ModulesCard from './ModulesCard';
 
 export default function Modules({ defaultValues }) {
   const dispatch = useDispatch();
+  // Make modules reactive to defaultValues changes
   const modules = defaultValues.detail?.modules || [];
-
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState('add'); // 'add' | 'edit'
   const [editingModule, setEditingModule] = useState(null); // holds original module object when editing
-
   // helper: return modules sorted by order (immutable)
   const getSorted = (arr) => [...arr].sort((a, b) => a.order - b.order);
-
   // ---------- Add Module ----------
   const addModule = async (data) => {
+    // Validate course exists
+    if (!defaultValues?.id) {
+      SwalUtils.error('Course ID is missing. Please save the course first.');
+      return;
+    }
     // if user didn't set order, auto assign next
     const nextOrder = modules.length ? Math.max(...modules.map((m) => m.order)) + 1 : 1;
     const orderToUse = data.order ?? nextOrder;
@@ -36,16 +38,30 @@ export default function Modules({ defaultValues }) {
       return;
     }
 
-    const newModule = { ...data, order: orderToUse, course_detail: defaultValues.detail.id };
+    // API expects course (course ID) and short_description
+    const newModule = {
+      course: defaultValues.id, // ✅ Use course ID (not course_detail)
+      title: data.title,
+      short_description: data.short_description,
+      order: orderToUse,
+      is_active: data.is_active,
+    };
 
     try {
       await dispatch(createCourseModules(newModule)).unwrap();
       SwalUtils.success('Module added successfully');
+      setModalOpen(false);
     } catch (error) {
-      SwalUtils.error(error?.data?.message || error?.message || 'Failed to add module');
+      console.error('Module creation error:', error);
+      console.error('Error response:', error?.response?.data);
+      SwalUtils.error(
+        error?.response?.data?.message ||
+          error?.data?.message ||
+          error?.message ||
+          'Failed to add module'
+      );
       return;
     }
-
     setModalOpen(false);
   };
 
@@ -59,21 +75,28 @@ export default function Modules({ defaultValues }) {
   };
 
   const handleEditSubmit = async (data) => {
-    // editingModule holds original module (may be null if something odd)
-    const originalOrder = editingModule?.order;
-    // if user didn't set order in form, keep original
-    const orderToUse = data.order ?? originalOrder;
-    // check conflict: allow if the only matching one is the original module
-    const conflict = modules.some((m) => m.order === orderToUse && m.order !== originalOrder);
+    const orderToUse = data.order ?? editingModule.order;
+    // check conflict with other modules (excluding self)
+    const conflict = modules.some((m) => m.id !== editingModule.id && m.order === orderToUse);
     if (conflict) {
       SwalUtils.error('Module order already exists. Choose another order.');
       return;
     }
+
+    // API expects course (course ID) and short_description
+    const updatedModule = {
+      course: defaultValues.id, // ✅ Use course ID (not course_detail)
+      title: data.title,
+      short_description: data.short_description,
+      order: orderToUse,
+      is_active: data.is_active,
+    };
+
     try {
       await dispatch(
         updateCourseModules({
           id: editingModule.id,
-          modulesData: { ...data, order: orderToUse, course_detail: defaultValues.detail.id },
+          modulesData: updatedModule,
         })
       ).unwrap();
       SwalUtils.success('Module updated successfully');

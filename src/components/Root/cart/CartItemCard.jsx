@@ -29,6 +29,13 @@ export default function CartItemCard({ item }) {
             {course.title}
           </Link>
           <p className="text-sm text-gray-500 mt-1">By Prime Academy</p>
+          
+          {/* Batch Information */}
+          {item.batch_info && (
+            <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 border border-blue-300">
+              📚 {item.batch_info.batch_name || item.batch_info.display_name || `Batch ${item.batch_info.batch_number}`}
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-4 mt-3 pt-3 border-t md:border-t-0 md:pt-0">
@@ -46,6 +53,13 @@ export default function CartItemCard({ item }) {
         <p className="text-xl font-bold text-primary">{formatCurrency(course.discounted_price)}</p>
         {course.has_discount && (
           <p className="text-sm text-gray-500 line-through">{formatCurrency(course.price)}</p>
+        )}
+        
+        {/* Installment Information */}
+        {item.batch_info?.has_installment && (
+          <div className="mt-2 text-xs text-blue-600 font-semibold">
+            💳 {item.batch_info.installment_preview.description}
+          </div>
         )}
       </div>
     </div>

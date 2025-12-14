@@ -12,12 +12,16 @@ const PriceLine = ({ label, value, className = '' }) => (
   </div>
 );
 
-export default function OrderSummaryCard({ preCouponTotal, originalPrice, cartItems }) {
+export default function OrderSummaryCard({ preCouponTotal, originalPrice, cartItems, installmentInfo, paymentSummary }) {
   // State for the coupon logic
   const [couponCode, setCouponCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [couponResult, setCouponResult] = useState(null); // Stores the API response data
+  
+  // Check for mixed payment methods
+  const hasMixedPayments = paymentSummary?.has_mixed_payment_methods;
+  const canCheckoutTogether = paymentSummary?.can_checkout_together;
 
   // --- Derived Values ---
   const initialDiscount = parseFloat(originalPrice) - parseFloat(preCouponTotal);
@@ -116,25 +120,60 @@ export default function OrderSummaryCard({ preCouponTotal, originalPrice, cartIt
 
       <div className="border-t border-gray-200 my-4"></div>
 
+      {/* Installment Option - Above Total */}
+      {installmentInfo?.available && (
+        <div className="mb-4 p-3 bg-blue-50 border-l-4 border-blue-500 rounded">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-gray-700">💳 First Installment</span>
+            <span className="text-lg font-bold text-blue-600">{formatCurrency(installmentInfo.amount)}</span>
+          </div>
+          <p className="text-xs text-gray-600 mt-1">
+            {installmentInfo.description}
+          </p>
+        </div>
+      )}
+
       {/* Total */}
-      <div className="flex justify-between items-center mb-5">
+      <div className="flex justify-between items-center mb-3">
         <span className="text-xl font-bold text-gray-900">Total</span>
         <span className="text-2xl font-bold text-primary">{formatCurrency(finalTotal)}</span>
       </div>
 
-      {/* Checkout Button */}
+      {/* Installment Info Notice - More Prominent */}
+      {installmentInfo?.available && (
+        <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-blue-100 border-2 border-blue-300 rounded-lg">
+          <div className="flex items-start gap-2">
+            <span className="text-2xl">💳</span>
+            <div className="flex-1">
+              <p className="text-sm font-bold text-blue-900 mb-1">Installment Payment Available</p>
+              <p className="text-sm text-blue-800">
+                {installmentInfo.description}
+              </p>
+              <p className="text-xs text-blue-600 mt-2">
+                Pay {formatCurrency(installmentInfo.amount)} today • Remaining in {installmentInfo.count - 1} months
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Checkout Button - Single unified button */}
       <Link
         to="/checkout"
         state={{
           coupon_code: couponResult ? couponResult.coupon_code : null,
           final_total: finalTotal,
         }}
-        className="w-full flex items-center justify-center gap-2 bg-primary text-white text-center py-3 rounded-lg font-semibold text-lg hover:bg-secondary transition-colors"
+        className="w-full flex flex-col items-center justify-center gap-1 bg-primary text-white text-center py-3 rounded-lg font-semibold text-lg hover:bg-secondary transition-colors"
       >
-        <Lock size={18} />
-        Proceed to Checkout
+        <div className="flex items-center gap-2">
+          <Lock size={18} />
+          <span>Proceed to Checkout</span>
+        </div>
+        {installmentInfo?.available && (
+          <span className="text-sm font-normal">({formatCurrency(installmentInfo.amount)} first installment)</span>
+        )}
       </Link>
-      {/* <PrimaryButton text={`Proceed to Checkout`} prefixIcon={<Lock size={18} />} href={`/checkcout`}/> */}
 
       {/* Secure Payment Info */}
       <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mt-5">

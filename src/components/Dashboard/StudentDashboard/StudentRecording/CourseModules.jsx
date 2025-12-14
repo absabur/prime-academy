@@ -1,5 +1,3 @@
-import React from 'react';
-import { ChevronRight } from 'lucide-react';
 import ModuleTable from '../../common/ModuleTable';
 import { studentRecordingColumnData } from '../../../../utils/studentRecordingColumnData';
 import { studentRecordingTableData } from '../../../../utils/studentRecordingTableData';

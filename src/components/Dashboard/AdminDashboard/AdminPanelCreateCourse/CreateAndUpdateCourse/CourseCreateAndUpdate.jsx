@@ -1,125 +1,113 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useSearchParams } from 'react-router-dom';
-// Components Imports
-import MainCourses from '../MainCourse/MainCourses';
-import CoursePrice from '../CoursePrice/CoursePrice';
-import CourseDetails from '../CourseDetails/CourseDetails';
-import WhyEnrollThisCourse from '../WhyEnroll/WhyEnrollThisCourse';
+
+// Components
 import CourseBenefits from '../Benefits/CourseBenefits';
-import CourseSuccessStories from '../SuccessStories/CourseSuccessStories';
+import CourseBatches from '../CourseBatches/CourseBatches';
+import CourseDetails from '../CourseDetails/CourseDetails';
 import Modules from '../CourseModules/Modules';
+import CoursePrice from '../CoursePrice/CoursePrice';
 import CourseSideSection from '../CouseSideSection/CourseSideSection';
+import MainCourses from '../MainCourse/MainCourses';
+import CourseSuccessStories from '../SuccessStories/CourseSuccessStories';
 import CourseTabSection from '../TabSection/CourseTabSection';
-// UI Components
+import WhyEnrollThisCourse from '../WhyEnroll/WhyEnrollThisCourse';
+
+// UI
 import PrimaryButton from '../../../../common/PrimaryButton';
-import DashBoardHeader from '../../../common/DashBoardHeader';
 import SecondaryButton from '../../../../common/SecondaryButton';
-// Redux Actions
+import DashBoardHeader from '../../../common/DashBoardHeader';
+
+// Redux
 import { singelCourse } from '../../../../../redux/courseWizard/courseWizardAction';
-import SwalUtils from '../../../../../utils/sweetAlert';
 import { clearCourse } from '../../../../../redux/courseWizard/courseWizardSlice';
+import SwalUtils from '../../../../../utils/sweetAlert';
+import LoadingDashboard from '../../../common/LoadingDashboard';
 
 const CourseCreateAndUpdate = () => {
   const dispatch = useDispatch();
   const { slug } = useParams();
-  // 1. SearchParams হুক সেটআপ
+
   const [searchParams, setSearchParams] = useSearchParams();
-  // 2. URL থেকে বর্তমান স্টেপ নেওয়া। না থাকলে ডিফল্ট 1
   const activeStep = Number(searchParams.get('step')) || 1;
-  // Redux থেকে step রিমুভ করা হয়েছে, শুধু ডেটা রাখা হয়েছে
-  const { courseWizardMessage, courseData } = useSelector((state) => state.courseWizard);
 
+  const { courseData, courseWizardMessage, courseWizardLoading } = useSelector(
+    (state) => state.courseWizard
+  );
+
+  /**
+   * Fetch Course
+   */
   useEffect(() => {
-    if (slug) {
-      dispatch(singelCourse(slug));
-    }
-
+    const fetchCourse = async () => {
+      if (slug) {
+        await dispatch(singelCourse(slug)).unwrap();
+      }
+    };
+    fetchCourse();
     return () => {
       dispatch(clearCourse());
     };
   }, [dispatch, slug, courseWizardMessage]);
 
-  //  SECURITY CHECK / VALIDATION
-
-  useEffect(() => {
-    if (!slug && activeStep > 1) {
-      setSearchParams((prevParams) => {
-        prevParams.set('step', '1');
-        return prevParams;
-      });
-
-      if (!courseData?.detail?.id && activeStep >= 4) {
-        setSearchParams((prevParams) => {
-          prevParams.set('step', '3');
-          return prevParams;
-        });
-      }
-    }
-  }, [slug, activeStep, setSearchParams, courseData]);
-
-  // Define steps configuration
   const steps = useMemo(
     () => [
       { id: 1, label: 'Courses', component: <MainCourses defaultValues={courseData} /> },
       { id: 2, label: 'Price', component: <CoursePrice defaultValues={courseData} /> },
-      { id: 3, label: 'Courses Details', component: <CourseDetails defaultValues={courseData} /> },
-      { id: 4, label: 'Modules', component: <Modules defaultValues={courseData} /> },
-      { id: 5, label: 'Why Enroll', component: <WhyEnrollThisCourse defaultValues={courseData} /> },
-      { id: 6, label: 'Benefits', component: <CourseBenefits defaultValues={courseData} /> },
+      { id: 3, label: 'Batches', component: <CourseBatches defaultValues={courseData} /> },
+      { id: 4, label: 'Course Details', component: <CourseDetails defaultValues={courseData} /> },
+      { id: 5, label: 'Modules', component: <Modules defaultValues={courseData} /> },
+      { id: 6, label: 'Why Enroll', component: <WhyEnrollThisCourse defaultValues={courseData} /> },
+      { id: 7, label: 'Benefits', component: <CourseBenefits defaultValues={courseData} /> },
       {
-        id: 7,
+        id: 8,
         label: 'Success Stories',
         component: <CourseSuccessStories defaultValues={courseData} />,
       },
-      { id: 8, label: 'Side Section', component: <CourseSideSection defaultValues={courseData} /> },
-      { id: 9, label: 'Tab Section', component: <CourseTabSection defaultValues={courseData} /> },
+      { id: 9, label: 'Side Section', component: <CourseSideSection defaultValues={courseData} /> },
+      { id: 10, label: 'Tab Section', component: <CourseTabSection defaultValues={courseData} /> },
     ],
     [courseData]
   );
 
-  // 3. Handler for navigation (URL আপডেট করবে)
-  const handleStepChange = (stepIndex) => {
-    // Validation
-    if (!slug && stepIndex > 1) {
-      return SwalUtils.error('Please save course info first');
-    }
+  /**
+   * Step Change Handler
+   */
+  const handleStepChange = (nextStep) => {
+    if (!slug && nextStep > 1) return SwalUtils.error('Please save course info first');
 
-    if (!courseData?.detail?.id && stepIndex >= 4) {
-      return SwalUtils.error(
-        'Please save Course Details first to proceed to Modules and other sections.'
-      );
-    }
+    if (nextStep >= 4 && !courseData?.batches?.length)
+      return SwalUtils.error('Please create at least one batch first');
+    if (nextStep >= 5 && !courseData?.detail?.id)
+      return SwalUtils.error('Please save Course Details first');
 
-    setSearchParams((prevParams) => {
-      prevParams.set('step', stepIndex);
-      return prevParams;
-    });
+    const newParams = new URLSearchParams();
+    newParams.set('step', nextStep);
+    setSearchParams(newParams);
   };
 
   return (
     <div className="space-y-xl">
+      {courseWizardLoading && <LoadingDashboard />}
       <DashBoardHeader title={slug ? 'Edit Course' : 'Create A Course'} />
-
-      {/* Navigation Tabs */}
+      {/* Navigation */}
       <div className="bg-white p-4 md:p-5 rounded-2xl shadow-lg w-full border-2 border-primary">
-        <div className="flex flex-wrap justify-start gap-3 sm:gap-4">
-          {steps.map((item) => {
-            // চেক করা হচ্ছে activeStep এর সাথে
-            const isActive = activeStep === item.id;
-
+        <div className="flex flex-wrap gap-3">
+          {steps.map((step) => {
+            const isActive = activeStep === step.id;
             return isActive ? (
               <PrimaryButton
-                key={item.id}
-                onClick={() => handleStepChange(item.id)}
-                text={item.label}
+                key={step.id}
+                onClick={() => handleStepChange(step.id)}
+                text={step.label}
                 minWidth="fit"
               />
             ) : (
               <SecondaryButton
-                key={item.id}
-                text={item.label}
-                onClick={() => handleStepChange(item.id)}
+                key={step.id}
+                onClick={() => handleStepChange(step.id)}
+                text={step.label}
                 minWidth="fit"
                 className="text-primary border-primary hover:text-white"
               />
@@ -128,13 +116,11 @@ const CourseCreateAndUpdate = () => {
         </div>
       </div>
 
-      {/* Dynamic Component Rendering */}
+      {/* Step Content */}
       <div className="mt-6">
-        {steps.map((item) => {
-          // রেন্ডারিং লজিক activeStep দিয়ে চেক করা হচ্ছে
-          if (activeStep !== item.id) return null;
-          return <div key={item.id}>{item.component}</div>;
-        })}
+        {steps.map((step) =>
+          activeStep === step.id ? <div key={step.id}>{step.component}</div> : null
+        )}
       </div>
     </div>
   );

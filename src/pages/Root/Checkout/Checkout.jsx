@@ -9,12 +9,17 @@ import { buildOrderPayload, calculateOrderTotals } from '../../../utils/checkout
 import { BillingForm } from '../../../components/Root/checkout/BillingForm';
 import { OrderSummary } from '../../../components/Root/checkout/OrderSummary';
 import { EmptyCart } from '../../../components/Root/checkout/CheckoutComponents';
+import SwalUtils from '../../../utils/sweetAlert';
+import LoadingDashboard from '../../../components/Dashboard/common/LoadingDashboard';
+import OuterSection from '../../../components/common/OuterSection';
+import InnerSection from '../../../components/common/InnerSection';
 
 // --- Main Checkout Component ---
 export default function CheckoutPage() {
   const { carts, status: cartStatus } = useSelector((state) => state.cart);
   const { couponState } = useSelector((state) => state.common);
   const { profile } = useSelector((state) => state.auth);
+  const { myCourses } = useSelector((state) => state.course);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -31,10 +36,50 @@ export default function CheckoutPage() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [error, setError] = useState(null);
 
+  // Calculate installment info from filtered items
+  const calculateInstallmentInfo = (items) => {
+    if (!items || items.length === 0) return null;
+
+    // Check if any item has installment
+    const hasInstallmentItems = items.some((item) => item.batch_info?.has_installment);
+    if (!hasInstallmentItems) return null;
+
+    // Calculate total first installment amount and total course price
+    let totalFirstInstallment = 0;
+    let totalCoursePrice = 0;
+    let installmentCount = 0;
+
+    items.forEach((item) => {
+      if (item.batch_info?.has_installment && item.batch_info?.installment_preview) {
+        totalFirstInstallment += parseFloat(item.batch_info.installment_preview.amount || 0);
+        installmentCount = item.batch_info.installment_preview.count || 0; // Assuming same plan
+      }
+      totalCoursePrice += parseFloat(item.subtotal || 0);
+    });
+
+    // Generate description
+    const description =
+      installmentCount > 0
+        ? `Pay in ${installmentCount} installments of ৳${totalFirstInstallment.toFixed(2)}`
+        : 'Installment payment available';
+
+    return {
+      amount: totalFirstInstallment.toFixed(2),
+      count: installmentCount,
+      total: totalCoursePrice.toFixed(2),
+      description: description,
+    };
+  };
+
   // Fetch user profile and cart on mount
   useEffect(() => {
     dispatch(userProfile());
     dispatch(fetchCarts());
+
+    // Fetch enrolled courses to check if already enrolled
+    import('../../../redux/courses/courseAction').then(({ fetchMyCourses }) => {
+      dispatch(fetchMyCourses());
+    });
   }, [dispatch]);
 
   // Pre-fill billing details from profile
@@ -59,12 +104,52 @@ export default function CheckoutPage() {
     }
   }, [cartStatus, carts, navigate]);
 
+  // Check if user is already enrolled in SPECIFIC BATCH of cart courses
+  useEffect(() => {
+    if (carts?.items && myCourses && myCourses.length > 0) {
+
+      // Check if enrolled in the EXACT batch (not just the course)
+      const alreadyEnrolledCourses = carts.items.filter((cartItem) => {
+        const cartBatchId = cartItem.batch?.id || cartItem.batch_info?.id;
+
+        return myCourses.some((enrollment) => {
+          const courseMatch = enrollment.course_slug === cartItem.course.slug;
+          const enrollmentBatchId = enrollment.batch_id || enrollment.batch;
+
+          // MUST match BOTH course AND batch
+          const batchMatch = enrollmentBatchId === cartBatchId;
+
+          return courseMatch && batchMatch;
+        });
+      });
+
+      if (alreadyEnrolledCourses.length > 0) {
+        const courseNames = alreadyEnrolledCourses
+          .map((item) => {
+            const batchName = item.batch_info?.batch_name || item.batch_info?.display_name || '';
+            return `${item.course.title} - ${batchName}`;
+          })
+          .join(', ');
+
+        SwalUtils.warning(`You are already enrolled in: ${courseNames}`, 'Already Enrolled').then(
+          () => {
+            navigate('/student-dashboard/my-courses');
+          }
+        );
+      } else {
+      }
+    }
+  }, [carts, myCourses, navigate]);
+
   // Get checkout state (from navigation or Redux)
   const passedState = location.state || couponState || {};
   const couponCode = passedState.coupon_code || null;
 
-  // Calculate all order totals
-  const totals = calculateOrderTotals(carts, passedState);
+  // No filtering needed since mixed payments are blocked
+  const filteredCarts = carts;
+
+  // Calculate all order totals based on filtered items
+  const totals = calculateOrderTotals(filteredCarts, passedState);
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -78,29 +163,26 @@ export default function CheckoutPage() {
     setIsPlacingOrder(true);
     setError(null);
 
-    let firstCourse = carts.items[0]?.course?.slug;
+    // Check if cart items have installment
+    const hasInstallment = filteredCarts?.items?.some((item) => item.batch_info?.has_installment);
+    let is_installment = hasInstallment;
+    let installment_plan = filteredCarts?.items?.[0]?.batch_info?.installment_preview?.count || 0;
 
-    let is_installment = false;
-    let installment_plan = 0;
+    // Calculate total first installment amount for all items in checkout
     let installment_price = 0;
-
-    try {
-      const courseResponse = await api.get(`/api/courses/${firstCourse}/`);
-      const pricing = courseResponse?.data?.data?.pricing;
-
-      is_installment = pricing?.installment_available;
-      installment_plan = pricing?.installment_count;
-      installment_price = pricing?.installment_amount;
-    } catch (error) {
-      console.error('Error fetching course details:', error);
-      setError('Failed to fetch course details. Please try again.');
-      setIsPlacingOrder(false);
-      return;
+    if (is_installment) {
+      installment_price =
+        filteredCarts?.items?.reduce((sum, item) => {
+          if (item.batch_info?.has_installment && item.batch_info?.installment_preview) {
+            return sum + parseFloat(item.batch_info.installment_preview.amount || 0);
+          }
+          return sum;
+        }, 0) || 0;
     }
 
     const orderPayload = buildOrderPayload(
       billingDetails,
-      carts,
+      filteredCarts,
       totals,
       couponCode,
       is_installment,
@@ -120,6 +202,7 @@ export default function CheckoutPage() {
 
       localStorage.setItem('latest_order_id', orderData.data.id);
 
+      // Refresh cart to reflect order creation (backend should handle partial clearing)
       dispatch(fetchCarts());
 
       // Initiate payment
@@ -143,9 +226,9 @@ export default function CheckoutPage() {
     }
   };
 
-  // Loading state
-  if (cartStatus === 'loading' || cartStatus === 'idle') {
-    return <LoadingSpinner />;
+  // Loading state (only show when actively loading)
+  if (cartStatus === 'loading') {
+    return <LoadingDashboard loading={true} />;
   }
 
   // Redirect to preserve state if needed
@@ -175,13 +258,14 @@ export default function CheckoutPage() {
       >
         <BillingForm billingDetails={billingDetails} handleChange={handleChange} />
         <OrderSummary
-          cartItems={carts?.items}
+          cartItems={filteredCarts?.items}
           originalSubtotal={totals.originalSubtotal}
           totalDiscount={totals.totalDiscount}
           couponCode={couponCode}
           totalToPay={totals.totalToPay}
           error={error}
           isPlacingOrder={isPlacingOrder}
+          installmentInfo={calculateInstallmentInfo(filteredCarts?.items)}
         />
       </form>
     </div>

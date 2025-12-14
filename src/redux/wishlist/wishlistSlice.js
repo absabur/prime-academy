@@ -4,8 +4,8 @@ import { fetchWishlist, deleteWishlist, createWishlist, moveToCart } from './wis
 const wishlistSlice = createSlice({
   name: 'wishlist',
   initialState: {
-    wishlist: [],
-    loadingWishlists: true,
+    wishlists: [],
+    loadingWishlists: false,
     loadingActionWishlists: false,
     error: null,
     message: null,
